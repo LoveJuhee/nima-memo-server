@@ -1,0 +1,33 @@
+{
+  "name": "nima-kitv-server",
+  "version": "0.1.0",
+  "description": "kitvalley server manager",
+  "main": "app.ts",
+  "scripts": {
+    "test": "tdd"
+  },
+  "keywords": [
+    "kitvalley"
+  ],
+  "author": "lj1212.kit@gmail.com",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-copy": "0.0.2",
+    "gulp-jasmine": "^2.4.0",
+    "gulp-print": "^2.0.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-strip-code": "^0.1.4",
+    "gulp-strip-comments": "^2.4.3",
+    "gulp-typescript": "^2.13.6",
+    "gulp-util": "^3.0.7",
+    "gulp-webserver": "^0.9.1",
+    "should": "^9.0.2",
+    "supertest": "^1.2.0"
+  }
+}
