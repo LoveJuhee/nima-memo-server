@@ -9,9 +9,16 @@
     "removeComments": false,
     "noImplicitAny": false
   },
-    "filesGlob": [
-        "./**/*.ts",
-        "!./node_modules/**/*.ts",
-        "!./public/app/node_modules/**/*.ts"
-    ],
+  "compileOnSave": false,
+  "filesGlob": [
+    "./**/*.ts",
+    "!./node_modules/**/*.ts",
+    "!./public/app/node_modules/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "wwwroot",
+    "typings/**/*.d.ts",
+    "test/**/*.ts"
+  ]
 }

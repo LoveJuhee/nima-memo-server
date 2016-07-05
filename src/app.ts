@@ -1,3 +1,5 @@
+/// <reference path="../typings/index.d.ts" />
+
 import * as express from "express";
 
 export class Server {
@@ -43,22 +45,22 @@ export class Server {
     const router: express.Router = express.Router();
 
     //get
-    router.get("/", wrap(async (req, res) => {
+    router.get("/", wrap( (req, res) => {
       res.status(200).json({ result: "Hello World" })
     }));
 
     //post
-    router.post("/", wrap(async (req, res) => {
+    router.post("/", wrap( (req, res) => {
       res.status(200).json({ result: "Hello World" })
     }));
 
     //put
-    router.put("/", wrap(async (req, res) => {
+    router.put("/", wrap( (req, res) => {
       res.status(200).json({ result: "Hello World" })
     }));
 
     //delete
-    router.delete("/", wrap(async (req, res) => {
+    router.delete("/", wrap( (req, res) => {
       res.status(200).json({ result: "Hello World" })
     }));
 
