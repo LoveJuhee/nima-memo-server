@@ -16,6 +16,7 @@
     "express": "^4.14.0"
   },
   "devDependencies": {
+    "debug": "^2.2.0",
     "del": "^2.2.1",
     "gulp": "^3.9.1",
     "gulp-copy": "0.0.2",

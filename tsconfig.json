@@ -17,8 +17,6 @@
   ],
   "exclude": [
     "node_modules",
-    "wwwroot",
-    "typings/**/*.d.ts",
-    "test/**/*.ts"
+    "typings"
   ]
 }
