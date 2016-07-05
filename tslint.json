@@ -36,7 +36,7 @@
       "check-else",
       "check-whitespace"
     ],
-    "quotemark": [true, "double"],
+    "quotemark": [true, "single"],
     "semicolon": true,
     "triple-equals": [true, "allow-null-check"],
     "typedef": [true,
@@ -45,11 +45,12 @@
       "parameter",
       "propertySignature",
       "variableDeclarator",
-      "memberVariableDeclarator"],
+      "memberVariableDeclarator"
+    ],
     "use-strict": false,
     "variable-name": [
-        true,
-        "allow-leading-underscore"
+      true,
+      "allow-leading-underscore"
     ],
     "whitespace": [
       true,

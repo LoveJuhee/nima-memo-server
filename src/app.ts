@@ -1,6 +1,6 @@
-/// <reference path="../typings/index.d.ts" />
+/// <reference path='../typings/index.d.ts' />
 
-import * as express from "express";
+import * as express from 'express';
 
 export class Server {
   /* app에 대한 타입 설정 */
@@ -29,7 +29,7 @@ export class Server {
       console.error(`error on requst ${req.method} | ${req.url} | ${err.status}`);
       console.error(err.stack || `${err.message}`);
 
-      err.message = err.status == 500 ? 'Something bad happened.' : err.message;
+      err.message = err.status === 500 ? 'Something bad happened.' : err.message;
       res.status(err.status).send(err.message);
     });
   }
@@ -45,23 +45,23 @@ export class Server {
     const router: express.Router = express.Router();
 
     //get
-    router.get("/", wrap( (req, res) => {
-      res.status(200).json({ result: "Hello World" })
+    router.get('/', wrap((req, res) => {
+      res.status(200).json({ result: 'Hello World' })
     }));
 
     //post
-    router.post("/", wrap( (req, res) => {
-      res.status(200).json({ result: "Hello World" })
+    router.post('/', wrap((req, res) => {
+      res.status(200).json({ result: 'Hello World' })
     }));
 
     //put
-    router.put("/", wrap( (req, res) => {
-      res.status(200).json({ result: "Hello World" })
+    router.put('/', wrap((req, res) => {
+      res.status(200).json({ result: 'Hello World' })
     }));
 
     //delete
-    router.delete("/", wrap( (req, res) => {
-      res.status(200).json({ result: "Hello World" })
+    router.delete('/', wrap((req, res) => {
+      res.status(200).json({ result: 'Hello World' })
     }));
 
     this.app.use(router);
