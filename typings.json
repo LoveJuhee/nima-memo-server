@@ -2,6 +2,7 @@
   "name": "nima-kitv-server",
   "dependencies": {},
   "globalDependencies": {
+    "bcrypt-nodejs": "registry:dt/bcrypt-nodejs#0.0.0+20160316155526",
     "body-parser": "registry:dt/body-parser#0.0.0+20160619023215",
     "debug": "registry:dt/debug#0.0.0+20160317120654",
     "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
@@ -9,7 +10,10 @@
     "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160701212727",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "mocha": "registry:dt/mocha#2.2.5+20160619032855",
+    "mongoose": "registry:dt/mongoose#3.8.5+20160629014609",
     "node": "registry:env/node#6.0.0+20160622202520",
+    "passport": "registry:dt/passport#0.2.0+20160317120654",
+    "passport-local": "registry:dt/passport-local#0.0.0+20160316155526",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
     "should": "registry:dt/should#8.1.1+20160608082854"
   }

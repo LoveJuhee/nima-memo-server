@@ -1,20 +1,25 @@
 {
-  "name": "nima-kitv-server",
+  "name": "nima-kitv",
   "version": "0.1.0",
-  "description": "kitvalley server manager",
+  "description": "kitvalley manager",
   "main": "app.ts",
   "scripts": {
     "test": "tdd"
   },
   "keywords": [
-    "kitvalley"
+    "kitvalley",
+    "nima"
   ],
   "author": "lj1212.kit@gmail.com",
   "license": "ISC",
   "private": true,
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "es6-promise": "^3.2.1",
     "express": "^4.14.0",
+    "mongoose": "^4.5.3",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "query-string": "^4.2.2",
     "source-map-support": "^0.4.1",
     "urlencode": "^1.1.0"
