@@ -1,7 +1,6 @@
 /// <reference path='../typings/index.d.ts' />
 require('source-map-support').install();
 
-import * as http from 'http';
 import AppServer from './app-server';
 
 /**
