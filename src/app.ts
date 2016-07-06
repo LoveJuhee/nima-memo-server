@@ -5,14 +5,18 @@ import * as http from 'http';
 import AppServer from './app-server';
 
 /**
- * 컨트롤러 연결 클래스
- * @class
+ * 메인 App 클래스
+ * 
+ * @export
+ * @class App
  */
-class App {
+export class App {
   private server: AppServer;
+
   /**
-   * Creates an instance of Routes.
+   * Creates an instance of App.
    * 
+   * @param {boolean} [run=true] 생성과 동시에 웹서비스 구동 여부 설정
    */
   constructor(run: boolean = true) {
     this.server = new AppServer();
@@ -22,14 +26,14 @@ class App {
   }
 
   /**
-   * start
+   * 웹서비스 실행
    */
   public start() {
     this.server.startup();
   }
 
   /**
-   * stop
+   * 웹서비스 중지
    */
   public stop() {
     this.server.shutdown();
