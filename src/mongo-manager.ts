@@ -10,7 +10,19 @@ import {
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_MONGO_MANAGER);
 
+/**
+ * MongoDB 접속 관리자
+ * 
+ * @export
+ * @class MongoManager
+ */
 export class MongoManager {
+    /**
+     * Creates an instance of MongoManager.
+     * 
+     * @param {express.Application} app
+     * @param {boolean} [run=false]
+     */
     constructor(private app: express.Application, run: boolean = false) {
         if (!app) {
             throw (new Error('app is null or undefined.'));
@@ -37,6 +49,11 @@ export class MongoManager {
         mongoose.disconnect(e => { debug(e); });
     }
 
+    /**
+     * 객체 정보 반환
+     * 
+     * @returns
+     */
     toString() {
         return 'MongoManager class';
     }
