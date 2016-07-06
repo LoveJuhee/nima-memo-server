@@ -1,17 +1,20 @@
 'use strict';
-require('source-map-support').install();
 
+import * as http from 'http';
 import * as express from 'express';
 import {ExpressPreset} from './express-preset';
+
+const PORT: number = 8080;
 
 /**
  * express 구동 전 사전 작업 클래스
  * 
  * @export
- * @class Server
+ * @class AppServer
  */
-export default class Server {
+export default class AppServer {
     app: express.Application;
+    server: http.Server;
 
     /**
      * Creates an instance of Routes.
@@ -32,6 +35,16 @@ export default class Server {
         }
         this.app = express();
         new ExpressPreset(this.app);
+
+        // 서버 실행
+        this.server = this.app.listen(PORT, () => {
+            var host = this.server.address().address;
+            var port = this.server.address().port;
+            console.log('This express app is listening on port:' + port);
+        });
+        // this.server = http.createServer(this.app).listen(PORT, function () {
+        //     console.log(`AppServer start. port: ${PORT}`);
+        // });
     }
 
     /**
@@ -39,6 +52,7 @@ export default class Server {
      */
     public shutdown() {
         this.app = undefined;
+        this.server.close();
     }
 
     /**
@@ -47,6 +61,6 @@ export default class Server {
      * @returns
      */
     toString() {
-        return 'Server class';
+        return 'AppServer class';
     }
 }

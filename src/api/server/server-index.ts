@@ -1,5 +1,4 @@
 'use strict';
-require('source-map-support').install();
 
 import {Application} from 'express';
 import ServerController from './server-controller';

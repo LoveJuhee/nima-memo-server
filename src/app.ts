@@ -1,20 +1,21 @@
 /// <reference path='../typings/index.d.ts' />
+// require('source-map-support').install();
 
 import * as http from 'http';
-import Server from './server';
+import AppServer from './app-server';
 
 /**
  * 컨트롤러 연결 클래스
  * @class
  */
 class App {
-  private server: Server;
+  private server: AppServer;
   /**
    * Creates an instance of Routes.
    * 
    */
   constructor(run: boolean = true) {
-    this.server = new Server();
+    this.server = new AppServer();
     if (run) {
       this.start();
     }
