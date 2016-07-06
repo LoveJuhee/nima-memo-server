@@ -5,6 +5,7 @@ import {
     IS_DEBUG_ROUTE_SERVER,
 } from '../../debug/flag';
 /* end-test-code */
+
 import {
     LOGGING_API_SERVER,
 } from '../../config/logger';
@@ -16,22 +17,30 @@ import {
 } from '../../provider/util/request-util';
 const nodeUtil = require('util');
 
+import * as express from 'express';
+
 /**
  * rest server 에 대한 처리 클래스
- * @class
+ * 
+ * @export
+ * @class ServerController
  */
 export default class ServerController {
+    /**
+     * Creates an instance of ServerController.
+     * 
+     */
     constructor() {
         debug(`ServerController create`);
     }
 
     /**
      * get 대응 로직
-     * @param {request} req 리퀘스트 요청 정보 객체
-     * @param {result} res 요청 처리 결과 반환 객체
-     * @return {void} void
+     * 
+     * @param {express.Request} req
+     * @param {express.Response} res
      */
-    index(req: any, res: any) {
+    index(req: express.Request, res: express.Response): void {
         let params = req.params;
         debug(`index ${nodeUtil.inspect(params)}`);
         res.send('index');
@@ -39,11 +48,11 @@ export default class ServerController {
 
     /**
      * get:id 대응 로직
-     * @param {request} req 리퀘스트 요청 정보 객체
-     * @param {result} res 요청 처리 결과 반환 객체
-     * @return {void} void
+     * 
+     * @param {express.Request} req
+     * @param {express.Response} res
      */
-    show(req: any, res: any) {
+    show(req: express.Request, res: express.Response): void {
         debug(`params: ${nodeUtil.inspect(req.params)}`);
         requestUtil.fromRequestParams(req.params)
             .then(requestUtil.print)
@@ -54,11 +63,11 @@ export default class ServerController {
 
     /**
      * post 대응 로직
-     * @param {request} req 리퀘스트 요청 정보 객체
-     * @param {result} res 요청 처리 결과 반환 객체
-     * @return {void} void
+     * 
+     * @param {express.Request} req
+     * @param {express.Response} res
      */
-    create(req: any, res: any) {
+    create(req: express.Request, res: express.Response): void {
         let body = req.body;
         debug(`create ${nodeUtil.inspect(body)}`);
         res.send(`create ${nodeUtil.inspect(body)}`);
@@ -66,11 +75,11 @@ export default class ServerController {
 
     /**
      * put, patch 대응 로직
-     * @param {request} req 리퀘스트 요청 정보 객체
-     * @param {result} res 요청 처리 결과 반환 객체
-     * @return {void} void
+     * 
+     * @param {express.Request} req
+     * @param {express.Response} res
      */
-    update(req: any, res: any) {
+    update(req: express.Request, res: express.Response): void {
         let params = requestUtil.toEncodeObject(req.params);
         debug(`update ${nodeUtil.inspect(params)}`);
         res.send('update');
@@ -78,17 +87,22 @@ export default class ServerController {
 
     /**
      * delete 대응 로직
-     * @param {request} req 리퀘스트 요청 정보 객체
-     * @param {result} res 요청 처리 결과 반환 객체
-     * @return {void} void
+     * 
+     * @param {express.Request} req
+     * @param {express.Response} res
      */
-    destroy(req: any, res: any) {
+    destroy(req: express.Request, res: express.Response): void {
         let params = requestUtil.toEncodeObject(req.params);
         debug(`destroy ${nodeUtil.inspect(params)}`);
         res.send('destroy');
     }
 
-    toString() {
+    /**
+     * 객체 정보
+     * 
+     * @returns {string}
+     */
+    toString(): string {
         return 'ServerController class';
     }
 }
