@@ -1,5 +1,5 @@
-/** Url */
-export const DEFAULT_SEISMIC_URL: string = 'http://www.kma.go.kr/weather/earthquake_volcano/domesticlist.jsp';
+/** Uri */
+export const DEFAULT_SEISMIC_URI: string = 'http://www.kma.go.kr/weather/earthquake_volcano/domesticlist.jsp';
 
 /** Logging */
 export const LOGGING_API_SERVER: string = 'api:server';

@@ -4,6 +4,7 @@ require('source-map-support').install();
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
+import * as route from './config/route';
 import ServerIndex from './api/server/server-index';
 
 /**
@@ -69,8 +70,13 @@ export class ExpressPreset {
     }));
   }
 
+  /**
+   * rest route 설정 
+   * 
+   * @private
+   */
   private route(): void {
-    new ServerIndex(this.app);
+    new ServerIndex(this.app, route.SERVER_API_URI);
   }
 
   private after(): void {
