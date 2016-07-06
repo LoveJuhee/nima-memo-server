@@ -42,9 +42,6 @@ export default class AppServer {
             var port = this.server.address().port;
             console.log('This express app is listening on port:' + port);
         });
-        // this.server = http.createServer(this.app).listen(PORT, function () {
-        //     console.log(`AppServer start. port: ${PORT}`);
-        // });
     }
 
     /**
