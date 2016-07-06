@@ -32,3 +32,4 @@ typings
 
 # Ignore Generated Output Files
 dist
+deploy
