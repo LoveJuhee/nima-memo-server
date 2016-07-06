@@ -3,7 +3,8 @@ require('source-map-support').install();
 
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as ExpressRoute from './express-route';
+
+import ServerIndex from './api/server/server-index';
 
 /**
  * 컨트롤러 연결 클래스
@@ -49,25 +50,32 @@ export class ExpressPreset {
    * 
    * @param {express.Application} app
    */
-  constructor(app: express.Application) {
+  constructor(private app: express.Application) {
     if (!app) {
       throw (new Error('app is null or undefined.'));
     }
+    try {
+      this.before();
+      this.route();
+      this.after();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  private before(app: express.Application) {
-    app.use(bodyParser.urlencoded({
+  private before(): void {
+    this.app.use(bodyParser.urlencoded({
       extended: true
     }));
   }
 
-  private route(app: express.Application) {
-
+  private route(): void {
+    new ServerIndex(this.app);
   }
 
-  private after(app: express.Application) {
+  private after(): void {
     /* Not Foud */
-    app.use((req: express.Request, res: express.Response, next: Function) => {
+    this.app.use((req: express.Request, res: express.Response, next: Function) => {
       /**
        *  Error이라는 정의가 있지만 Error에는 status라는 정의가 없어서 any 설정
        *  (아마 typescript로 개발하다보면 any를 많이 쓰게된다)
@@ -78,7 +86,7 @@ export class ExpressPreset {
     });
 
     /* 에러 처리 */
-    app.use((err: any, req: express.Request, res: express.Response) => {
+    this.app.use((err: any, req: express.Request, res: express.Response) => {
       err.status = err.status || 500;
       console.error(`error on requst ${req.method} | ${req.url} | ${err.status}`);
       console.error(err.stack || `${err.message}`);

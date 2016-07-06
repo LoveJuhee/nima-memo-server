@@ -1,69 +1,48 @@
 /// <reference path='../typings/index.d.ts' />
 
-import * as express from 'express';
+import * as http from 'http';
+import Server from './server';
 
-export class Server {
-  /* app에 대한 타입 설정 */
-  public app: express.Application;
-
-  constructor() {
-    /* express 설정을 위한 express 선언 */
-    this.app = express();
-    /* 라우터 */
-    this.router();
-
-    /* Not Foud */
-    this.app.use((req: express.Request, res: express.Response, next: Function) => {
-      /**
-       *  Error이라는 정의가 있지만 Error에는 status라는 정의가 없어서 any 설정
-       *  (아마 typescript로 개발하다보면 any를 많이 쓰게된다)
-       */
-      const err: any = new Error('not_found');
-      err.status = 404;
-      next(err);
-    });
-
-    /* 에러 처리 */
-    this.app.use((err: any, req: express.Request, res: express.Response) => {
-      err.status = err.status || 500;
-      console.error(`error on requst ${req.method} | ${req.url} | ${err.status}`);
-      console.error(err.stack || `${err.message}`);
-
-      err.message = err.status === 500 ? 'Something bad happened.' : err.message;
-      res.status(err.status).send(err.message);
-    });
+/**
+ * 컨트롤러 연결 클래스
+ * @class
+ */
+class App {
+  private server: Server;
+  /**
+   * Creates an instance of Routes.
+   * 
+   */
+  constructor(run: boolean = true) {
+    this.server = new Server();
+    if (run) {
+      this.start();
+    }
   }
 
-  private router() {
-    /**
-     * 에러 처리를 좀더 쉽게 하기 위해서 한번 감싸준다.
-     * es7에 제안된 async await를 사용하여 에러처리시 catch가 되기 편하게 해준 방식이다.
-     * http://expressjs.com/ko/advanced/best-practice-performance.html#section-10 을 참고하면 좋다.
-     */
-    const wrap = fn => (req, res, next) => fn(req, res, next).catch(next);
-    //get router
-    const router: express.Router = express.Router();
+  /**
+   * start
+   */
+  public start() {
+    this.server.startup();
+  }
 
-    //get
-    router.get('/', wrap((req, res) => {
-      res.status(200).json({ result: 'Hello World' })
-    }));
+  /**
+   * stop
+   */
+  public stop() {
+    this.server.shutdown();
+  }
 
-    //post
-    router.post('/', wrap((req, res) => {
-      res.status(200).json({ result: 'Hello World' })
-    }));
-
-    //put
-    router.put('/', wrap((req, res) => {
-      res.status(200).json({ result: 'Hello World' })
-    }));
-
-    //delete
-    router.delete('/', wrap((req, res) => {
-      res.status(200).json({ result: 'Hello World' })
-    }));
-
-    this.app.use(router);
+  /**
+   * 객체 정보 출력
+   * 
+   * @returns
+   */
+  toString() {
+    return 'App class';
   }
 }
+
+const app = new App();
+export default app;

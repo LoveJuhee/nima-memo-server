@@ -4,7 +4,7 @@ require('source-map-support').install();
 /* test-code */
 import {
     IS_DEBUG_ROUTE_SERVER,
-} from '../../config/debug.flag';
+} from '../../debug/flag';
 /* end-test-code */
 import {
     LOGGING_API_SERVER,
@@ -12,20 +12,18 @@ import {
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_API_SERVER);
 
-// import {
-//   default as nimaUtil
-// } from '../../providers/util';
+import {
+    default as requestUtil
+} from '../../provider/util/request-util';
 const nodeUtil = require('util');
 
-export const NIMA_ROUTE_URI = '/api/nimas';
-
 /**
- * rest nima 에 대한 처리 클래스
+ * rest server 에 대한 처리 클래스
  * @class
  */
-export class NimaController {
+export default class ServerController {
     constructor() {
-        debug(`NimaController create`);
+        debug(`ServerController create`);
     }
 
     /**
@@ -34,7 +32,7 @@ export class NimaController {
      * @param {result} res 요청 처리 결과 반환 객체
      * @return {void} void
      */
-    index(req, res) {
+    index(req: any, res: any) {
         let params = req.params;
         debug(`index ${nodeUtil.inspect(params)}`);
         res.send('index');
@@ -46,10 +44,10 @@ export class NimaController {
      * @param {result} res 요청 처리 결과 반환 객체
      * @return {void} void
      */
-    show(req, res) {
+    show(req: any, res: any) {
         debug(`params: ${nodeUtil.inspect(req.params)}`);
-        nimaUtil.fromRequestParams(req.params)
-            .then(nimaUtil.print)
+        requestUtil.fromRequestParams(req.params)
+            .then(requestUtil.print)
             .then(r => {
                 res.send(`show ${nodeUtil.inspect(r)}`);
             });
@@ -61,7 +59,7 @@ export class NimaController {
      * @param {result} res 요청 처리 결과 반환 객체
      * @return {void} void
      */
-    create(req, res) {
+    create(req: any, res: any) {
         let body = req.body;
         debug(`create ${nodeUtil.inspect(body)}`);
         res.send(`create ${nodeUtil.inspect(body)}`);
@@ -73,8 +71,8 @@ export class NimaController {
      * @param {result} res 요청 처리 결과 반환 객체
      * @return {void} void
      */
-    update(req, res) {
-        let params = nimaUtil.toEncodeObject(req.params);
+    update(req: any, res: any) {
+        let params = requestUtil.toEncodeObject(req.params);
         debug(`update ${nodeUtil.inspect(params)}`);
         res.send('update');
     }
@@ -85,13 +83,13 @@ export class NimaController {
      * @param {result} res 요청 처리 결과 반환 객체
      * @return {void} void
      */
-    destroy(req, res) {
-        let params = nimaUtil.toEncodeObject(req.params);
+    destroy(req: any, res: any) {
+        let params = requestUtil.toEncodeObject(req.params);
         debug(`destroy ${nodeUtil.inspect(params)}`);
         res.send('destroy');
     }
 
     toString() {
-        return 'NimaController class';
+        return 'ServerController class';
     }
 }

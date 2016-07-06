@@ -17,15 +17,13 @@ const nodeUtil = require('util');
  * @class
  */
 class RequestUtil {
-  constructor() { }
-
   /**
    * Promise then 사용을 위한 단순 출력 객체
    * @param {Object} item 출력할 객체
    * @return {Promise} Promise 객체
    */
-  print(item) {
-    return new Promise(function (resolve, reject) {
+  print(item: any): Promise<Object> {
+    return new Promise(function (resolve: any, reject: any) {
       if (!item) {
         reject(new Error('item is null or undefined'));
       }
@@ -39,7 +37,7 @@ class RequestUtil {
    * @param {string} file 파일 경로
    * @return {array} JSON 배열
    */
-  toJsonSync(file) {
+  toJsonSync(file: string): Object {
     try {
       let reads = fs.readFileSync(file, 'utf8');
       return JSON.parse(reads);
@@ -54,7 +52,7 @@ class RequestUtil {
    * @param {string} params request 요청 내용
    * @return {Object} 변환된 객체
    */
-  fromRequestParams(params: string): Object {
+  fromRequestParams(params: string): Promise<Object> {
     let toEncodeObject = this.toEncodeObject;
     let toJsonObject = this.toJsonObject;
     return toEncodeObject(params)
@@ -140,5 +138,5 @@ class RequestUtil {
   }
 }
 
-const util = new RequestUtil();
-export default util;
+const requestUtil = new RequestUtil();
+export default requestUtil;
