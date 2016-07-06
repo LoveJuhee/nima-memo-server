@@ -8,7 +8,7 @@ import {
 /* end-test-code */
 import {
     LOGGING_API_SERVER,
-} from '../../config/config';
+} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_API_SERVER);
 
