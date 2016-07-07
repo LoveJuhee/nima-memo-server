@@ -3,8 +3,8 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
-import * as route from './config/route';
-import ServerIndex from './api/server/server-index';
+import * as route from '../config/route';
+import ServerIndex from '../api/server/server-index';
 
 /**
  * 컨트롤러 연결 클래스

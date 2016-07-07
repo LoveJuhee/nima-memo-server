@@ -1,7 +1,8 @@
 /// <reference path='../typings/index.d.ts' />
 require('source-map-support').install();
 
-import AppServer from './app-server';
+import {AppServer} from './preset/app-server';
+import {MongoManager} from './preset/mongo-manager';
 
 /**
  * 메인 App 클래스
@@ -11,6 +12,7 @@ import AppServer from './app-server';
  */
 export class App {
   private server: AppServer;
+  private mongoManager: MongoManager;
 
   /**
    * Creates an instance of App.

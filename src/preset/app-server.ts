@@ -12,7 +12,7 @@ const PORT: number = 8080;
  * @export
  * @class AppServer
  */
-export default class AppServer {
+export class AppServer {
     app: express.Application;
     server: http.Server;
 

@@ -1,12 +1,12 @@
 'use strict';
 
 import * as express from 'express';
-import {ENVIRONMENT} from './config/environment';
+import {ENVIRONMENT} from '../config/environment';
 import * as mongoose from 'mongoose';
 
 import {
     LOGGING_MONGO_MANAGER
-} from './config/logger';
+} from '../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_MONGO_MANAGER);
 
