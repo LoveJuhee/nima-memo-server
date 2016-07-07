@@ -3,7 +3,7 @@ import {Promise} from 'es6-promise';
 
 import {
   LOGGING_PROVIDER_UTIL_REQUEST,
-} from '../../config/logger';
+} from '../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_PROVIDER_UTIL_REQUEST);
 
@@ -23,7 +23,7 @@ class RequestUtil {
    * @return {Promise} Promise 객체
    */
   print(item: any): Promise<Object> {
-    return new Promise(function (resolve: any, reject: any) {
+    return new Promise((resolve: any, reject: any) => {
       if (!item) {
         reject(new Error('item is null or undefined'));
       }
@@ -66,7 +66,7 @@ class RequestUtil {
    * @return {Object} 변환된 객체
    */
   toJsonObject(params: Object): Promise<Object> {
-    return new Promise(function (resolve: any, reject: any) {
+    return new Promise((resolve: any, reject: any) => {
       if (!params) {
         resolve({});
       }
@@ -91,7 +91,7 @@ class RequestUtil {
    * @return {Object} encode 처리한 오브젝트
    */
   toEncodeObject(params: Object): Promise<Object> {
-    return new Promise(function (resolve: any, reject: any) {
+    return new Promise((resolve: any, reject: any) => {
       if (!params) {
         resolve({});
       }
@@ -117,7 +117,7 @@ class RequestUtil {
    * @return {Object} decode 처리한 오브젝트
    */
   toDecodeObject(params: Object): Promise<Object> {
-    return new Promise(function (resolve: any, reject: any) {
+    return new Promise((resolve: any, reject: any) => {
       if (!params) {
         resolve({});
       }
