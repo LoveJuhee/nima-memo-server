@@ -5,4 +5,7 @@ require('source-map-support').install();
 import * as express from 'express';
 let app = express();
 
-export let preset = {app};
+import {MongoManager} from '../preset/mongo-manager';
+let db = new MongoManager(app, false);
+
+export let preset = { app, db };
