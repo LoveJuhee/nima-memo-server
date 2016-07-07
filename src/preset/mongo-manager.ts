@@ -17,6 +17,7 @@ let debug: debug.IDebugger = debugClass(LOGGING_MONGO_MANAGER);
  * @class MongoManager
  */
 export class MongoManager {
+    private _mongoose: mongoose.Mongoose;
     /**
      * Creates an instance of MongoManager.
      * 
@@ -39,7 +40,30 @@ export class MongoManager {
         // the url correspond to the environment we are in
         this.app.set('dbUrl', ENVIRONMENT.db[this.app.settings.env]);
         // we're going to use mongoose to interact with the mongodb
-        mongoose.connect(this.app.get('dbUrl'));
+        this._mongoose = mongoose.connect(this.app.get('dbUrl'));
+    }
+
+    /**
+     * DB 접속 여부 
+     * 
+     * @readonly
+     * @type {boolean}
+     */
+    public get isConnected(): boolean {
+        if (this._mongoose) {
+            return (this._mongoose.connection.readyState === 1);
+        }
+        return false;
+    }
+
+    /**
+     * DB 접속 상태
+     * 
+     * @readonly
+     * @type {number}
+     */
+    public get readyState(): number {
+        return (this._mongoose) ? this._mongoose.connection.readyState : -1;
     }
 
     /**
