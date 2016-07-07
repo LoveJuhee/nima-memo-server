@@ -14,7 +14,7 @@ let debug: debug.IDebugger = debugClass(LOGGING_API_SERVER);
 
 import {
     default as requestUtil
-} from '../../provider/util/request-util';
+} from '../../util/request-util';
 const nodeUtil = require('util');
 
 import * as express from 'express';

@@ -1,7 +1,7 @@
 'use strict';
 import {preset} from '../debug/spec-preset';
 import {MongoManager} from './mongo-manager';
-import mongoUtil from '../provider/util/mongo-util';
+import mongoUtil from '../util/mongo-util';
 
 import {
     LOGGING_TDD_MONGODB
