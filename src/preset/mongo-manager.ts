@@ -3,6 +3,7 @@
 import * as express from 'express';
 import {ENVIRONMENT} from '../config/environment';
 import * as mongoose from 'mongoose';
+import {Promise} from 'es6-promise';
 
 import {
     LOGGING_MONGO_MANAGER
@@ -36,11 +37,18 @@ export class MongoManager {
     /**
      * connect
      */
-    public connect() {
-        // the url correspond to the environment we are in
-        this.app.set('dbUrl', ENVIRONMENT.db[this.app.settings.env]);
-        // we're going to use mongoose to interact with the mongodb
-        this._mongoose = mongoose.connect(this.app.get('dbUrl'));
+    public connect(): Promise<Object> {
+        return new Promise((resolve: any, reject: any) => {
+            // the url correspond to the environment we are in
+            this.app.set('dbUrl', ENVIRONMENT.db[this.app.settings.env]);
+            // we're going to use mongoose to interact with the mongodb
+            this._mongoose = mongoose.connect(this.app.get('dbUrl'), function (err: any) {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
+        });
     }
 
     /**
@@ -69,8 +77,15 @@ export class MongoManager {
     /**
      * disconnect
      */
-    public disconnect() {
-        mongoose.disconnect(e => { debug(e); });
+    public disconnect(): Promise<Object> {
+        return new Promise((resolve: any, reject: any) => {
+            mongoose.disconnect(function (err: any) {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
+        });
     }
 
     /**
