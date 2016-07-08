@@ -17,7 +17,7 @@ describe('MongoManager Test', function () {
         manager = new MongoManager(preset.app, false);
     });
 
-    afterEach(function (done: MochaDone) {
+    afterEach(function (done: DoneFn) {
         // DB의 경우 다른 테스트에서 활용하는 경우가 많아서 대기를 걸어줘야 오류가 발생하지 않는다.
         setTimeout(() => { done(); }, 3000);
     });

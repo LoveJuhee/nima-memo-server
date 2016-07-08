@@ -10,7 +10,6 @@
     "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160701212727",
     "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
-    "mocha": "registry:dt/mocha#2.2.5+20160619032855",
     "mongoose": "registry:dt/mongoose#3.8.5+20160629014609",
     "node": "registry:env/node#6.0.0+20160622202520",
     "passport": "registry:dt/passport#0.2.0+20160317120654",
