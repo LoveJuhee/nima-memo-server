@@ -22,7 +22,7 @@ describe('MongoManager Test', function () {
         setTimeout(() => { done(); }, 3000);
     });
 
-    it('connect & disconnect test', function (done) {
+    it('connect & disconnect test', function (done: DoneFn) {
         function isConnected() {
             console.log(`1. after connect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(manager.readyState)}`);
             expect(manager.isConnected).toBeTruthy();
@@ -41,7 +41,7 @@ describe('MongoManager Test', function () {
         setTimeout(isConnected, 1000);
     });
 
-    it('connect & disconnect promise test', function (done) {
+    it('connect & disconnect promise test', function (done: DoneFn) {
         console.log(`try connect`);
         manager.connect()
             .then(() => {
