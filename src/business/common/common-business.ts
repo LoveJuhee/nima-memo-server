@@ -21,13 +21,13 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {T} item
      * @param {(error: any, result: any) => void} callback
      */
-    create(item: T, callback: (error: any, result: any) => void): Promise<Object> {
+    create(item: T, callback: (error: any, result: any) => void = null): Promise<Object> {
         if (callback) {
             this._model.create(item, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.create(item, (err: any, res: mongoose.Document) => {
+            this._model.create(item, (err: any, res: any) => {
                 if (err) {
                     reject(err);
                 }
@@ -43,13 +43,13 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {T} item
      * @param {(error: any, result: any) => void} callback
      */
-    update(_id: mongoose.Types.ObjectId, item: T, callback: (error: any, result: any) => void): Promise<Object> {
+    update(_id: mongoose.Types.ObjectId, item: T, callback: (error: any, result: any) => void = null): Promise<Object> {
         if (callback) {
             this._model.update({ _id: _id }, item, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.update({ _id: _id }, item, (err: any, res: mongoose.Document) => {
+            this._model.update({ _id: _id }, item, (err: any, res: any) => {
                 if (err) {
                     reject(err);
                 }
@@ -64,7 +64,7 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {string} _id
      * @param {(error: any, result: any) => void} callback
      */
-    delete(_id: string, callback: (error: any, result: any) => void): Promise<Object> {
+    delete(_id: string, callback: (error: any, result: any) => void = null): Promise<Object> {
         if (callback) {
             this._model.remove({ _id: this.toObjectId(_id) }, (err) => callback(err, null));
             return;
@@ -84,13 +84,13 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * 
      * @param {(error: any, result: any) => void} callback
      */
-    findAll(callback: (error: any, result: any) => void): Promise<Object> {
+    findAll(callback: (error: any, result: any) => void = null): Promise<Object> {
         if (callback) {
             this._model.find({}, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.find({}, (err: any, res: mongoose.Document[]) => {
+            this._model.find({}, (err: any, res: any) => {
                 if (err) {
                     reject(err);
                 }
@@ -105,13 +105,13 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {string} _id
      * @param {(error: any, result: T) => void} callback
      */
-    findById(_id: string, callback: (error: any, result: T) => void): Promise<Object> {
+    findById(_id: string, callback: (error: any, result: any) => void = null): Promise<Object> {
         if (callback) {
             this._model.findById(_id, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.findById(_id, (err: any, res: mongoose.Document) => {
+            this._model.findById(_id, (err: any, res: any) => {
                 if (err) {
                     reject(err);
                 }

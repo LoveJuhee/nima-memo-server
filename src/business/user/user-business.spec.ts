@@ -23,7 +23,7 @@ describe('UserBusiness TDD', function () {
         }, 3000);
     });
 
-    it('insert test', function (done: DoneFn) {
+    it('callback insert & delete test', function (done: DoneFn) {
         let user = User.create({ name: 'a1', email: 'b1', password: 'c1' }, (err, res) => {
             if (err) {
                 console.error(`User.create: failed`);
@@ -42,8 +42,36 @@ describe('UserBusiness TDD', function () {
                 console.error(`business.create: success`);
                 console.log(result);
                 expect(result).not.toBeNull();
-                done();
+                console.log(typeof result._id);
+                let _id: string = result._id + '';
+                console.log(`_id.length: ${_id.length}`);
+                business.delete(_id, (err, result) => {
+                    if (err) {
+                        console.error(`business.delete: failed`);
+                        console.error(err);
+                        expect(err).toBeNull();
+                        done();
+                    }
+                    console.error(`business.delete: success`);
+                    console.log(result);
+                    expect(result).toBeNull();
+                    done();
+                });
             });
         });
+    });
+
+    it('promise insert & delete test', function (done: DoneFn) {
+        User.create({ name: 'a2', email: 'b2', password: 'c2' })
+            .then(new UserBusiness().create)
+            .then(otherUtil.print)
+            .then(r => {
+                let _id: string = r['_id'] + '';
+                console.log(`_id: ${_id}, _id.length: ${_id.length}`);
+                return new UserBusiness().delete(_id);
+            })
+            // .catch(otherUtil.print)
+            // .catch(otherUtil.print)
+            .then(done);
     });
 });
