@@ -1,12 +1,12 @@
 'use strict';
 import {preset} from '../debug/spec-preset';
 import {MongoManager} from './mongo-manager';
+
 import mongoUtil from '../util/mongo-util';
 import requestUtil from '../util/request-util';
+import otherUtil from '../util/other-util';
 
-import {
-    LOGGING_TDD_MONGODB
-} from '../config/logger';
+import {LOGGING_TDD_MONGODB} from '../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_TDD_MONGODB);
 
@@ -15,6 +15,11 @@ let manager: MongoManager;
 describe('MongoManager Test', function () {
     beforeEach(function () {
         manager = new MongoManager(preset.app, false);
+    });
+
+    afterEach(function (done: MochaDone) {
+        // DB의 경우 다른 테스트에서 활용하는 경우가 많아서 대기를 걸어줘야 오류가 발생하지 않는다.
+        setTimeout(() => { done(); }, 3000);
     });
 
     it('connect & disconnect test', function (done) {
@@ -49,7 +54,7 @@ describe('MongoManager Test', function () {
                 let state: number = manager.readyState;
                 console.log(`2. after disconnect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(state)}`);
                 expect(manager.isConnected).not.toBeTruthy();
-            }).catch(requestUtil.print)
+            }).catch(otherUtil.print)
             .then(done);
     });
 });
