@@ -31,16 +31,15 @@ export function setupStrategies(passport: Passport): void {
         });
     });
 
-    // ============ //
-    // LOCAL SIGNUP //
-    // ============ //
-
     let strategyParams: IStrategyOptionsWithRequest = {
         usernameField: 'email',
         passwordField: 'password',
-        passReqToCallback: true
+        passReqToCallback: true, // allows us to pass back the entire request to the callback
     };
 
+    // ============ //
+    // LOCAL SIGNUP //
+    // ============ //
     passport.use('local-signup',
         new LocalStrategy(strategyParams, (req, email, password, done) => {
             // async
@@ -54,17 +53,18 @@ export function setupStrategies(passport: Passport): void {
 
                         // 검색결과가 있다면 등록된 email이라고 반환을 한다.
                         if (user) {
-                            return done(null, null, req.flash('signupMessage', 'That email is already taken.'));
+                            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                         } else {
-                            // if there si no user, create a new one
+                            // email, password를 제외한 데이터는 모두 body 객체에서 정보를 가져와서 생성한다.
+                            let body = req.body;
                             let newUser: Object = {
-                                name: user.name,
-                                email: user.email,
+                                name: body.name,
+                                email: email,
                                 password: passportUtil.generateHash(password),
                             };
 
                             // 계정정보를 이용하여 IUserModel을 생성한다.
-                            UserFactory.create(newUser, (err, res) => {
+                            UserFactory.create(newUser, (err: any, res: IUserModel) => {
                                 // 생성된 IUserModel을 추가한다.
                                 new UserBusiness().create(res)
                                     .then(() => { return done(null, newUser); })
@@ -77,16 +77,16 @@ export function setupStrategies(passport: Passport): void {
                     var user = req.user;
 
                     // set the credentials
-                    user.local.email = email;
-                    user.local.password = user.generateHash(password);
-                    // saving the user
-                    user.save(function (err) {
-                        if (err) {
-                            throw err;
-                        }
-                        return done(null, user);
-                    });
+                    user.email = email;
+                    user.password = passportUtil.generateHash(password);
 
+                    // 계정정보를 이용하여 IUserModel을 생성한다.
+                    UserFactory.create(user, (err: any, res: IUserModel) => {
+                        // 생성된 IUserModel을 추가한다.
+                        new UserBusiness().create(res)
+                            .then(() => { return done(null, user); })
+                            .catch(err => { return done(err); });
+                    });
                 }
             });
         })
@@ -96,16 +96,10 @@ export function setupStrategies(passport: Passport): void {
     // LOCAL LOGIN //
     // =========== //
     // We create another strategy for the login process
-
-    passport.use('local-login', new LocalStrategy({
-        // change default username for email
-        usernameField: 'email',
-        passwordField: 'password',
-        passReqToCallback: true // allows us to pass back the entire request to the callback
-    },
-        function (req, email, password, done) {
+    passport.use('local-login',
+        new LocalStrategy(strategyParams, (req, email, password, done) => {
             // first check if the user already exists
-            UserFactory.findOne({ 'local.email': email }, function (err, user) {
+            UserFactory.findOne({ 'email': email }, function (err: any, user: IUserModel) {
                 // If there are any error, return the error
                 if (err) {
                     return done(err);
@@ -117,7 +111,6 @@ export function setupStrategies(passport: Passport): void {
                 }
 
                 // if the user exists, we check the password
-
                 if (!passportUtil.validPassword(password, user.password + '')) {
                     return done(null, false, req.flash('loginMessage', 'Opps! Wrong password.'));
                 }
