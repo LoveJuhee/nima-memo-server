@@ -35,17 +35,3 @@ export let UserSchema = new mongoose.Schema({
     created_at: Date,
     updated_at: Date
 });
-
-/**
- * 암호화 처리 
- */
-UserSchema.methods.generateHash = function (password: string): string {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
-};
-
-/**
- * 암호 동일 여부 확인
- */
-UserSchema.methods.validPassword = function (password: string): boolean {
-    return bcrypt.compareSync(password, this.password);
-};
