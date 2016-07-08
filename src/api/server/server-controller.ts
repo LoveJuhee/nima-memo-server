@@ -1,20 +1,15 @@
 'use strict';
 
 /* test-code */
-import {
-    IS_DEBUG_ROUTE_SERVER,
-} from '../../debug/flag';
+import {IS_DEBUG_ROUTE_SERVER} from '../../debug/flag';
 /* end-test-code */
 
-import {
-    LOGGING_API_SERVER,
-} from '../../config/logger';
+import {LOGGING_API_SERVER} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_API_SERVER);
 
-import {
-    default as requestUtil
-} from '../../util/request-util';
+import requestUtil from '../../util/request-util';
+import otherUtil from '../../util/other-util';
 const nodeUtil = require('util');
 
 import * as express from 'express';
@@ -55,7 +50,7 @@ export default class ServerController {
     show(req: express.Request, res: express.Response): void {
         debug(`params: ${nodeUtil.inspect(req.params)}`);
         requestUtil.fromRequestParams(req.params)
-            .then(requestUtil.print)
+            .then(otherUtil.print)
             .then(r => {
                 res.send(`show ${nodeUtil.inspect(r)}`);
             });
