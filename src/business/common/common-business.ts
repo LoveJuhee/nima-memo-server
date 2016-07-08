@@ -3,6 +3,10 @@
 import mongoose = require('mongoose');
 import {Promise} from 'es6-promise';
 
+import {LOGGING_BUSINESS_COMMON} from '../../config/logger';
+import * as debugClass from 'debug';
+let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_COMMON);
+
 export default class CommonBusiness<T extends mongoose.Document> {
     private _model: mongoose.Model<mongoose.Document>;
 
@@ -26,11 +30,14 @@ export default class CommonBusiness<T extends mongoose.Document> {
             this._model.create(item, callback);
             return;
         }
+        debug(`create return new Promise()`);
         return new Promise((resolve: any, reject: any) => {
             this._model.create(item, (err: any, res: any) => {
                 if (err) {
+                    debug(`create reject()`);
                     reject(err);
                 }
+                debug(`create resolve()`);
                 resolve(res);
             });
         });
@@ -51,8 +58,10 @@ export default class CommonBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.update({ _id: _id }, item, (err: any, res: any) => {
                 if (err) {
+                    debug(`update reject()`);
                     reject(err);
                 }
+                debug(`update resolve()`);
                 resolve(res);
             });
         });
@@ -65,6 +74,7 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {(error: any, result: any) => void} callback
      */
     delete(_id: string, callback: (error: any, result: any) => void = null): Promise<Object> {
+        debug(`delete _id: ${_id}`);
         if (callback) {
             this._model.remove({ _id: this.toObjectId(_id) }, (err) => callback(err, null));
             return;
@@ -72,9 +82,11 @@ export default class CommonBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.remove({ _id: this.toObjectId(_id) }, (err) => {
                 if (err) {
+                    debug(`delete reject()`);
                     reject(err);
                 }
-                resolve();
+                debug(`delete resolve()`);
+                resolve(null);
             });
         });
     }
@@ -92,8 +104,10 @@ export default class CommonBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.find({}, (err: any, res: any) => {
                 if (err) {
+                    debug(`findAll reject()`);
                     reject(err);
                 }
+                debug(`findAll resolve()`);
                 resolve(res);
             });
         });
@@ -113,8 +127,10 @@ export default class CommonBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.findById(_id, (err: any, res: any) => {
                 if (err) {
+                    debug(`findById reject()`);
                     reject(err);
                 }
+                debug(`findById resolve()`);
                 resolve(res);
             });
         });
