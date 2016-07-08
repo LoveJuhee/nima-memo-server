@@ -1,9 +1,7 @@
 'use strict';
 import {Promise} from 'es6-promise';
 
-import {
-  LOGGING_PROVIDER_UTIL_REQUEST,
-} from '../config/logger';
+import {LOGGING_PROVIDER_UTIL_REQUEST} from '../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_PROVIDER_UTIL_REQUEST);
 
@@ -17,21 +15,6 @@ const nodeUtil = require('util');
  * @class
  */
 class RequestUtil {
-  /**
-   * Promise then 사용을 위한 단순 출력 객체
-   * @param {Object} item 출력할 객체
-   * @return {Promise} Promise 객체
-   */
-  print(item: any): Promise<Object> {
-    return new Promise((resolve: any, reject: any) => {
-      if (!item) {
-        reject(new Error('item is null or undefined'));
-      }
-      console.log(item);
-      resolve(item);
-    });
-  }
-
   /**
    * 동기식으로 파일을 읽어서 JSON으로 반환
    * @param {string} file 파일 경로
