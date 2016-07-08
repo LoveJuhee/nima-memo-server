@@ -1,9 +1,14 @@
 'use strict';
 import {preset} from '../../debug/spec-preset';
-import User from '../../model/user/user';
+
+import UserFactory from '../../model/user/user';
 import UserBusiness from './user-business';
 
 import otherUtil from '../../util/other-util';
+
+import {LOGGING_TDD_BUSINESS_USER} from '../../config/logger';
+import * as debugClass from 'debug';
+let debug: debug.IDebugger = debugClass(LOGGING_TDD_BUSINESS_USER);
 
 describe('UserBusiness TDD', function () {
     beforeEach(function (done: DoneFn) {
@@ -20,40 +25,40 @@ describe('UserBusiness TDD', function () {
             preset.db.disconnect()
                 .then(done)
                 .catch(done);
-        }, 3000);
+        }, 1000);
     });
 
     it('callback insert & delete test', function (done: DoneFn) {
-        let user = User.create({ name: 'a1', email: 'b1', password: 'c1' }, (err, res) => {
+        let user = UserFactory.create({ name: 'a1', email: 'b1', password: 'c1' }, (err, res) => {
             if (err) {
-                console.error(`User.create: failed`);
-                console.error(err);
+                debug(`UserFactory.create: failed`);
+                debug(err);
                 expect(err).toBeNull();
                 done();
             }
             let business: UserBusiness = new UserBusiness();
             business.create(res, (err, result) => {
                 if (err) {
-                    console.error(`business.create: failed`);
-                    console.error(err);
+                    debug(`business.create: failed`);
+                    debug(err);
                     expect(err).toBeNull();
                     done();
                 }
-                console.error(`business.create: success`);
-                console.log(result);
+                debug(`business.create: success`);
+                debug(result);
                 expect(result).not.toBeNull();
-                console.log(typeof result._id);
+                debug(typeof result._id);
                 let _id: string = result._id + '';
-                console.log(`_id.length: ${_id.length}`);
+                debug(`_id.length: ${_id.length}`);
                 business.delete(_id, (err, result) => {
                     if (err) {
-                        console.error(`business.delete: failed`);
-                        console.error(err);
+                        debug(`business.delete: failed`);
+                        debug(err);
                         expect(err).toBeNull();
                         done();
                     }
-                    console.error(`business.delete: success`);
-                    console.log(result);
+                    debug(`business.delete: success`);
+                    debug(result);
                     expect(result).toBeNull();
                     done();
                 });
@@ -62,16 +67,24 @@ describe('UserBusiness TDD', function () {
     });
 
     it('promise insert & delete test', function (done: DoneFn) {
-        User.create({ name: 'a2', email: 'b2', password: 'c2' })
-            .then(new UserBusiness().create)
-            .then(otherUtil.print)
-            .then(r => {
-                let _id: string = r['_id'] + '';
-                console.log(`_id: ${_id}, _id.length: ${_id.length}`);
-                return new UserBusiness().delete(_id);
-            })
-            // .catch(otherUtil.print)
-            // .catch(otherUtil.print)
-            .then(done);
+        UserFactory.create({ name: 'a2', email: 'b2', password: 'c2' }, (err, res) => {
+            if (err) {
+                debug(`UserFactory.create: failed`);
+                debug(err);
+                expect(err).toBeNull();
+                done();
+            }
+            let business: UserBusiness = new UserBusiness();
+
+            business.create(res)
+                .then(otherUtil.print)
+                .then(r => {
+                    let _id: string = r['_id'] + '';
+                    debug(`_id: ${_id}, _id.length: ${_id.length}`);
+                    return business.delete(_id);
+                })
+                .catch(otherUtil.print)
+                .then(done);
+        });
     });
 });
