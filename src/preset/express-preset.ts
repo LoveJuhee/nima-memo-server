@@ -1,10 +1,18 @@
 'use strict';
 
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
 
+/** 라우트 처리를 위한 설정 */
 import * as route from '../config/route';
 import ServerIndex from '../api/server/server-index';
+
+/** 전처리를 위한 설정*/
+import * as bodyParser from 'body-parser';
+import passport = require('passport');
+import session = require('express-session');
+import flash = require('connect-flash');
+import logger = require('morgan');
+import cookieParser = require('cookie-parser');
 
 /**
  * 컨트롤러 연결 클래스
@@ -63,7 +71,27 @@ export class ExpressPreset {
     }
   }
 
+  /**
+   * ROUTE 전처리 작업
+   * 
+   * @private
+   */
   private before(): void {
+    this.app.use(logger('dev'));
+
+    // passport setup
+    this.app.use(session({
+      secret: 'hyounwoo.ko',
+      saveUninitialized: true,
+      resave: true
+    }));
+    this.app.use(passport.initialize());
+    this.app.use(passport.session()); // persistent login sessions
+    this.app.use(flash()); // use connect-flash for flash messages stored in session
+
+    this.app.use(cookieParser());
+
+    this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({
       extended: true
     }));
