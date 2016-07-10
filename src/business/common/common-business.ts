@@ -25,14 +25,14 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {T} item
      * @param {(error: any, result: any) => void} callback
      */
-    create(item: T, callback: (error: any, result: any) => void = null): Promise<Object> {
+    create(item: T, callback: (error: any, result: T) => void = null): Promise<T> {
         if (callback) {
             this._model.create(item, callback);
             return;
         }
         debug(`create return new Promise()`);
         return new Promise((resolve: any, reject: any) => {
-            this._model.create(item, (err: any, res: any) => {
+            this._model.create(item, (err: any, res: T) => {
                 if (err) {
                     debug(`create reject()`);
                     reject(err);
@@ -48,21 +48,21 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * 
      * @param {mongoose.Types.ObjectId} _id
      * @param {T} item
-     * @param {(error: any, result: any) => void} callback
+     * @param {(err: any, affectedRows: number, raw: any) => void} callback
      */
-    update(_id: mongoose.Types.ObjectId, item: T, callback: (error: any, result: any) => void = null): Promise<Object> {
+    update(_id: mongoose.Types.ObjectId, item: T, callback: (err: any, affectedRows: number, raw: any) => void = null): Promise<number> {
         if (callback) {
             this._model.update({ _id: _id }, item, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.update({ _id: _id }, item, (err: any, res: any) => {
+            this._model.update({ _id: _id }, item, (err: any, affectedRows: number, raw: any) => {
                 if (err) {
                     debug(`update reject()`);
                     reject(err);
                 }
                 debug(`update resolve()`);
-                resolve(res);
+                resolve(affectedRows);
             });
         });
     }
@@ -73,7 +73,7 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {string} _id
      * @param {(error: any, result: any) => void} callback
      */
-    delete(_id: string, callback: (error: any, result: any) => void = null): Promise<Object> {
+    delete(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
         debug(`delete _id: ${_id}`);
         if (callback) {
             this._model.remove({ _id: this.toObjectId(_id) }, (err) => callback(err, null));
@@ -96,13 +96,13 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * 
      * @param {(error: any, result: any) => void} callback
      */
-    findAll(callback: (error: any, result: any) => void = null): Promise<Object> {
+    findAll(callback: (error: any, result: any) => void = null): Promise<T[]> {
         if (callback) {
             this._model.find({}, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.find({}, (err: any, res: any) => {
+            this._model.find({}, (err: any, res: T[]) => {
                 if (err) {
                     debug(`findAll reject()`);
                     reject(err);
@@ -119,13 +119,13 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {string} _id
      * @param {(error: any, result: T) => void} callback
      */
-    findById(_id: string, callback: (error: any, result: any) => void = null): Promise<Object> {
+    findById(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
         if (callback) {
             this._model.findById(_id, callback);
             return;
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.findById(_id, (err: any, res: any) => {
+            this._model.findById(_id, (err: any, res: T) => {
                 if (err) {
                     debug(`findById reject()`);
                     reject(err);
@@ -134,7 +134,6 @@ export default class CommonBusiness<T extends mongoose.Document> {
                 resolve(res);
             });
         });
-
     }
 
     /**
