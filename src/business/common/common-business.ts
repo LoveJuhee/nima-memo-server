@@ -7,6 +7,13 @@ import {LOGGING_BUSINESS_COMMON} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_COMMON);
 
+/**
+ * 공통 비지니스 클래스
+ * 
+ * @export
+ * @class CommonBusiness
+ * @template T
+ */
 export default class CommonBusiness<T extends mongoose.Document> {
     private _model: mongoose.Model<mongoose.Document>;
 
@@ -23,7 +30,8 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * 추가 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
      * @param {T} item
-     * @param {(error: any, result: any) => void} callback
+     * @param {(error: any, result: T) => void} [callback=null]
+     * @returns {Promise<T>}
      */
     create(item: T, callback: (error: any, result: T) => void = null): Promise<T> {
         if (callback) {
@@ -48,9 +56,10 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * 
      * @param {mongoose.Types.ObjectId} _id
      * @param {T} item
-     * @param {(err: any, affectedRows: number, raw: any) => void} callback
+     * @param {(err: any, affectedRows: number, raw: any) => void} [callback=null]
+     * @returns {Promise<number>}
      */
-    update(_id: mongoose.Types.ObjectId, item: T, callback: (err: any, affectedRows: number, raw: any) => void = null): Promise<number> {
+    update(_id: mongoose.Types.ObjectId, item: T, callback: (err: any, affectedRows: number, raw: any) => void = null): Promise<any> {
         if (callback) {
             this._model.update({ _id: _id }, item, callback);
             return;
@@ -62,7 +71,54 @@ export default class CommonBusiness<T extends mongoose.Document> {
                     reject(err);
                 }
                 debug(`update resolve()`);
+                console.log(affectedRows);
+                console.log(raw);
                 resolve(affectedRows);
+            });
+        });
+    }
+
+    /**
+     * 특정 대상 업데이트
+     * 
+     * @param {Object} cond
+     * @param {Object} update
+     * @param {(error: any, result: T) => void} [callback=null]
+     * @returns {Promise<T>}
+     */
+    updateOne(cond: Object, update: Object, callback: (error: any, result: T) => void = null): Promise<T> {
+        if (callback) {
+            this._model.findOneAndUpdate(cond, update, callback);
+            return;
+        }
+        return new Promise((resolve: any, reject: any) => {
+            this._model.findOneAndUpdate(cond, update, (err, res) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(res);
+            });
+        });
+    }
+
+    /**
+     * 특정 대상 삭제
+     * 
+     * @param {Object} cond
+     * @param {(error: any, result: T) => void} [callback=null]
+     * @returns {Promise<T>}
+     */
+    deleteOne(cond: Object, callback: (error: any, result: T) => void = null): Promise<T> {
+        if (callback) {
+            this._model.findOneAndRemove(cond, callback);
+            return;
+        }
+        return new Promise((resolve: any, reject: any) => {
+            this._model.findOneAndRemove(cond, (err, res) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(res);
             });
         });
     }
@@ -71,7 +127,8 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * 삭제 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
      * @param {string} _id
-     * @param {(error: any, result: any) => void} callback
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<T>}
      */
     delete(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
         debug(`delete _id: ${_id}`);
@@ -94,7 +151,8 @@ export default class CommonBusiness<T extends mongoose.Document> {
     /**
      * 모든 객체 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
-     * @param {(error: any, result: any) => void} callback
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<T[]>}
      */
     findAll(callback: (error: any, result: any) => void = null): Promise<T[]> {
         if (callback) {
@@ -114,10 +172,35 @@ export default class CommonBusiness<T extends mongoose.Document> {
     }
 
     /**
+     * 특정 조건 객체 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
+     * 
+     * @param {Object} [cond={}]
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<T[]>}
+     */
+    find(cond: Object = {}, callback: (error: any, result: any) => void = null): Promise<T[]> {
+        if (callback) {
+            this._model.find(cond, callback);
+            return;
+        }
+        return new Promise((resolve: any, reject: any) => {
+            this._model.find(cond, (err: any, res: T[]) => {
+                if (err) {
+                    debug(`findByEmail reject()`);
+                    reject(err);
+                }
+                debug(`findByEmail resolve()`);
+                resolve(res);
+            });
+        });
+    }
+
+    /**
      * 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
      * @param {string} _id
-     * @param {(error: any, result: T) => void} callback
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<T>}
      */
     findById(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
         if (callback) {
@@ -143,7 +226,7 @@ export default class CommonBusiness<T extends mongoose.Document> {
      * @param {string} _id
      * @returns {mongoose.Types.ObjectId}
      */
-    private toObjectId(_id: string): mongoose.Types.ObjectId {
+    protected toObjectId(_id: string): mongoose.Types.ObjectId {
         return mongoose.Types.ObjectId.createFromHexString(_id);
     }
 }
