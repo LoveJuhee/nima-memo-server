@@ -8,4 +8,5 @@ export const LOGGING_BUSINESS_COMMON: string = 'business:common';
 /** TDD */
 export const LOGGING_TDD_PRESET_MONGO_MANAGER: string = 'tdd:preset:mongo-manager';
 export const LOGGING_TDD_BUSINESS_USER: string = 'tdd:business:user';
+export const LOGGING_TDD_BUSINESS_ACCOUNT: string = 'tdd:business:account';
 /* end-test-code */
