@@ -9,7 +9,7 @@ class OtherUtil {
      * @param {*} item 출력할 객체
      * @returns {Promise<Object>} Promise 객체
      */
-    print(item: any): Promise<Object> {
+    print(item: any): Promise<any> {
         return new Promise((resolve: any, reject: any) => {
             if (!item) {
                 reject(new Error('item is null or undefined'));
