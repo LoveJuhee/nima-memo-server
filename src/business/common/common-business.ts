@@ -186,10 +186,30 @@ export default class CommonBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.find(cond, (err: any, res: T[]) => {
                 if (err) {
-                    debug(`findByEmail reject()`);
+                    debug(`find reject()`);
                     reject(err);
                 }
-                debug(`findByEmail resolve()`);
+                debug(`find resolve()`);
+                resolve(res);
+            });
+        });
+    }
+
+    /**
+     * findOne
+     */
+    public findOne(cond: any, callback: (error: any, result: any) => void = null): Promise<T> {
+        if (callback) {
+            this._model.findOne(cond, callback);
+            return;
+        }
+        return new Promise((resolve: any, reject: any) => {
+            this._model.findOne(cond, (err: any, res: T) => {
+                if (err) {
+                    debug(`findOne reject()`);
+                    reject(err);
+                }
+                debug(`findOne resolve()`);
                 resolve(res);
             });
         });
