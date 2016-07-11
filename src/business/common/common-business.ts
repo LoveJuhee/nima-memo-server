@@ -15,25 +15,25 @@ let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_COMMON);
  * @template T
  */
 export default class CommonBusiness<T extends mongoose.Document> {
-    private _model: mongoose.Model<mongoose.Document>;
+    private _model: mongoose.Model<T>;
 
     /**
      * Creates an instance of CommonBusiness.
      * 
-     * @param {mongoose.Model<mongoose.Document>} schemaModel
+     * @param {mongoose.Model<T>} schemaModel
      */
-    constructor(schemaModel: mongoose.Model<mongoose.Document>) {
+    constructor(schemaModel: mongoose.Model<T>) {
         this._model = schemaModel;
     }
 
     /**
      * 추가 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
-     * @param {T} item
+     * @param {*} item
      * @param {(error: any, result: T) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    create(item: T, callback: (error: any, result: T) => void = null): Promise<T> {
+    create(item: any, callback: (error: any, result: T) => void = null): Promise<T> {
         if (callback) {
             this._model.create(item, callback);
             return;
