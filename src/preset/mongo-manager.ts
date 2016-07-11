@@ -1,9 +1,10 @@
 'use strict';
 
 import * as express from 'express';
-import {ENVIRONMENT} from '../config/environment';
 import * as mongoose from 'mongoose';
 import {Promise} from 'es6-promise';
+
+import ENVIRONMENT from '../config/environment';
 
 import {
     LOGGING_MONGO_MANAGER

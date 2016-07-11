@@ -3,8 +3,9 @@
 import * as http from 'http';
 import * as express from 'express';
 import {ExpressPreset} from './express-preset';
+import ENVIRONMENT from '../config/environment';
 
-const PORT: number = 8080;
+const PORT: number = ENVIRONMENT.port || 9999;
 
 /**
  * express 구동 전 사전 작업 클래스
