@@ -1,6 +1,6 @@
 'use strict';
 
-import CommonBusiness from '../common/common-business';
+import {CommonBusiness} from '../common/common-business';
 import User from '../../model/user/user';
 import {IUserModel} from '../../model/user/user-schema';
 
