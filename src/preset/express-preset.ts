@@ -5,6 +5,7 @@ import * as express from 'express';
 /** 라우트 처리를 위한 설정 */
 import * as route from '../config/route';
 import ServerIndex from '../api/server/server-index';
+import {AccountIndex} from '../api/account/account-index';
 
 /** 전처리를 위한 설정*/
 import * as bodyParser from 'body-parser';
@@ -103,6 +104,7 @@ export class ExpressPreset {
    * @private
    */
   private route(): void {
+    new AccountIndex(this.app, route.ROUTE_ACCOUNT_URI);
     new ServerIndex(this.app, route.SERVER_API_URI);
   }
 
