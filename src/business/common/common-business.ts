@@ -14,7 +14,7 @@ let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_COMMON);
  * @class CommonBusiness
  * @template T
  */
-export default class CommonBusiness<T extends mongoose.Document> {
+export class CommonBusiness<T extends mongoose.Document> {
     private _model: mongoose.Model<T>;
 
     /**

@@ -1,12 +1,12 @@
 'use strict';
 
-import CommonBusiness from '../common/common-business';
+import {CommonBusiness} from '../common/common-business';
 import Account from '../../model/account/account';
 import {IAccountModel} from '../../model/account/account-schema';
 
 import nodeUtil = require('util');
 
-export default class AccountBusiness extends CommonBusiness<IAccountModel> {
+export class AccountBusiness extends CommonBusiness<IAccountModel> {
     constructor() {
         super(Account);
     }
@@ -73,3 +73,6 @@ export default class AccountBusiness extends CommonBusiness<IAccountModel> {
         return `AccountBusiness class`;
     }
 }
+
+let factory: AccountBusiness = new AccountBusiness();
+export default factory;

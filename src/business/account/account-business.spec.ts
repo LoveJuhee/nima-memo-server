@@ -2,7 +2,7 @@
 import {preset} from '../../debug/spec-preset';
 
 import AccountFactory from '../../model/account/account';
-import AccountBusiness from './account-business';
+import {AccountBusiness} from './account-business';
 
 import otherUtil from '../../util/other-util';
 
