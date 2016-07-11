@@ -1,5 +1,6 @@
 /** Logging */
 export const LOGGING_API_SERVER: string = 'api:server';
+export const LOGGING_ROUTE_ACCOUNT: string = 'route:account';
 export const LOGGING_PROVIDER_UTIL_REQUEST: string = 'provider:util:request';
 export const LOGGING_MONGO_MANAGER: string = 'app:db:manager';
 export const LOGGING_BUSINESS_COMMON: string = 'business:common';
