@@ -42,6 +42,7 @@ describe('AccountBusiness TDD', function () {
     });
 
     it('callback insert & delete test', function (done: DoneFn) {
+        debug(`===== callback insert & delete test =====`);
         let user = AccountFactory.create(callbackAccount, (err, res) => {
             if (err) {
                 debug(`AccountFactory.create: failed`);
@@ -79,94 +80,134 @@ describe('AccountBusiness TDD', function () {
     });
 
     it('promise insert & delete test', function (done: DoneFn) {
-        AccountFactory.create(promiseAccount, (err, res) => {
-            if (err) {
-                debug(`AccountFactory.create: failed`);
-                debug(err);
-                expect(err).toBeNull();
+        debug('===== promise insert & delete test =====');
+        business.create(promiseAccount)
+            .then(r => {
+                debug(`business.create success`);
+                debug(r);
+                return business.deleteOne(promiseAccount);
+            })
+            .catch(r => {
+                debug(`business.create failed`);
+                debug(r);
                 done();
-            }
-            business.create(res)
-                .then(res => {
-                    console.log(`business.create() done.`);
-                    return otherUtil.print(res);
-                })
-                .then(() => {
-                    console.log(`try delete item`);
-                    return business.deleteOne(promiseAccount);
-                })
-                .then(res => {
-                    console.log(`business.deleteOne() done.`);
-                    return otherUtil.print(res);
-                })
-                .catch(otherUtil.print)
-                .then(done);
-        });
+            })
+            .then(r => {
+                debug(`business.delete success`);
+                debug(r);
+                return Promise.resolve(r);
+            })
+            .catch(r => {
+                debug(`business.delete failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
+            .then(done);
     });
 
     it('promise insert test', function (done: DoneFn) {
-        AccountFactory.create(promiseAccount, (err, res) => {
-            if (err) {
-                debug(`AccountFactory.create: failed`);
-                debug(err);
-                expect(err).toBeNull();
-                done();
-            }
-            business.create(res)
-                .catch(otherUtil.print)
-                .then(done);
-        });
+        debug(`===== promise insert test =====`);
+        business.create(promiseAccount)
+            .then(r => {
+                debug(`business.create success`);
+                debug(r);
+                return Promise.resolve(r);
+            })
+            .catch(r => {
+                debug(`business.create failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
+            .then(done);
     });
 
     it('promise find email test', function (done: DoneFn) {
+        debug(`===== promise find email test =====`);
         business.findByEmail(promiseAccount.email)
             .then(r => {
+                debug(`business.findByEmail success`);
+                debug(r);
                 expect(r).toBeDefined();
                 expect(r.email).toBe(promiseAccount.email);
                 expect(r.password).toBe(promiseAccount.password);
                 return Promise.resolve(r);
             })
-            .catch(otherUtil.print)
+            .catch(r => {
+                debug(`business.findByEmail failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
             .then(done);
     });
 
     it('promise update password test', function (done: DoneFn) {
-        console.log(`try update account: ${promiseAccountUpdate.password}`);
+        debug(`===== promise update password test =====`);
         business.updateOne(promiseAccount, promiseAccountUpdate)
-            .then(otherUtil.print)
-            .catch(otherUtil.print)
-            .then(() => {
-                console.log(`try find account: ${promiseAccount.email}`);
+            .then(r => {
+                debug(`business.update success`);
+                debug(r);
                 return business.findByEmail(promiseAccount.email);
             })
+            .catch(r => {
+                debug(`business.update failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
             .then(r => {
+                debug(`business.findByEmail success`);
+                debug(r);
                 expect(r.email).toBe(promiseAccountUpdate.email);
                 expect(r.password).toBe(promiseAccountUpdate.password);
-                return otherUtil.print(r);
+                return Promise.resolve(r);
             })
-            .catch(otherUtil.print)
+            .catch(r => {
+                debug(`business.findByEmail failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
             .then(done);
     });
 
     it('promise delete email test', function (done: DoneFn) {
-        console.log(`try delete account: ${promiseAccountUpdate.email}`);
+        debug(`===== promise delete email test =====`);
         business.deleteOne(promiseAccountUpdate)
-            .catch(otherUtil.print)
-            .then(() => {
-                console.log(`try find account: ${promiseAccountUpdate.email}`);
+            .then(r => {
+                debug(`business.delete success`);
+                debug(r);
+                expect(r).not.toBeNull();
                 return business.findByEmail(promiseAccountUpdate.email);
             })
+            .catch(r => {
+                debug(`business.delete failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
             .then(r => {
+                debug(`business.findByEmail success`);
+                debug(r);
                 expect(r).toBeNull();
                 return Promise.resolve();
             })
-            .catch(otherUtil.print)
+            .catch(r => {
+                debug(`business.findByEmail failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
             .then(() => {
-                console.log(`try delete item`);
+                debug(`try delete item`);
                 return business.deleteOne(promiseAccountUpdate);
             })
-            .then(otherUtil.print)
-            .catch(otherUtil.print)
+            .then(r => {
+                debug(`business.delete success`);
+                debug(r);
+                expect(r).toBeNull();
+                return business.findByEmail(promiseAccountUpdate.email);
+            })
+            .catch(r => {
+                debug(`business.delete failed`);
+                debug(r);
+                return Promise.resolve(r);
+            })
             .then(done);
     });
 });
