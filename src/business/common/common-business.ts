@@ -35,10 +35,13 @@ export class CommonBusiness<T extends mongoose.Document> {
      */
     create(item: any, callback: (error: any, result: T) => void = null): Promise<T> {
         if (callback) {
+            debug(`use callback`);
+            debug(item);
             this._model.create(item, callback);
             return;
         }
         debug(`create return new Promise()`);
+        debug(item);
         return new Promise((resolve: any, reject: any) => {
             this._model.create(item, (err: any, res: T) => {
                 if (err) {
