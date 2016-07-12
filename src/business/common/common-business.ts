@@ -119,8 +119,12 @@ export class CommonBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.findOneAndRemove(cond, (err, res) => {
                 if (err) {
+                    debug(`findOneAndRemove failed`);
+                    debug(err.errmsg);
                     reject(err);
                 }
+                debug(`findOneAndRemove succeed`);
+                debug(res);
                 resolve(res);
             });
         });

@@ -15,13 +15,18 @@ let callbackAccount = {
     email: 'callback@gmail.com',
     password: '123456789',
 };
-let promiseAccount = {
+let accountNewer = {
     email: 'promise@gmail.com',
     password: 'abcdefg',
 };
-let promiseAccountUpdate = {
-    email: promiseAccount.email,
-    password: '123456789',
+let accountTryUpdate = {
+    email: accountNewer.email,
+    password: accountNewer.password,
+    newPassword: '123456789',
+};
+let accountUpdated = {
+    email: 'promise@gmail.com',
+    password: accountTryUpdate.newPassword,
 };
 
 let business: AccountBusiness = new AccountBusiness();
@@ -59,7 +64,7 @@ describe('AccountBusiness TDD', function () {
                 expect(err).toBeNull();
                 done();
             }
-            debug(`business.create: success`);
+            debug(`business.create: succeed`);
             debug(result);
             expect(result).not.toBeNull();
             debug(typeof result._id);
@@ -72,7 +77,7 @@ describe('AccountBusiness TDD', function () {
                     expect(err).toBeNull();
                     done();
                 }
-                debug(`business.delete: success`);
+                debug(`business.delete: succeed`);
                 debug(result);
                 expect(result).toBeNull();
                 done();
@@ -82,55 +87,85 @@ describe('AccountBusiness TDD', function () {
 
     it('promise insert & delete test', function (done: DoneFn) {
         debug('===== promise insert & delete test =====');
-        business.create(promiseAccount)
+        debug(`try business.create`);
+        business.create(accountNewer)
             .then(r => {
-                debug(`business.create success`);
+                debug(`business.create succeed`);
                 debug(r);
-                return business.deleteOne(promiseAccount);
+                return Promise.resolve(null);
             })
             .catch(r => {
                 debug(`business.create failed`);
-                debug(r);
-                done();
+                debug(r.errmsg);
+                return Promise.resolve(null);
+            })
+            // delete 로직 수행
+            .then(() => {
+                debug(`try business.deleteOne`);
+                return business.deleteOne(accountNewer);
             })
             .then(r => {
-                debug(`business.delete success`);
+                debug(`business.delete succeed`);
                 debug(r);
+                expect(r).not.toBeNull();
                 return Promise.resolve(r);
             })
             .catch(r => {
                 debug(`business.delete failed`);
-                debug(r);
+                debug(r.errmsg);
                 return Promise.resolve(r);
             })
+            // 종료 로직 수행
             .then(done);
     });
 
     it('promise insert test', function (done: DoneFn) {
         debug(`===== promise insert test =====`);
-        business.create(promiseAccount)
+        business.create(accountNewer)
             .then(r => {
-                debug(`business.create success`);
+                debug(`business.create succeed`);
                 debug(r);
                 return Promise.resolve(r);
             })
             .catch(r => {
                 debug(`business.create failed`);
-                debug(r);
+                debug(r.errmsg);
                 return Promise.resolve(r);
             })
+            // 종료 로직 수행
             .then(done);
     });
 
-    it('promise find email test', function (done: DoneFn) {
-        debug(`===== promise find email test =====`);
-        business.findByEmail(promiseAccount.email)
+    it('promise findOne test', function (done: DoneFn) {
+        debug(`===== promise findOne test =====`);
+        business.findOne(accountNewer)
             .then(r => {
-                debug(`business.findByEmail success`);
+                debug(`business.findOne succeed`);
                 debug(r);
                 expect(r).toBeDefined();
-                expect(r.email).toBe(promiseAccount.email);
-                expect(r.password).toBe(passportUtil.generateHash(promiseAccount.password));
+                expect(r.email).toBe(accountNewer.email);
+                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeTruthy();
+                return Promise.resolve(r);
+            })
+            .catch(r => {
+                debug(`business.findOne failed`);
+                debug(r.errmsg);
+                return Promise.resolve(r);
+            })
+            // 종료 로직 수행
+            .then(done);
+    });
+
+    it('promise findByEmail test', function (done: DoneFn) {
+        debug(`===== promise findByEmail test =====`);
+        business.findByEmail(accountNewer.email)
+            .then(r => {
+                debug(`business.findByEmail succeed`);
+                debug(r);
+                expect(r).toBeDefined();
+                expect(r.email).toBe(accountNewer.email);
+                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeTruthy();
+                expect(passportUtil.isValidPassword(accountUpdated.password, r.password + '')).toBeFalsy();
                 return Promise.resolve(r);
             })
             .catch(r => {
@@ -138,77 +173,93 @@ describe('AccountBusiness TDD', function () {
                 debug(r);
                 return Promise.resolve(r);
             })
+            // 종료 로직 수행
             .then(done);
     });
 
     it('promise update password test', function (done: DoneFn) {
         debug(`===== promise update password test =====`);
-        business.updateOne(promiseAccount, promiseAccountUpdate)
+        business.updateOne(accountTryUpdate)
             .then(r => {
-                debug(`business.update success`);
+                debug(`business.update succeed`);
                 debug(r);
-                return business.findByEmail(promiseAccount.email);
+                expect(r).toBeDefined();
+                expect(r.email).toBe(accountNewer.email);
+                expect(passportUtil.isValidPassword(accountUpdated.password, r.password + '')).toBeFalsy();
+                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeTruthy();
+                return Promise.resolve(r);
             })
             .catch(r => {
                 debug(`business.update failed`);
-                debug(r);
+                debug(r.errmsg);
                 return Promise.resolve(r);
             })
+            // 갱신된 정보 검색
+            .then(() => {
+                return business.findOne(accountUpdated);
+            })
             .then(r => {
-                debug(`business.findByEmail success`);
+                debug(`business.findOne succeed`);
                 debug(r);
-                expect(r.email).toBe(promiseAccountUpdate.email);
-                expect(r.password).toBe(passportUtil.generateHash(promiseAccountUpdate.password));
+                expect(passportUtil.isValidPassword(accountUpdated.password, r.password + '')).toBeTruthy('changed password check');
+                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeFalsy('older password check');
                 return Promise.resolve(r);
             })
             .catch(r => {
-                debug(`business.findByEmail failed`);
-                debug(r);
+                debug(`business.findOne failed`);
+                debug(r.errmsg);
                 return Promise.resolve(r);
             })
+            // 종료 로직 수행
             .then(done);
     });
 
     it('promise delete email test', function (done: DoneFn) {
         debug(`===== promise delete email test =====`);
-        business.deleteOne(promiseAccountUpdate)
+        business.deleteOne(accountUpdated)
             .then(r => {
-                debug(`business.delete success`);
+                debug(`business.delete succeed`);
                 debug(r);
                 expect(r).not.toBeNull();
-                return business.findByEmail(promiseAccountUpdate.email);
+                return Promise.resolve(r);
             })
             .catch(r => {
                 debug(`business.delete failed`);
-                debug(r);
+                debug(r.errmsg);
                 return Promise.resolve(r);
             })
+            // 삭제된 정보 검색
+            .then(() => {
+                return business.findByEmail(accountUpdated.email);
+            })
             .then(r => {
-                debug(`business.findByEmail success`);
+                debug(`business.findByEmail succeed`);
                 debug(r);
                 expect(r).toBeNull();
                 return Promise.resolve();
             })
             .catch(r => {
                 debug(`business.findByEmail failed`);
-                debug(r);
+                debug(r.errmsg);
                 return Promise.resolve(r);
             })
+            // 다시 삭제 시도
             .then(() => {
-                debug(`try delete item`);
-                return business.deleteOne(promiseAccountUpdate);
+                debug(`retry delete item`);
+                return business.deleteOne(accountUpdated);
             })
             .then(r => {
-                debug(`business.delete success`);
+                debug(`business.delete succeed`);
                 debug(r);
                 expect(r).toBeNull();
-                return business.findByEmail(promiseAccountUpdate.email);
+                return business.findByEmail(accountUpdated.email);
             })
             .catch(r => {
                 debug(`business.delete failed`);
                 debug(r);
                 return Promise.resolve(r);
             })
+            // 종료
             .then(done);
     });
 });

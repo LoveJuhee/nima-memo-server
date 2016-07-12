@@ -31,13 +31,12 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
         if (this.isValidAccount(email, password) === false) {
             if (callback) {
                 callback(new Error('cond is invalid'), null);
-            } else {
-                Promise.reject('cond is invalid');
+                return;
             }
-            return;
+            return Promise.reject('cond is invalid');
         }
-        let original = password;
-        password = passportUtil.generateHash(original);
+        // let original = password;
+        // password = passportUtil.generateHash(original);
         return super.create({ email, password }, callback);
     }
 
@@ -52,33 +51,83 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
         let cond: Object = {
             email: email
         };
-        return this.findOne(cond, callback);
+        return super.findOne(cond, callback);
+    }
+
+    /**
+     * email, password 기반 객체 찾기
+     * 
+     * @param {*} [{email = '', password = ''}={}]
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<IAccountModel>}
+     */
+    findOne({email = '', password = ''}: any = {}, callback: (error: any, result: any) => void = null): Promise<IAccountModel> {
+        let cond: Object = {
+            email: email
+        };
+        return super.findOne(cond)
+            .then(r => {
+                if (!r) {
+                    return Promise.resolve(null);
+                }
+                debug(r);
+                debug(`check password ${password}, ${r.password}`);
+                if (passportUtil.isValidPassword(password, r.password + '') === false) {
+                    debug(`findOne invalid password`);
+                    if (callback) {
+                        callback(new Error(`invalid password.`), null);
+                        return;
+                    }
+                    return Promise.reject(new Error(`invalid password.`));
+                }
+                if (callback) {
+                    callback(null, r);
+                    return;
+                }
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                debug(`findOne error`);
+                debug(err);
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
     }
 
     /**
      * 특정 대상 업데이트
      * 
-     * @param {*} cond
-     * @param {*} update
+     * @param {*} item (email, password, newPassword 포함)
      * @param {(error: any, result: IAccountModel) => void} [callback=null]
      * @returns {Promise<IAccountModel>}
      */
-    updateOne(cond: any, update: any, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
-        const COND_EMAIL: string = cond.email || '';
-        const COND_PASSWORD: string = cond.password || '';
-        const UPDATE_PASSWORD: string = update.password || '';
+    updateOne(item: any, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
+        const COND_EMAIL: string = item.email || '';
+        const COND_PASSWORD: string = item.password || '';
+        const UPDATE_PASSWORD: string = item.newPassword || '';
         if ((this.isValidAccount(COND_EMAIL, COND_PASSWORD) === false) || (!UPDATE_PASSWORD)) {
             if (callback) {
                 callback(new Error('cond or update is invalid'), null);
-            } else {
-                Promise.reject('cond or update is invalid');
+                return;
             }
-            return;
+            return Promise.reject('cond or update is invalid');
         }
-        // hash 값 변경된 객체로 검색을 하고 갱신을 하도록 해야한다. 
-        cond.password = passportUtil.generateHash(COND_PASSWORD);
-        let password = passportUtil.generateHash(UPDATE_PASSWORD);
-        return super.updateOne(cond, { password }, callback);
+
+        return this.findOne(item)
+            .then(r => {
+                let cond = { email: COND_EMAIL };
+                return super.updateOne(cond, item, callback);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
     }
 
     /**
@@ -92,14 +141,30 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
         if (this.isValidAccount(email, password) === false) {
             if (callback) {
                 callback(new Error('cond is invalid'), null);
-            } else {
-                Promise.reject('cond is invalid');
+                return;
             }
-            return;
+            return Promise.reject('cond is invalid');
         }
-        let original = password;
-        password = passportUtil.generateHash(original);
-        return super.deleteOne({ email, password }, callback);
+
+        return this.findOne({ email, password })
+            .then(r => {
+                if (!r) {
+                    if (callback) {
+                        callback(null, null);
+                        return;
+                    }
+                    return Promise.resolve(null);
+                }
+                let cond = { _id: r._id };
+                return super.deleteOne(cond, callback);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
     }
 
     toString() {
