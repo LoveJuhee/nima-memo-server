@@ -111,7 +111,7 @@ export function setupStrategies(passport: Passport): void {
                 }
 
                 // if the user exists, we check the password
-                if (!passportUtil.validPassword(password, user.password + '')) {
+                if (!passportUtil.isValidPassword(password, user.password + '')) {
                     return done(null, false, req.flash('loginMessage', 'Opps! Wrong password.'));
                 }
 

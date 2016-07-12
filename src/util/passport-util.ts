@@ -26,12 +26,12 @@ class PassportUtil {
     /**
      * 암호 동일 여부 확인
      * 
-     * @param {string} password
-     * @param {string} password2
+     * @param {string} password  스트링 문자열
+     * @param {string} hash 암호화 처리 문자열
      * @returns {boolean}
      */
-    validPassword(password: string, password2: string): boolean {
-        return bcrypt.compareSync(password, password2);
+    isValidPassword(password: string, hash: string): boolean {
+        return bcrypt.compareSync(password, hash);
     };
 
 }
