@@ -25,15 +25,19 @@ export class AccountController {
      * @param {Response} res
      * @param {*} next
      */
-    signup(req: Request, res: Response, next: any): void {
-        debug(req.body.param);
+    signup(req: Request, res: Response): void {
+        debug(req.body);
+        debug(`email: ${req.body.param.email}, password: ${req.body.param.password}`);
         factory.create(req.body.param)
             .then(r => {
+                debug('signup success');
                 debug(r);
-                req.flash('loginMessage', 'Thank you for registration!');
-                res.redirect('/login');
+                res.json({ success: true, message: r });
+                // req.flash('loginMessage', 'Thank you for registration!');
+                // res.redirect('/login');
             })
             .catch(err => {
+                debug('signup failed');
                 debug(err);
                 res.json({ success: false, message: err });
             });
@@ -73,7 +77,6 @@ export class AccountController {
      * @param {Response} res
      */
     logout(req: Request, res: Response): void {
-
     }
 
     toString() {

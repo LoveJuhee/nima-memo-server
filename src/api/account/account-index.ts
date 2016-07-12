@@ -10,7 +10,8 @@ export class AccountIndex {
     /**
      * Creates an instance of AccountIndex.
      * 
-     * @param {string} uri 기본 경로
+     * @param {Application} app
+     * @param {string} [uri=''] 기본 경로
      */
     constructor(app: Application, uri: string = '') {
         if (!app) {
