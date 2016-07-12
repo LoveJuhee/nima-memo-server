@@ -2,8 +2,11 @@
 
 import * as http from 'http';
 import * as express from 'express';
-import {ExpressPreset} from './express-preset';
+
 import ENVIRONMENT from '../config/environment';
+
+import {ExpressPreset} from './express-preset';
+import {MongoManager} from './mongo-manager';
 
 const PORT: number = ENVIRONMENT.port || 9999;
 
@@ -14,8 +17,9 @@ const PORT: number = ENVIRONMENT.port || 9999;
  * @class AppServer
  */
 export class AppServer {
-    app: express.Application;
-    server: http.Server;
+    private app: express.Application;
+    private server: http.Server;
+    private mongoManager: MongoManager;
 
     /**
      * Creates an instance of Routes.
@@ -34,8 +38,12 @@ export class AppServer {
         if (this.app) {
             this.shutdown();
         }
+
         this.app = express();
+        this.mongoManager = new MongoManager(this.app);
         new ExpressPreset(this.app);
+
+        this.mongoManager.connect();
 
         // 서버 실행
         this.server = this.app.listen(PORT, () => {
@@ -49,8 +57,17 @@ export class AppServer {
      * shutdown
      */
     public shutdown() {
-        this.app = undefined;
-        this.server.close();
+        if (this.app) {
+            this.app = undefined;
+        }
+        if (this.mongoManager) {
+            this.mongoManager.disconnect();
+            this.mongoManager = undefined;
+        }
+        if (this.server) {
+            this.server.close();
+            this.server = undefined;
+        }
     }
 
     /**

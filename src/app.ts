@@ -2,7 +2,6 @@
 require('source-map-support').install();
 
 import {AppServer} from './preset/app-server';
-import {MongoManager} from './preset/mongo-manager';
 
 /**
  * 메인 App 클래스
@@ -12,7 +11,6 @@ import {MongoManager} from './preset/mongo-manager';
  */
 export class App {
   private server: AppServer;
-  private mongoManager: MongoManager;
 
   /**
    * Creates an instance of App.
