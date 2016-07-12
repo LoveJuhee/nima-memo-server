@@ -1,8 +1,16 @@
 'use strict';
 import * as bcrypt from 'bcrypt-nodejs';
 
-class PassportUtil {
+import {LOGGING_UTIL_PASSPORT} from '../config/logger';
+import * as debugClass from 'debug';
+let debug: debug.IDebugger = debugClass(LOGGING_UTIL_PASSPORT);
 
+/**
+ * 
+ * 
+ * @class PassportUtil
+ */
+class PassportUtil {
     /**
      * 암호화 처리 
      * 
@@ -10,7 +18,9 @@ class PassportUtil {
      * @returns {string}
      */
     generateHash(password: string): string {
-        return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+        let hash = bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+        debug(`password(${password}) => hash(${hash})`);
+        return hash;
     };
 
     /**
