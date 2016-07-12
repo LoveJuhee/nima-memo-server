@@ -5,6 +5,7 @@ import AccountFactory from '../../model/account/account';
 import {AccountBusiness} from './account-business';
 
 import otherUtil from '../../util/other-util';
+import passportUtil from '../../util/passport-util';
 
 import {LOGGING_TDD_BUSINESS_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';
@@ -41,40 +42,40 @@ describe('AccountBusiness TDD', function () {
         }, 1000);
     });
 
+    it('check variable', function (done: DoneFn) {
+        let s1: string = '';
+        let s2: string = 'a';
+        expect(!s1).toBeTruthy();
+        expect(!s2).toBeFalsy();
+        done();
+    });
+
     it('callback insert & delete test', function (done: DoneFn) {
         debug(`===== callback insert & delete test =====`);
-        let user = AccountFactory.create(callbackAccount, (err, res) => {
+        business.create(callbackAccount, (err, result) => {
             if (err) {
-                debug(`AccountFactory.create: failed`);
+                debug(`business.create: failed`);
                 debug(err);
                 expect(err).toBeNull();
                 done();
             }
-            business.create(res, (err, result) => {
+            debug(`business.create: success`);
+            debug(result);
+            expect(result).not.toBeNull();
+            debug(typeof result._id);
+            let _id: string = result._id + '';
+            debug(`_id.length: ${_id.length}`);
+            business.delete(_id, (err, result) => {
                 if (err) {
-                    debug(`business.create: failed`);
+                    debug(`business.delete: failed`);
                     debug(err);
                     expect(err).toBeNull();
                     done();
                 }
-                debug(`business.create: success`);
+                debug(`business.delete: success`);
                 debug(result);
-                expect(result).not.toBeNull();
-                debug(typeof result._id);
-                let _id: string = result._id + '';
-                debug(`_id.length: ${_id.length}`);
-                business.delete(_id, (err, result) => {
-                    if (err) {
-                        debug(`business.delete: failed`);
-                        debug(err);
-                        expect(err).toBeNull();
-                        done();
-                    }
-                    debug(`business.delete: success`);
-                    debug(result);
-                    expect(result).toBeNull();
-                    done();
-                });
+                expect(result).toBeNull();
+                done();
             });
         });
     });
@@ -129,7 +130,7 @@ describe('AccountBusiness TDD', function () {
                 debug(r);
                 expect(r).toBeDefined();
                 expect(r.email).toBe(promiseAccount.email);
-                expect(r.password).toBe(promiseAccount.password);
+                expect(r.password).toBe(passportUtil.generateHash(promiseAccount.password));
                 return Promise.resolve(r);
             })
             .catch(r => {
@@ -157,7 +158,7 @@ describe('AccountBusiness TDD', function () {
                 debug(`business.findByEmail success`);
                 debug(r);
                 expect(r.email).toBe(promiseAccountUpdate.email);
-                expect(r.password).toBe(promiseAccountUpdate.password);
+                expect(r.password).toBe(passportUtil.generateHash(promiseAccountUpdate.password));
                 return Promise.resolve(r);
             })
             .catch(r => {

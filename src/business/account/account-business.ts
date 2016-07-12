@@ -4,11 +4,41 @@ import {CommonBusiness} from '../common/common-business';
 import Account from '../../model/account/account';
 import {IAccountModel} from '../../model/account/account-schema';
 
+import {LOGGING_BUSINESS_ACCOUNT} from '../../config/logger';
+import * as debugClass from 'debug';
+let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_ACCOUNT);
+
 import nodeUtil = require('util');
+import passportUtil from '../../util/passport-util';
 
 export class AccountBusiness extends CommonBusiness<IAccountModel> {
+    /**
+     * Creates an instance of AccountBusiness.
+     * 
+     */
     constructor() {
         super(Account);
+    }
+
+    /**
+     * 유저 생성 (추가 이전에 password 암호화 처리가 동작한다.)
+     * 
+     * @param {*} [{email = '', password = ''}={}]
+     * @param {(error: any, result: IAccountModel) => void} [callback=null]
+     * @returns {Promise<IAccountModel>}
+     */
+    create({email = '', password = ''}: any = {}, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
+        if (this.isValidAccount(email, password) === false) {
+            if (callback) {
+                callback(new Error('cond is invalid'), null);
+            } else {
+                Promise.reject('cond is invalid');
+            }
+            return;
+        }
+        let original = password;
+        password = passportUtil.generateHash(original);
+        return super.create({ email, password }, callback);
     }
 
     /**
@@ -34,10 +64,10 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      * @returns {Promise<IAccountModel>}
      */
     updateOne(cond: any, update: any, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
-        let email: string = cond.email || '';
-        let password: string = cond.password || '';
-        let email2: string = update.email || '';
-        if (email.length === 0 || password.length === 0 || email !== email2) {
+        const COND_EMAIL: string = cond.email || '';
+        const COND_PASSWORD: string = cond.password || '';
+        const UPDATE_PASSWORD: string = update.password || '';
+        if ((this.isValidAccount(COND_EMAIL, COND_PASSWORD) === false) || (!UPDATE_PASSWORD)) {
             if (callback) {
                 callback(new Error('cond or update is invalid'), null);
             } else {
@@ -45,7 +75,10 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
             }
             return;
         }
-        return super.updateOne(cond, update, callback);
+        // hash 값 변경된 객체로 검색을 하고 갱신을 하도록 해야한다. 
+        cond.password = passportUtil.generateHash(COND_PASSWORD);
+        let password = passportUtil.generateHash(UPDATE_PASSWORD);
+        return super.updateOne(cond, { password }, callback);
     }
 
     /**
@@ -55,10 +88,8 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      * @param {(error: any, result: IAccountModel) => void} [callback=null]
      * @returns {Promise<IAccountModel>}
      */
-    deleteOne(cond: any, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
-        let email: string = cond.email || '';
-        let password: string = cond.password || '';
-        if (email.length === 0 || password.length === 0) {
+    deleteOne({email = '', password = ''}: any = {}, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
+        if (this.isValidAccount(email, password) === false) {
             if (callback) {
                 callback(new Error('cond is invalid'), null);
             } else {
@@ -66,11 +97,27 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
             }
             return;
         }
-        return super.deleteOne(cond, callback);
+        let original = password;
+        password = passportUtil.generateHash(original);
+        return super.deleteOne({ email, password }, callback);
     }
 
     toString() {
         return `AccountBusiness class`;
+    }
+
+    /**
+     * 계정정보 유효한지 확인
+     * 
+     * @param {string} email
+     * @param {string} password
+     * @returns {boolean}
+     */
+    public isValidAccount(email: string, password: string): boolean {
+        if (!email || !password) {
+            return false;
+        }
+        return true;
     }
 }
 
