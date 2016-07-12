@@ -28,7 +28,7 @@ describe('UserBusiness TDD', function () {
         }, 1000);
     });
 
-    it('callback insert & delete test', function (done: DoneFn) {
+    xit('callback insert & delete test', function (done: DoneFn) {
         let user = UserFactory.create({ name: 'a1', email: 'b1', password: 'c1' }, (err, res) => {
             if (err) {
                 debug(`UserFactory.create: failed`);
@@ -66,7 +66,7 @@ describe('UserBusiness TDD', function () {
         });
     });
 
-    it('promise insert & delete test', function (done: DoneFn) {
+    xit('promise insert & delete test', function (done: DoneFn) {
         UserFactory.create({ name: 'a2', email: 'b2', password: 'c2' }, (err, res) => {
             if (err) {
                 debug(`UserFactory.create: failed`);
