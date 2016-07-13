@@ -31,17 +31,32 @@ export class AccountIndex {
      * @param {AccountController} controller 처리 객체
      */
     private link(app: Application, uri: string, controller: AccountController): void {
+
+        app.get(uri + '/profile', (req, res, next) => {
+            res.send('profile: succeed message');
+        });
+
+        app.get(uri + '/signup', (req, res, next) => {
+            res.send('signup: failed message');
+        });
+
+        app.get(uri + '/login', (req, res, next) => {
+            res.send('t4: failed message');
+        });
+
         app.post(uri + '/signup', passport.authenticate('local-signup', {
-            successRedirect: 'profile',
-            failureRedirect: 'signup',
+            successRedirect: uri + '/profile',
+            failureRedirect: uri + '/signup',
             failureFlash: true
         }));
 
+        // app.post(uri + '/signup', controller.signup);
+
         app.delete(uri + '/signout', this.isLoggedIn, controller.signout);
 
-        app.get(uri + '/login', passport.authenticate('local-login', {
-            successRedirect: 'profile',
-            failureRedirect: 'login',
+        app.post(uri + '/login', passport.authenticate('local-login', {
+            successRedirect: uri + '/profile',
+            failureRedirect: uri + '/login',
             failureFlash: true
         }));
 
@@ -62,7 +77,9 @@ export class AccountIndex {
             return next();
         }
         // 로그인이 되지 않은 경우 리다이렉트 처리한다.
-        res.redirect('/');
+        // TODO: / 페이지 구현하고 변경한다.
+        // res.redirect('/');
+        res.redirect('https://github.com/acdetadcd');
     }
 
     toString() {
