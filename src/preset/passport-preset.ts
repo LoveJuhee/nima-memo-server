@@ -23,14 +23,14 @@ export function setupStrategies(passport: Passport): void {
     // passport needs ability to serialize and unserialize users out of session
 
     // used to serialize the user for the session
-    passport.serializeUser(function (user: IAccountModel, done: any) {
+    passport.serializeUser(function (user: IAccountModel, done: (err: any, user: any) => void) {
         debug(`passport.serializeUser`);
         debug(user);
         done(null, user.id);
     });
 
     // used to deserialize the user
-    passport.deserializeUser(function (id: any, done: any) {
+    passport.deserializeUser(function (id: any, done: (err: any, user: any) => void) {
         debug(`passport.deserializeUser`);
         factory.findById(id, (err, user) => {
             debug(user);
@@ -48,10 +48,11 @@ export function setupStrategies(passport: Passport): void {
     // LOCAL SIGNUP //
     // ============ //
     passport.use('local-signup',
-        new LocalStrategy(strategyParams, (req, email, password, done) => {
-            debug(`passport.local-signup`);
-            debug(`${email}, ${password}`);
-
+        new LocalStrategy({
+            usernameField: 'email',
+            passwordField: 'password',
+            passReqToCallback: true
+        }, (req, email, password, done) => {
             // async
             process.nextTick(function () {
                 let email: string;
@@ -59,40 +60,47 @@ export function setupStrategies(passport: Passport): void {
 
                 // req.user 가 있으면 req.user 값으로 계정을 만든다. 없으면 body에서 추출한다. 
                 if (!req.user) {
-                    email = req.body.param.email;
-                    password = req.body.param.password;
+                    email = req.body.email;
+                    password = req.body.password;
                 } else {
                     email = req.user.email;
                     password = req.user.password;
                 }
 
-                // email 계정이 있는지 확인하고 없으면 추가하는 흐름으로 구현한다.
-                factory.findByEmail(email, (err, account) => {
-                    if (err) {
-                        debug(`passport.local-signup findByEmail err`);
-                        debug(err);
-                        return done(err);
-                    }
-
-                    // 검색결과가 있으면 이미 가입한 계정으로 안내한다.
-                    if (account) {
-                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-                    }
-
-                    factory.create({ email, password })
-                        // 생성 성공에 따른 리턴 처리
-                        .then(res => {
-                            debug(`passport.local-signup create succeed`);
-                            debug(res);
-                            return done(null, res);
-                        })
-                        // 생성 실패에 따른 리턴처리
-                        .catch(err => {
-                            debug(`passport.local-signup create failed`);
+                debug(`passport.local-signup`);
+                debug(`${email}, ${password}`);
+                try {
+                    // email 계정이 있는지 확인하고 없으면 추가하는 흐름으로 구현한다.
+                    factory.findByEmail(email, (err, account) => {
+                        if (err) {
+                            debug(`passport.local-signup findByEmail err`);
                             debug(err);
                             return done(err);
-                        });
-                });
+                        }
+
+                        // 검색결과가 있으면 이미 가입한 계정으로 안내한다.
+                        if (account) {
+                            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                        }
+
+                        debug(`try passport.local-signup create`);
+                        factory.create({ email, password })
+                            // 생성 성공에 따른 리턴 처리
+                            .then(res => {
+                                debug(`passport.local-signup create succeed`);
+                                debug(res);
+                                return done(null, res);
+                            })
+                            // 생성 실패에 따른 리턴처리
+                            .catch(err => {
+                                debug(`passport.local-signup create failed`);
+                                debug(err);
+                                return done(err);
+                            });
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             });
         })
     );
@@ -102,7 +110,11 @@ export function setupStrategies(passport: Passport): void {
     // =========== //
     // We create another strategy for the login process
     passport.use('local-login',
-        new LocalStrategy(strategyParams, (req, email, password, done) => {
+        new LocalStrategy({
+            usernameField: 'email',
+            passwordField: 'password',
+            passReqToCallback: true
+        }, (req, email, password, done) => {
             debug(`passport.local-login`);
             debug(`${email}, ${password}`);
 
@@ -117,6 +129,7 @@ export function setupStrategies(passport: Passport): void {
 
                 // 반환이 null 이면 email, password 가 다르다고 판단한다.
                 if (!user) {
+                    console.log(`passport.local-login findOne failed`);
                     debug(`passport.local-login findOne failed`);
                     return done(null, false, req.flash('loginMessage', 'login failed.'));
                 }
