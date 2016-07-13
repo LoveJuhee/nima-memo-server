@@ -2,12 +2,15 @@
 
 import * as express from 'express';
 
-/** 라우트 처리를 위한 설정 */
+/** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
 import ServerIndex from '../api/server/server-index';
 import {AccountIndex} from '../api/account/account-index';
 
-/** 전처리를 위한 설정*/
+/** passport 처리를 위한 객체 */
+import {setupStrategies} from './passport-preset'; 
+
+/** 전처리를 위한 객체 */
 import * as bodyParser from 'body-parser';
 import passport = require('passport');
 import session = require('express-session');
@@ -89,6 +92,8 @@ export class ExpressPreset {
     this.app.use(passport.initialize());
     this.app.use(passport.session()); // persistent login sessions
     this.app.use(flash()); // use connect-flash for flash messages stored in session
+
+    setupStrategies(passport); // passport local 설정
 
     this.app.use(cookieParser());
 
