@@ -48,9 +48,8 @@ export class AccountController {
      * 
      * @param {Request} req
      * @param {Response} res
-     * @param {*} next
      */
-    signout(req: Request, res: Response, next: any): void {
+    signout(req: Request, res: Response): void {
         factory.deleteOne(req.body.param)
             .then(r => {
                 req.flash('signout message', 'bye bye.');
@@ -77,6 +76,8 @@ export class AccountController {
      * @param {Response} res
      */
     logout(req: Request, res: Response): void {
+        req.logout();
+        res.redirect('/');
     }
 
     toString() {
