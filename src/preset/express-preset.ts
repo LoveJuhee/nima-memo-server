@@ -8,7 +8,7 @@ import ServerIndex from '../api/server/server-index';
 import {AccountIndex} from '../api/account/account-index';
 
 /** passport 처리를 위한 객체 */
-import {setupStrategies} from './passport-preset'; 
+import {setupStrategies} from './passport-preset';
 
 /** 전처리를 위한 객체 */
 import * as bodyParser from 'body-parser';
@@ -83,6 +83,19 @@ export class ExpressPreset {
   private before(): void {
     this.app.use(logger('dev'));
 
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(cookieParser());
+
+    this.beforePassport();
+  }
+
+  /**
+   * 세션 및 PASSPORT 관련 작업 
+   * 
+   * @private
+   */
+  private beforePassport(): void {
     // passport setup
     this.app.use(session({
       secret: 'hyounwoo.ko',
@@ -93,14 +106,8 @@ export class ExpressPreset {
     this.app.use(passport.session()); // persistent login sessions
     this.app.use(flash()); // use connect-flash for flash messages stored in session
 
-    setupStrategies(passport); // passport local 설정
-
-    this.app.use(cookieParser());
-
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({
-      extended: true
-    }));
+    // passport local 설정
+    setupStrategies(passport);
   }
 
   /**
