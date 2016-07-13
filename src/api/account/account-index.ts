@@ -1,8 +1,10 @@
 'use strict';
 
-import {Application} from 'express';
+import {Application, Request, Response, NextFunction} from 'express';
 import {AccountController} from './account-controller';
 import {AccountBusiness} from '../../business/account/account-business';
+
+var passport = require('passport');
 
 export class AccountIndex {
     business: AccountBusiness;
@@ -29,8 +31,38 @@ export class AccountIndex {
      * @param {AccountController} controller 처리 객체
      */
     private link(app: Application, uri: string, controller: AccountController): void {
-        app.post(uri + '/signup', controller.signup);
-        app.delete(uri + '/signout', controller.signout);
+        app.post(uri + '/signup', passport.authenticate('local-signup', {
+            successRedirect: 'profile',
+            failureRedirect: 'signup',
+            failureFlash: true
+        }));
+
+        app.delete(uri + '/signout', this.isLoggedIn, controller.signout);
+
+        app.get(uri + '/login', passport.authenticate('local-login', {
+            successRedirect: 'profile',
+            failureRedirect: 'login',
+            failureFlash: true
+        }));
+
+        app.get(uri + '/logout', controller.logout);
+    }
+
+    /**
+     * 전처리 - 로그인 여부
+     * 
+     * @param {Request} req
+     * @param {Response} res
+     * @param {NextFunction} next
+     * @returns
+     */
+    isLoggedIn(req: Request, res: Response, next: NextFunction) {
+        // if user is authenticate in the session, carry on
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        // 로그인이 되지 않은 경우 리다이렉트 처리한다.
+        res.redirect('/');
     }
 
     toString() {
