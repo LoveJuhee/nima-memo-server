@@ -47,7 +47,7 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      * @param {(error: any, result: any) => void} [callback=null]
      * @returns {Promise<IAccountModel>}
      */
-    findByEmail(email: string, callback: (error: any, result: any) => void = null): Promise<IAccountModel> {
+    findByEmail(email: string, callback: (error: any, result: (IAccountModel | any)) => void = null): Promise<IAccountModel> {
         let cond: Object = {
             email: email
         };
@@ -57,11 +57,11 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
     /**
      * email, password 기반 객체 찾기
      * 
-     * @param {*} [{email = '', password = ''}={}]
-     * @param {(error: any, result: any) => void} [callback=null]
+     * @param {*} [{email = '', password = ''}={}] 로그인 계정
+     * @param {((error: any, result: (IAccountModel | any)) => void)} [callback=null] 콜백
      * @returns {Promise<IAccountModel>}
      */
-    findOne({email = '', password = ''}: any = {}, callback: (error: any, result: any) => void = null): Promise<IAccountModel> {
+    findOne({email = '', password = ''}: any = {}, callback: (error: any, result: (IAccountModel | any)) => void = null): Promise<IAccountModel> {
         let cond: Object = {
             email: email
         };
