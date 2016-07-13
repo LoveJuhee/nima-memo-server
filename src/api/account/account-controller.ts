@@ -27,8 +27,8 @@ export class AccountController {
      */
     signup(req: Request, res: Response): void {
         debug(req.body);
-        debug(`email: ${req.body.param.email}, password: ${req.body.param.password}`);
-        factory.create(req.body.param)
+        debug(`email: ${req.body.email}, password: ${req.body.password}`);
+        factory.create(req.body)
             .then(r => {
                 debug('signup success');
                 debug(r);
@@ -50,10 +50,11 @@ export class AccountController {
      * @param {Response} res
      */
     signout(req: Request, res: Response): void {
-        factory.deleteOne(req.body.param)
+        factory.deleteOne(req.body)
             .then(r => {
                 req.flash('signout message', 'bye bye.');
-                res.redirect('/');
+                // TODO: 탈퇴 시 이동할 페이지 추후에 반영
+                res.redirect('http://www.naver.com');
             })
             .catch(err => {
                 res.json({ success: false, message: err });
@@ -77,7 +78,8 @@ export class AccountController {
      */
     logout(req: Request, res: Response): void {
         req.logout();
-        res.redirect('/');
+        // TODO: 로그아웃 시 이동할 페이지 추후에 반영
+        res.redirect('http://www.naver.com');
     }
 
     toString() {
