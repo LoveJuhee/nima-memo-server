@@ -53,7 +53,7 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
         const EMAIL: string = item.email;
         const NICKNAME: string = item.nickname;
         if (this.isValidUser(EMAIL, NICKNAME) === false) {
-            return Promise.reject(new Error('정보가 잘못 되었어요.'));
+            return Promise.reject(new Error(`정보가 잘못 되었어요. email:${EMAIL}, nickname:${NICKNAME}`));
         }
         return AccountFactory.findByEmail(EMAIL)
             .then(r => {
