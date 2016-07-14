@@ -1,5 +1,5 @@
 /** Logging */
-export const DEBUG_API_SERVER: string = 'api:server';
+export const DEBUG_ROUTE_SERVER: string = 'api:server';
 export const DEBUG_ROUTE_ACCOUNT: string = 'route:account';
 export const DEBUG_ROUTE_USER: string = 'route:user';
 
