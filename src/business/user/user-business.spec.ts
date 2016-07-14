@@ -62,7 +62,7 @@ describe('UserBusiness TDD', function () {
         AccountFactory.create(ACCOUNT_MOCK)
             // 성공 시 user 생성
             .then(r => {
-                return factory.create(ACCOUNT_MOCK)
+                return factory.create(ACCOUNT_MOCK);
             })
             // 생성 성공 (목표)
             .then(r => {
