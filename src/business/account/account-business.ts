@@ -35,8 +35,6 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
             }
             return Promise.reject('cond is invalid');
         }
-        // let original = password;
-        // password = passportUtil.generateHash(original);
         return super.create({ email, password }, callback);
     }
 
