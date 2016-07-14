@@ -1,7 +1,7 @@
 /** Logging */
-export const DEBUG_ROUTE_SERVER: string = 'api:server';
-export const DEBUG_ROUTE_ACCOUNT: string = 'route:account';
-export const DEBUG_ROUTE_USER: string = 'route:user';
+export const DEBUG_ROUTE_SERVERS: string = 'route:servers';
+export const DEBUG_ROUTE_ACCOUNTS: string = 'route:accounts';
+export const DEBUG_ROUTE_USERS: string = 'route:users';
 
 export const DEBUG_MONGO_MANAGER: string = 'app:db:manager';
 export const DEBUG_PRESET_PASSPORT: string = 'preset:passport';

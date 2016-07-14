@@ -1,12 +1,12 @@
 'use strict';
 
 /* test-code */
-import {IS_DEBUG_ROUTE_SERVER} from '../../debug/flag';
+import {IS_DEBUG_ROUTE_SERVERS} from '../../debug/flag';
 /* end-test-code */
 
-import {DEBUG_ROUTE_SERVER} from '../../config/logger';
+import {DEBUG_ROUTE_SERVERS} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_SERVER);
+let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_SERVERS);
 
 import requestUtil from '../../util/request-util';
 import otherUtil from '../../util/other-util';

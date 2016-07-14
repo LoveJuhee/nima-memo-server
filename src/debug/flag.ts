@@ -1,3 +1,4 @@
 /** Debug Flags */
-export const IS_DEBUG_ROUTE_SERVER: boolean = true;
-export const IS_DEBUG_ROUTE_ACCOUNT: boolean = true;
+export const IS_DEBUG_ROUTE_SERVERS: boolean = true;
+export const IS_DEBUG_ROUTE_ACCOUNTS: boolean = true;
+export const IS_DEBUG_ROUTE_USERS: boolean = true;
