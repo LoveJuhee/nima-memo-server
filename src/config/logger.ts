@@ -6,6 +6,9 @@ export const LOGGING_ROUTE_USER: string = 'route:user';
 export const LOGGING_MONGO_MANAGER: string = 'app:db:manager';
 export const LOGGING_PRESET_PASSPORT: string = 'preset:passport';
 
+export const LOGGING_SCHEMA_ACCOUNT: string = 'schema:account';
+export const LOGGING_SCHEMA_USER: string = 'schema:user';
+
 export const LOGGING_BUSINESS_COMMON: string = 'business:common';
 export const LOGGING_BUSINESS_ACCOUNT: string = 'business:account';
 export const LOGGING_BUSINESS_USER: string = 'business:user';
