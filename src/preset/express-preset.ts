@@ -4,8 +4,9 @@ import express = require('express');
 
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
-import ServerIndex from '../api/server/server-index';
+import {ServerIndex} from '../api/server/server-index';
 import {AccountIndex} from '../api/account/account-index';
+import {UserIndex} from '../api/user/user-index';
 
 /** passport 처리를 위한 객체 */
 import {setupStrategies} from './passport-preset';
@@ -85,8 +86,9 @@ export class ExpressPreset {
    * @private
    */
   private route(): void {
-    this.app.use(route.ROUTE_ACCOUNT_URI, new AccountIndex().routes);
-    this.app.use(route.ROUTE_SERVER_URI, new ServerIndex().routes);
+    this.app.use(route.ROUTE_URI_ACCOUNTS, new AccountIndex().routes);
+    this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
+    this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
   }
 
   /**
