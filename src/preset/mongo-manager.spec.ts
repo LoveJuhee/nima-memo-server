@@ -29,7 +29,7 @@ describe('MongoManager Test', function () {
 
             console.log(`try disconnect`);
             manager.disconnect();
-            setTimeout(isDisconnected, 2000);
+            setTimeout(isDisconnected, 100);
         }
         function isDisconnected() {
             console.log(`1. after disconnect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(manager.readyState)}`);
@@ -38,7 +38,7 @@ describe('MongoManager Test', function () {
         }
         console.log(`try connect`);
         manager.connect();
-        setTimeout(isConnected, 1000);
+        setTimeout(isConnected, 100);
     });
 
     it('connect & disconnect promise test', function (done: DoneFn) {
