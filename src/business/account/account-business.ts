@@ -60,24 +60,8 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      * @returns {Promise<IAccountModel>}
      */
     findOne({email = '', password = ''}: any = {}, callback: (error: any, result: (IAccountModel | any)) => void = null): Promise<IAccountModel> {
-        let cond: Object = {
-            email: email
-        };
-        return super.findOne(cond)
+        return this._findOne(email, password)
             .then(r => {
-                if (!r) {
-                    return Promise.resolve(null);
-                }
-                debug(r);
-                debug(`check password ${password}, ${r.password}`);
-                if (passportUtil.isValidPassword(password, r.password + '') === false) {
-                    debug(`findOne invalid password`);
-                    if (callback) {
-                        callback(new Error(`invalid password.`), null);
-                        return;
-                    }
-                    return Promise.reject(new Error(`invalid password.`));
-                }
                 if (callback) {
                     callback(null, r);
                     return;
@@ -85,12 +69,41 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
                 return Promise.resolve(r);
             })
             .catch(err => {
-                debug(`findOne error`);
                 debug(err);
                 if (callback) {
                     callback(err, null);
                     return;
                 }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 실제로 Account 검색 수행
+     * 
+     * @private
+     * @param {string} [email='']
+     * @param {string} [password='']
+     * @returns {Promise<IAccountModel>}
+     */
+    private _findOne(email: string = '', password: string = ''): Promise<IAccountModel> {
+        if (!email || !password) {
+            return Promise.reject(new Error(`invalid parameter(email:${email}, password:${password})`));
+        }
+        return super.findOne({ email })
+            .then(r => {
+                if (!r) {
+                    return Promise.resolve(null);
+                }
+                if (passportUtil.isValidPassword(password, r.password + '') === false) {
+                    debug(`invalid password`);
+                    return Promise.reject(new Error(`email or password is not match.`));
+                }
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                debug(`findOne error`);
+                debug(err);
                 return Promise.reject(err);
             });
     }
@@ -114,10 +127,17 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
             return Promise.reject('cond or update is invalid');
         }
 
-        return this.findOne(item)
+        return this._findOne(COND_EMAIL, COND_PASSWORD)
             .then(r => {
-                let cond = { email: COND_EMAIL };
-                return super.updateOne(cond, item, callback);
+                if (!r) {
+                    if (callback) {
+                        callback(null, null);
+                        return;
+                    }
+                    return Promise.resolve(null);
+                }
+                let cond = { _id: r._id };
+                return super.updateOne(r._id, item, callback);
             })
             .catch(err => {
                 if (callback) {
@@ -136,15 +156,7 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      * @returns {Promise<IAccountModel>}
      */
     deleteOne({email = '', password = ''}: any = {}, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
-        if (this.isValidAccount(email, password) === false) {
-            if (callback) {
-                callback(new Error('cond is invalid'), null);
-                return;
-            }
-            return Promise.reject('cond is invalid');
-        }
-
-        return this.findOne({ email, password })
+        return this._findOne(email, password)
             .then(r => {
                 if (!r) {
                     if (callback) {

@@ -11,22 +11,22 @@ import {DEBUG_TDD_BUSINESS_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_TDD_BUSINESS_ACCOUNT);
 
-let callbackAccount = {
+const CB_ACCOUNT = {
     email: 'callback@gmail.com',
     password: '123456789',
 };
-let accountNewer = {
+const ACCOUNT_NEW = {
     email: 'promise@gmail.com',
     password: 'abcdefg',
 };
-let accountTryUpdate = {
-    email: accountNewer.email,
-    password: accountNewer.password,
+const ACCOUNT_TRY_UPDATE = {
+    email: ACCOUNT_NEW.email,
+    password: ACCOUNT_NEW.password,
     newPassword: '123456789',
 };
-let accountUpdated = {
+const ACCOUNT_UPDATED = {
     email: 'promise@gmail.com',
-    password: accountTryUpdate.newPassword,
+    password: ACCOUNT_TRY_UPDATE.newPassword,
 };
 
 let business: AccountBusiness = new AccountBusiness();
@@ -57,7 +57,7 @@ describe('AccountBusiness TDD', function () {
 
     it('callback insert & delete test', function (done: DoneFn) {
         debug(`===== callback insert & delete test =====`);
-        business.create(callbackAccount, (err, result) => {
+        business.create(CB_ACCOUNT, (err, result) => {
             if (err) {
                 debug(`business.create: failed`);
                 debug(err);
@@ -88,7 +88,7 @@ describe('AccountBusiness TDD', function () {
     it('promise insert & delete test', function (done: DoneFn) {
         debug('===== promise insert & delete test =====');
         debug(`try business.create`);
-        business.create(accountNewer)
+        business.create(ACCOUNT_NEW)
             .then(r => {
                 debug(`business.create succeed`);
                 debug(r);
@@ -102,7 +102,7 @@ describe('AccountBusiness TDD', function () {
             // delete 로직 수행
             .then(() => {
                 debug(`try business.deleteOne`);
-                return business.deleteOne(accountNewer);
+                return business.deleteOne(ACCOUNT_NEW);
             })
             .then(r => {
                 debug(`business.delete succeed`);
@@ -121,7 +121,7 @@ describe('AccountBusiness TDD', function () {
 
     it('promise insert test', function (done: DoneFn) {
         debug(`===== promise insert test =====`);
-        business.create(accountNewer)
+        business.create(ACCOUNT_NEW)
             .then(r => {
                 debug(`business.create succeed`);
                 debug(r);
@@ -138,13 +138,13 @@ describe('AccountBusiness TDD', function () {
 
     it('promise findOne test', function (done: DoneFn) {
         debug(`===== promise findOne test =====`);
-        business.findOne(accountNewer)
+        business.findOne(ACCOUNT_NEW)
             .then(r => {
                 debug(`business.findOne succeed`);
                 debug(r);
                 expect(r).toBeDefined();
-                expect(r.email).toBe(accountNewer.email);
-                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeTruthy();
+                expect(r.email).toBe(ACCOUNT_NEW.email);
+                expect(passportUtil.isValidPassword(ACCOUNT_NEW.password, r.password + '')).toBeTruthy();
                 return Promise.resolve(r);
             })
             .catch(r => {
@@ -158,14 +158,14 @@ describe('AccountBusiness TDD', function () {
 
     it('promise findByEmail test', function (done: DoneFn) {
         debug(`===== promise findByEmail test =====`);
-        business.findByEmail(accountNewer.email)
+        business.findByEmail(ACCOUNT_NEW.email)
             .then(r => {
                 debug(`business.findByEmail succeed`);
                 debug(r);
                 expect(r).toBeDefined();
-                expect(r.email).toBe(accountNewer.email);
-                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeTruthy();
-                expect(passportUtil.isValidPassword(accountUpdated.password, r.password + '')).toBeFalsy();
+                expect(r.email).toBe(ACCOUNT_NEW.email);
+                expect(passportUtil.isValidPassword(ACCOUNT_NEW.password, r.password + '')).toBeTruthy();
+                expect(passportUtil.isValidPassword(ACCOUNT_UPDATED.password, r.password + '')).toBeFalsy();
                 return Promise.resolve(r);
             })
             .catch(r => {
@@ -179,14 +179,14 @@ describe('AccountBusiness TDD', function () {
 
     it('promise update password test', function (done: DoneFn) {
         debug(`===== promise update password test =====`);
-        business.updateOne(accountTryUpdate)
+        business.updateOne(ACCOUNT_TRY_UPDATE)
             .then(r => {
                 debug(`business.update succeed`);
                 debug(r);
                 expect(r).toBeDefined();
-                expect(r.email).toBe(accountNewer.email);
-                expect(passportUtil.isValidPassword(accountUpdated.password, r.password + '')).toBeFalsy();
-                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeTruthy();
+                expect(r.email).toBe(ACCOUNT_NEW.email);
+                expect(passportUtil.isValidPassword(ACCOUNT_UPDATED.password, r.password + '')).toBeFalsy();
+                expect(passportUtil.isValidPassword(ACCOUNT_NEW.password, r.password + '')).toBeTruthy();
                 return Promise.resolve(r);
             })
             .catch(r => {
@@ -196,13 +196,13 @@ describe('AccountBusiness TDD', function () {
             })
             // 갱신된 정보 검색
             .then(() => {
-                return business.findOne(accountUpdated);
+                return business.findOne(ACCOUNT_UPDATED);
             })
             .then(r => {
                 debug(`business.findOne succeed`);
                 debug(r);
-                expect(passportUtil.isValidPassword(accountUpdated.password, r.password + '')).toBeTruthy('changed password check');
-                expect(passportUtil.isValidPassword(accountNewer.password, r.password + '')).toBeFalsy('older password check');
+                expect(passportUtil.isValidPassword(ACCOUNT_UPDATED.password, r.password + '')).toBeTruthy('changed password check');
+                expect(passportUtil.isValidPassword(ACCOUNT_NEW.password, r.password + '')).toBeFalsy('older password check');
                 return Promise.resolve(r);
             })
             .catch(r => {
@@ -216,7 +216,7 @@ describe('AccountBusiness TDD', function () {
 
     it('promise delete email test', function (done: DoneFn) {
         debug(`===== promise delete email test =====`);
-        business.deleteOne(accountUpdated)
+        business.deleteOne(ACCOUNT_UPDATED)
             .then(r => {
                 debug(`business.delete succeed`);
                 debug(r);
@@ -230,7 +230,7 @@ describe('AccountBusiness TDD', function () {
             })
             // 삭제된 정보 검색
             .then(() => {
-                return business.findByEmail(accountUpdated.email);
+                return business.findByEmail(ACCOUNT_UPDATED.email);
             })
             .then(r => {
                 debug(`business.findByEmail succeed`);
@@ -246,13 +246,13 @@ describe('AccountBusiness TDD', function () {
             // 다시 삭제 시도
             .then(() => {
                 debug(`retry delete item`);
-                return business.deleteOne(accountUpdated);
+                return business.deleteOne(ACCOUNT_UPDATED);
             })
             .then(r => {
                 debug(`business.delete succeed`);
                 debug(r);
                 expect(r).toBeNull();
-                return business.findByEmail(accountUpdated.email);
+                return business.findByEmail(ACCOUNT_UPDATED.email);
             })
             .catch(r => {
                 debug(`business.delete failed`);
