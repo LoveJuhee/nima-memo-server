@@ -12,6 +12,8 @@ import requestUtil from '../../util/request-util';
 import otherUtil from '../../util/other-util';
 const nodeUtil = require('util');
 
+import factory from '../../business/user/user-business';
+
 import {Request, Response} from 'express';
 
 /**
@@ -56,7 +58,17 @@ export class UserController {
      * @param {Response} res
      */
     create(req: Request, res: Response): void {
-        res.send('UserController.create');
+        factory.create(req.body)
+            .then(r => {
+                debug(`유저 계정 생성 성공`);
+                res.send(r);
+            })
+            .catch(err => {
+                debug(`factory.create failed`);
+                debug(err);
+                let e: Error = err;
+                res.send(e.message);
+            });
     }
 
     /**
