@@ -9,7 +9,7 @@ var router = express.Router();
  * 컨트롤러 연결 클래스
  * @class
  */
-export default class ServerIndex {
+export class ServerIndex {
     /**
      * route 처리 객체 반환
      * 
