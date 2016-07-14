@@ -20,7 +20,7 @@ import * as express from 'express';
  * @export
  * @class ServerController
  */
-export default class ServerController {
+export class ServerController {
     /**
      * Creates an instance of ServerController.
      * 

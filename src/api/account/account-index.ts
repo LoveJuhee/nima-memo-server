@@ -1,77 +1,66 @@
 'use strict';
 
-import {Application, Request, Response, NextFunction} from 'express';
-import {AccountController} from './account-controller';
-import {AccountBusiness} from '../../business/account/account-business';
+import express = require('express');
+import passport = require('passport');
 
-var passport = require('passport');
+import {AccountController} from './account-controller';
+
+var router = express.Router();
 
 export class AccountIndex {
-    business: AccountBusiness;
-
     /**
-     * Creates an instance of AccountIndex.
+     * route 처리 객체 반환
      * 
-     * @param {Application} app
-     * @param {string} [uri=''] 기본 경로
+     * @readonly
+     * @type {express.Router}
      */
-    constructor(app: Application, uri: string = '') {
-        if (!app) {
-            throw (new Error('app is invalied.'));
-        }
-        this.business = new AccountBusiness();
-        this.link(app, uri, new AccountController());
-    }
+    get routes(): express.Router {
+        let controller: AccountController = new AccountController();
 
-    /**
-     * RESTful 연결
-     * 
-     * @private
-     * @param {string} uri 기본 경로
-     * @param {AccountController} controller 처리 객체
-     */
-    private link(app: Application, uri: string, controller: AccountController): void {
+        // TODO: token 기능 구현
+        // TODO: front-end 분리 하도록 구현
 
-        app.get(uri + '/profile', (req, res, next) => {
+        router.get('/profile', (req, res, next) => {
             res.send('profile: succeed message');
         });
 
-        app.get(uri + '/signup', (req, res, next) => {
+        router.get('/signup', (req, res, next) => {
             res.send('signup: failed message');
         });
 
-        app.get(uri + '/login', (req, res, next) => {
+        router.get('/login', (req, res, next) => {
             res.send('t4: failed message');
         });
 
-        app.post(uri + '/signup', passport.authenticate('local-signup', {
-            successRedirect: uri + '/profile',
-            failureRedirect: uri + '/signup',
+        router.post('/signup', passport.authenticate('local-signup', {
+            successRedirect: '/profile',
+            failureRedirect: '/signup',
             failureFlash: true
         }));
 
-        // app.post(uri + '/signup', controller.signup);
+        // router.post('/signup', controller.signup);
 
-        app.delete(uri + '/signout', this.isLoggedIn, controller.signout);
+        router.delete('/signout', this.isLoggedIn, controller.signout);
 
-        app.post(uri + '/login', passport.authenticate('local-login', {
-            successRedirect: uri + '/profile',
-            failureRedirect: uri + '/login',
+        router.post('/login', passport.authenticate('local-login', {
+            successRedirect: '/profile',
+            failureRedirect: '/login',
             failureFlash: true
         }));
 
-        app.get(uri + '/logout', controller.logout);
+        router.get('/logout', controller.logout);
+        return router;
     }
 
     /**
      * 전처리 - 로그인 여부
      * 
-     * @param {Request} req
-     * @param {Response} res
-     * @param {NextFunction} next
+     * @param {express.Request} req
+     * @param {express.Response} res
+     * @param {express.NextFunction} next
      * @returns
      */
-    isLoggedIn(req: Request, res: Response, next: NextFunction) {
+    isLoggedIn(req: express.Request, res: express.Response, next: express.NextFunction) {
         // if user is authenticate in the session, carry on
         if (req.isAuthenticated()) {
             return next();

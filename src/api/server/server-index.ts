@@ -1,28 +1,32 @@
 'use strict';
 
-import {Application} from 'express';
-import ServerController from './server-controller';
+import express = require('express');
+import {ServerController} from './server-controller';
+
+var router = express.Router();
 
 /**
  * 컨트롤러 연결 클래스
  * @class
  */
 export default class ServerIndex {
-    constructor(app: Application, uri: string) {
-        if (app && uri) {
-            this.link(app, uri, new ServerController());
-        } else {
-            throw (new Error('app or uri is invalied.'));
-        }
-    }
+    /**
+     * route 처리 객체 반환
+     * 
+     * @readonly
+     * @type {express.Router}
+     */
+    get routes(): express.Router {
+        let controller: ServerController = new ServerController();
 
-    link(app: Application, uri: string, controller: ServerController) {
-        app.get(uri + '/', controller.index);
-        app.get(uri + '/:id', controller.show);
-        app.post(uri + '/', controller.create);
-        app.put(uri + '/:id', controller.update);
-        app.patch(uri + '/:id', controller.update);
-        app.delete(uri + '/:id', controller.destroy);
+        router.get('/', controller.index);
+        router.get('/:id', controller.show);
+        router.post('/', controller.create);
+        router.put('/:id', controller.update);
+        router.patch('/:id', controller.update);
+        router.delete('/:id', controller.destroy);
+
+        return router;
     }
 
     toString() {

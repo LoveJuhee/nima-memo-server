@@ -1,6 +1,6 @@
 'use strict';
 
-import * as express from 'express';
+import express = require('express');
 
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
@@ -17,37 +17,6 @@ import session = require('express-session');
 import flash = require('connect-flash');
 import logger = require('morgan');
 import cookieParser = require('cookie-parser');
-
-/**
- * 컨트롤러 연결 클래스
- * @class
- */
-class Linker {
-  /**
-   * 
-   * 
-   * @param {express.Application} app
-   * @param {string} uri
-   * @param {*} controller
-   */
-  link(app: express.Application, uri: string, controller: any) {
-    app.get(uri, controller.index);
-    app.get(uri + ':id', controller.show);
-    app.post(uri, controller.create);
-    app.put(uri + ':id', controller.update);
-    app.patch(uri + ':id', controller.update);
-    app.delete(uri + ':id', controller.destroy);
-  }
-
-  /**
-   * 객체 정보 출력
-   * 
-   * @returns
-   */
-  toString() {
-    return 'Linker class';
-  }
-}
 
 /**
  * express 구동 전 사전 작업 클래스
@@ -116,10 +85,15 @@ export class ExpressPreset {
    * @private
    */
   private route(): void {
-    new AccountIndex(this.app, route.ROUTE_ACCOUNT_URI);
-    new ServerIndex(this.app, route.SERVER_API_URI);
+    this.app.use(route.ROUTE_ACCOUNT_URI, new AccountIndex().routes);
+    this.app.use(route.ROUTE_SERVER_URI, new ServerIndex().routes);
   }
 
+  /**
+   * route 설정 이후의 작업
+   * 
+   * @private
+   */
   private after(): void {
     /* Not Foud */
     this.app.use((req: express.Request, res: express.Response, next: Function) => {
