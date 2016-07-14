@@ -37,9 +37,9 @@ export class ExpressPreset {
       throw (new Error('app is null or undefined.'));
     }
     try {
-      this.before();
-      this.route();
-      this.after();
+      this.beforeSetting();
+      this.routeSetting();
+      this.afterSetting();
     } catch (error) {
       throw error;
     }
@@ -50,7 +50,7 @@ export class ExpressPreset {
    * 
    * @private
    */
-  private before(): void {
+  private beforeSetting(): void {
     this.app.use(logger('dev'));
 
     this.app.use(bodyParser.json());
@@ -85,7 +85,7 @@ export class ExpressPreset {
    * 
    * @private
    */
-  private route(): void {
+  private routeSetting(): void {
     this.app.use(route.ROUTE_URI_ACCOUNTS, new AccountIndex().routes);
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
@@ -96,7 +96,7 @@ export class ExpressPreset {
    * 
    * @private
    */
-  private after(): void {
+  private afterSetting(): void {
     /* Not Foud */
     this.app.use((req: express.Request, res: express.Response, next: Function) => {
       /**
