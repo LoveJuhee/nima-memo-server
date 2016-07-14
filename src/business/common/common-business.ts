@@ -3,9 +3,9 @@
 import mongoose = require('mongoose');
 import {Promise} from 'es6-promise';
 
-import {LOGGING_BUSINESS_COMMON} from '../../config/logger';
+import {DEBUG_BUSINESS_COMMON} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_COMMON);
+let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_COMMON);
 
 /**
  * 공통 비지니스 클래스

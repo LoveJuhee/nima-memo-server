@@ -7,10 +7,10 @@ import {Promise} from 'es6-promise';
 import ENVIRONMENT from '../config/environment';
 
 import {
-    LOGGING_MONGO_MANAGER
+    DEBUG_MONGO_MANAGER
 } from '../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_MONGO_MANAGER);
+let debug: debug.IDebugger = debugClass(DEBUG_MONGO_MANAGER);
 
 /**
  * MongoDB 접속 관리자

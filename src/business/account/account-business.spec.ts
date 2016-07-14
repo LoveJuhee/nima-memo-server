@@ -7,9 +7,9 @@ import {AccountBusiness} from './account-business';
 import otherUtil from '../../util/other-util';
 import passportUtil from '../../util/passport-util';
 
-import {LOGGING_TDD_BUSINESS_ACCOUNT} from '../../config/logger';
+import {DEBUG_TDD_BUSINESS_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_TDD_BUSINESS_ACCOUNT);
+let debug: debug.IDebugger = debugClass(DEBUG_TDD_BUSINESS_ACCOUNT);
 
 let callbackAccount = {
     email: 'callback@gmail.com',

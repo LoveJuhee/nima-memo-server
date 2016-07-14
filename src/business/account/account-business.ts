@@ -4,9 +4,9 @@ import {CommonBusiness} from '../common/common-business';
 import Account from '../../model/account/account';
 import {IAccountModel} from '../../model/account/account-schema';
 
-import {LOGGING_BUSINESS_ACCOUNT} from '../../config/logger';
+import {DEBUG_BUSINESS_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_ACCOUNT);
+let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_ACCOUNT);
 
 import nodeUtil = require('util');
 import passportUtil from '../../util/passport-util';

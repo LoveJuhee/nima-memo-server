@@ -6,9 +6,9 @@ import {IUserModel} from '../../model/user/user-schema';
 
 import AccountFactory from '../account/account-business';
 
-import {LOGGING_BUSINESS_USER} from '../../config/logger';
+import {DEBUG_BUSINESS_USER} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_BUSINESS_USER);
+let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_USER);
 
 export class UserBusiness extends CommonBusiness<IUserModel> {
     constructor() {

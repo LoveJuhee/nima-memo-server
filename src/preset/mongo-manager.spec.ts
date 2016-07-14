@@ -6,9 +6,9 @@ import mongoUtil from '../util/mongo-util';
 import requestUtil from '../util/request-util';
 import otherUtil from '../util/other-util';
 
-import {LOGGING_TDD_PRESET_MONGO_MANAGER} from '../config/logger';
+import {DEBUG_TDD_PRESET_MONGO_MANAGER} from '../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_TDD_PRESET_MONGO_MANAGER);
+let debug: debug.IDebugger = debugClass(DEBUG_TDD_PRESET_MONGO_MANAGER);
 
 let manager: MongoManager;
 

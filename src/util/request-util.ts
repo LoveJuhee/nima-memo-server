@@ -1,9 +1,9 @@
 'use strict';
 import {Promise} from 'es6-promise';
 
-import {LOGGING_UTIL_REQUEST} from '../config/logger';
+import {DEBUG_UTIL_REQUEST} from '../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_UTIL_REQUEST);
+let debug: debug.IDebugger = debugClass(DEBUG_UTIL_REQUEST);
 
 const fs = require('fs');
 const urlencode = require('urlencode');

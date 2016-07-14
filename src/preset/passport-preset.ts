@@ -10,9 +10,9 @@ import factory from '../business/account/account-business';
 
 import passportUtil from '../util/passport-util';
 
-import {LOGGING_PRESET_PASSPORT} from '../config/logger';
+import {DEBUG_PRESET_PASSPORT} from '../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_PRESET_PASSPORT);
+let debug: debug.IDebugger = debugClass(DEBUG_PRESET_PASSPORT);
 
 export function setupStrategies(passport: Passport): void {
 

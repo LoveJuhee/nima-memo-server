@@ -4,9 +4,9 @@
 import {IS_DEBUG_ROUTE_SERVER} from '../../debug/flag';
 /* end-test-code */
 
-import {LOGGING_API_SERVER} from '../../config/logger';
+import {DEBUG_API_SERVER} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_API_SERVER);
+let debug: debug.IDebugger = debugClass(DEBUG_API_SERVER);
 
 import requestUtil from '../../util/request-util';
 import otherUtil from '../../util/other-util';

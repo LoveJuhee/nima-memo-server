@@ -3,9 +3,9 @@
 import {Schema, Document, HookNextFunction} from 'mongoose';
 import * as bcrypt from 'bcrypt-nodejs';
 
-import {LOGGING_SCHEMA_ACCOUNT} from '../../config/logger';
+import {DEBUG_SCHEMA_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(LOGGING_SCHEMA_ACCOUNT);
+let debug: debug.IDebugger = debugClass(DEBUG_SCHEMA_ACCOUNT);
 
 export interface IAccount {
     email: String;
