@@ -76,6 +76,74 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
     }
 
     /**
+     * email 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
+     * 
+     * @param {string} [email='']
+     * @param {(error: any, result: IUserModel) => void} [callback=null]
+     * @returns {Promise<IUserModel>}
+     */
+    findByEmail(email: string = '', callback: (error: any, result: IUserModel) => void = null): Promise<IUserModel> {
+        return this._findOne({ email })
+            .then(r => {
+                if (callback) {
+                    callback(null, r);
+                    return;
+                }
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 실제로 User 검색 수행
+     * 
+     * @private
+     * @param {*} [{email = '', nickname = ''}={}]
+     * @returns {Promise<IUserModel>}
+     */
+    private _findOne(item: any = {}): Promise<IUserModel> {
+        const EMAIL: string = item.email;
+        const NICKNAME: string = item.nickname;
+        if (!EMAIL && !NICKNAME) {
+            return Promise.reject(new Error(`invalid parameter(email:${EMAIL}, nickname:${NICKNAME})`));
+        }
+        return super.findOne(item);
+    }
+
+    /**
+     * 특정 대상 업데이트
+     * 
+     * @param {*} item (email 포함)
+     * @param {(error: any, result: IUserModel) => void} [callback=null]
+     * @returns {Promise<IUserModel>}
+     */
+    updateOne(item: any, callback: (error: any, result: IUserModel) => void = null): Promise<IUserModel> {
+        return this._findOne({ email: item.email })
+            .then(r => {
+                if (!r) {
+                    let err: any = new Error(`${item.email} 검색이 안되네요.`);
+                    return Promise.reject(err);
+                }
+                let cond = { _id: r._id };
+                return super.updateOne(cond, item, callback);
+            })
+            // this._findOne, super.updateOne 에러 및 검색결과가 없을 경우 처리.
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
      * 특정 대상 삭제
      * 
      * @param {string} [email='']
@@ -83,14 +151,11 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
      * @returns {Promise<IUserModel>}
      */
     deleteOne(email: string = '', callback: (error: any, result: IUserModel) => void = null): Promise<IUserModel> {
-        return this.findOne({ email })
+        return this._findOne({ email })
             .then(r => {
                 if (!r) {
-                    if (callback) {
-                        callback(new Error('email 검색이 안되네요.'), null);
-                        return;
-                    }
-                    return Promise.reject(new Error('email 검색이 안되네요.'));
+                    let err: any = new Error(`${email} 검색이 안되네요.`);
+                    return Promise.reject(err);
                 }
                 let cond = { _id: r._id };
                 return super.deleteOne(cond, callback);
