@@ -29,17 +29,18 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      */
     create({email = '', password = ''}: any = {}, callback: (error: any, result: IAccountModel) => void = null): Promise<IAccountModel> {
         if (this.isValidAccount(email, password) === false) {
+            let err: any = new Error('cond is invalid');
             if (callback) {
-                callback(new Error('cond is invalid'), null);
+                callback(err, null);
                 return;
             }
-            return Promise.reject('cond is invalid');
+            return Promise.reject(err);
         }
         return super.create({ email, password }, callback);
     }
 
     /**
-     * 모든 객체 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
+     * email 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
      * @param {string} email
      * @param {(error: any, result: any) => void} [callback=null]
@@ -120,11 +121,12 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
         const COND_PASSWORD: string = item.password || '';
         const UPDATE_PASSWORD: string = item.newPassword || '';
         if ((this.isValidAccount(COND_EMAIL, COND_PASSWORD) === false) || (!UPDATE_PASSWORD)) {
+            let err: any = new Error('cond or update is invalid');
             if (callback) {
-                callback(new Error('cond or update is invalid'), null);
+                callback(err, null);
                 return;
             }
-            return Promise.reject('cond or update is invalid');
+            return Promise.reject(err);
         }
 
         return this._findOne(COND_EMAIL, COND_PASSWORD)
