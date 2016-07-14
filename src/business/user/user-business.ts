@@ -43,6 +43,7 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
 
     /**
      * 실질적인 User 계정 생성 로직 수행
+     * Account 데이터에 정보가 있을 경우 수행한다.
      * 
      * @private
      * @param {*} item
@@ -52,14 +53,21 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
         const EMAIL: string = item.email;
         const NICKNAME: string = item.nickname;
         if (this.isValidUser(EMAIL, NICKNAME) === false) {
-            return Promise.reject(new Error('정보가 잘못 되었어'));
+            return Promise.reject(new Error('정보가 잘못 되었어요.'));
         }
         return AccountFactory.findByEmail(EMAIL)
             .then(r => {
                 if (!r) {
-                    return Promise.reject(new Error('유저 계정이 없어'));
+                    return Promise.reject(new Error('account 유저 계정이 없어요.'));
                 }
-                return super.create(item);
+                return super.findOne({ nickname: NICKNAME });
+            })
+            // nickname을 사용하는 객체가 있는지 검색한 결과 
+            .then(r => {
+                if (!r) {
+                    return super.create(item);
+                }
+                return Promise.reject(new Error('이미 사용 중인 nickname 이에요.'));
             })
             .catch(err => {
                 return Promise.reject(err);
@@ -70,6 +78,13 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
         return 'UserBusiness class';
     }
 
+    /**
+     * 유저 정보가 유효한가에 대한 판단
+     * 
+     * @param {string} email
+     * @param {string} nickname
+     * @returns {boolean}
+     */
     public isValidUser(email: string, nickname: string): boolean {
         if (!email || !nickname) {
             return false;
