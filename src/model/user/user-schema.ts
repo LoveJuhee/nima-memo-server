@@ -2,6 +2,10 @@
 
 import {Schema, Document, HookNextFunction} from 'mongoose';
 
+import {DEBUG_SCHEMA_USER} from '../../config/logger';
+import * as debugClass from 'debug';
+let debug: debug.IDebugger = debugClass(DEBUG_SCHEMA_USER);
+
 export interface IUser {
     email: String;
     nickname: String;
@@ -35,7 +39,8 @@ export let UserSchema = new Schema({
 
 // 저장 이전에 할 동작
 UserSchema.pre('save', (next) => {
-    console.log(this);
+    debug(`UserSchema.pre('save')`);
+    debug(this);
     // TODO: created_at 데이터 생성
     // TODO: 복호화가 가능한 암호화 처리
     return next();
@@ -43,7 +48,8 @@ UserSchema.pre('save', (next) => {
 
 // 업데이트 이전에 할 동작
 UserSchema.pre('findOneAndUpdate', (next) => {
-    console.log(this);
+    debug(`UserSchema.pre('findOneAndUpdate')`);
+    debug(this);
     // TODO: updated_at 데이터 생성
     // TODO: 복호화가 가능한 암호화 처리
     return next();
