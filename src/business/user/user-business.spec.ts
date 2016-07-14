@@ -88,21 +88,41 @@ describe('UserBusiness TDD', function () {
             .then(done);
     });
 
-    // it('User delete', function (done: DoneFn) {
-    //     factory.deleteOne(ACCOUNT)
-    //         // 생성 성공 결과 (오류)
-    //         .then(r => {
-    //             debug(r);
-    //             expect(r).toBeNull();
-    //             return Promise.resolve();
-    //         })
-    //         // 생성 실패 (목표)
-    //         .catch(err => {
-    //             debug(err);
-    //             expect(err).not.toBeNull();
-    //             return Promise.resolve();
-    //         })
-    //         .then(done);
-    // });
+    it('User delete', function (done: DoneFn) {
+        factory.deleteOne(ACCOUNT.email)
+            // 생성 성공 결과 (목표)
+            .then(r => {
+                debug(r);
+                expect(r).not.toBeNull();
+                return Promise.resolve();
+            })
+            // 생성 실패 (오류)
+            .catch(err => {
+                debug(err);
+                expect(err).toBeNull();
+                return Promise.resolve();
+            })
+            .then(() => {
+                return AccountFactory.deleteOne(ACCOUNT);
+            })
+            .then(done);
+    });
+
+    it('User duplicate delete', function (done: DoneFn) {
+        factory.deleteOne(ACCOUNT.email)
+            // 생성 성공 결과 (오류)
+            .then(r => {
+                debug(r);
+                expect(r).toBeNull();
+                return Promise.resolve();
+            })
+            // 생성 실패 (목표)
+            .catch(err => {
+                debug(err);
+                expect(err).not.toBeNull();
+                return Promise.resolve();
+            })
+            .then(done);
+    });
 
 });

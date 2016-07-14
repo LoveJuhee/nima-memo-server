@@ -69,7 +69,38 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
                 }
                 return Promise.reject(new Error('이미 사용 중인 nickname 이에요.'));
             })
+            // 모든 promise 오류 대응
             .catch(err => {
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 특정 대상 삭제
+     * 
+     * @param {string} [email='']
+     * @param {(error: any, result: IUserModel) => void} [callback=null]
+     * @returns {Promise<IUserModel>}
+     */
+    deleteOne(email: string = '', callback: (error: any, result: IUserModel) => void = null): Promise<IUserModel> {
+        return this.findOne({ email })
+            .then(r => {
+                if (!r) {
+                    if (callback) {
+                        callback(new Error('email 검색이 안되네요.'), null);
+                        return;
+                    }
+                    return Promise.reject(new Error('email 검색이 안되네요.'));
+                }
+                let cond = { _id: r._id };
+                return super.deleteOne(cond, callback);
+            })
+            // 모든 promise 오류 대응
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
                 return Promise.reject(err);
             });
     }
