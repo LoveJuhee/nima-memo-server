@@ -1,37 +1,44 @@
 'use strict';
 
-import * as mongoose from 'mongoose';
-import * as bcrypt from 'bcrypt-nodejs';
+import {Schema, Document, HookNextFunction} from 'mongoose';
 
 export interface IUser {
-    name: String;
     email: String;
-    password: String;
-    admin: Boolean;
+    nickname: String;
+    name: String;
+    rules: [String];
     location: String;
     meta: {
-        age: Number;
         website: String;
     };
     created_at: Date;
     updated_at: Date;
 };
 
-export interface IUserModel extends IUser, mongoose.Document { };
+export interface IUserModel extends IUser, Document { };
 
 /**
  * User 스키마
  */
-export let UserSchema = new mongoose.Schema({
-    name: String,
+export let UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    admin: Boolean,
+    nickname: { type: String, required: true, unique: true },
+    name: String,
+    rules: [String],
     location: String,
     meta: {
-        age: Number,
         website: String
     },
     created_at: Date,
     updated_at: Date
+});
+
+// 저장 이전에 할 동작
+UserSchema.pre('save', (next) => {
+    // TODO: created_at 데이터 생성
+});
+
+// 업데이트 이전에 할 동작
+UserSchema.pre('findOneAndUpdate', (next) => {
+    // TODO: updated_at 데이터 생성
 });
