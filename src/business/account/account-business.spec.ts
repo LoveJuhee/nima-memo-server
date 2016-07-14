@@ -44,7 +44,7 @@ describe('AccountBusiness TDD', function () {
             preset.db.disconnect()
                 .then(done)
                 .catch(done);
-        }, 1000);
+        }, 100);
     });
 
     it('check variable', function (done: DoneFn) {
