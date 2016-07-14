@@ -24,7 +24,6 @@ const USER_TRY_UPDATE: any = {
 describe('UserBusiness TDD', function () {
     beforeEach(function (done: DoneFn) {
         preset.db.connect()
-            .then(() => { return otherUtil.print('connected'); })
             .then(done)
             .catch(otherUtil.print)
             .then(done);
