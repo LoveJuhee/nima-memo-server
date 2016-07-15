@@ -11,12 +11,17 @@ let gulp = require('gulp'),
   exec = require('gulp-exec'),
   del = require('del');
 
-// 기본 경로
-const DIST_PATH = 'dist/';
-const DEPLOY_PATH = 'deploy/';
-const MAPS_PATH = './';
+/****************************
+ * 경로 설정
+ ***************************/
 const APP_PATH = 'src/';
+const DIST_PATH = 'dist/';                    // 개발 경로
+const MAPS_PATH = './';                       // 기본 경로
+const DEPLOY_PATH = 'deploy/';                // 배포 경로 (package.json 위치)
 
+/****************************
+ * 파일 리스트 설정
+ ***************************/
 // 속성에 맞는 파일리스트
 const APP_ALL_FILES = APP_PATH + '**/*';
 const APP_TS_FILES = APP_PATH + '**/*.ts';
@@ -40,7 +45,7 @@ gulp.task('js:dist', function () {
     .pipe(gPrint())
     .pipe(ts())
     .pipe(sourcemaps.write(MAPS_PATH))
-    .pipe(gulp.dest(DIST_PATH));
+    .pipe(gulp.dest(DEPLOY_PATH));
 });
 
 /** 개발용 */
