@@ -18,6 +18,7 @@ const APP_PATH = 'src/';
 const DIST_PATH = 'dist/';                    // 개발 경로
 const MAPS_PATH = './';                       // 기본 경로
 const DEPLOY_PATH = 'deploy/';                // 배포 경로 (package.json 위치)
+const DEPLOY_APP_PATH = DEPLOY_PATH + 'app/'; // 배포 경로 (app 위치)
 
 /****************************
  * 파일 리스트 설정
@@ -45,7 +46,7 @@ gulp.task('js:dist', function () {
     .pipe(gPrint())
     .pipe(ts())
     .pipe(sourcemaps.write(MAPS_PATH))
-    .pipe(gulp.dest(DEPLOY_PATH));
+    .pipe(gulp.dest(DEPLOY_APP_PATH));
 });
 
 /** 개발용 */
@@ -94,7 +95,8 @@ gulp.task('js:deploy', function () {
     .pipe(stripComments())
     .pipe(ts())
     .pipe(sourcemaps.write(MAPS_PATH))
-    .pipe(gulp.dest(DEPLOY_PATH));
+    .pipe(gulp.dest(DEPLOY_APP_PATH))
+    .pipe(exec('cp package.json ' + DEPLOY_PATH));
 });
 
 /** 배포용 */
@@ -106,7 +108,7 @@ gulp.task('clean:deploy', function () {
 gulp.task('deploy', ['clean:deploy', 'js:deploy'], function () {
   return gulp.src([APP_HTTP_FILES, APP_CSS_FILES])
     .pipe(gPrint())
-    .pipe(gulp.dest(DEPLOY_PATH));
+    .pipe(gulp.dest(DEPLOY_APP_PATH));
 });
 
 /** 정리용 */
