@@ -1,5 +1,13 @@
 'use strict';
 
+import UserBusiness from './user.business';
+
+import {Request, Response} from 'express';
+
+import requestUtil from '../../component/util/request.util';
+import otherUtil from '../../component/util/other.util';
+const nodeUtil = require('util');
+
 /* test-code */
 import {IS_DEBUG_ROUTE_USERS} from '../../debug/flag';
 /* end-test-code */
@@ -7,12 +15,6 @@ import {IS_DEBUG_ROUTE_USERS} from '../../debug/flag';
 import {DEBUG_ROUTE_USERS} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_USERS);
-
-import requestUtil from '../../util/request-util';
-import otherUtil from '../../util/other-util';
-const nodeUtil = require('util');
-
-import {Request, Response} from 'express';
 
 /**
  * rest 라우트명 에 대한 처리 클래스
@@ -56,7 +58,17 @@ export class UserController {
      * @param {Response} res
      */
     create(req: Request, res: Response): void {
-        res.send('UserController.create');
+        UserBusiness.create(req.body)
+            .then(r => {
+                debug(`유저 계정 생성 성공`);
+                res.send(r);
+            })
+            .catch(err => {
+                debug(`factory.create failed`);
+                debug(err);
+                let e: Error = err;
+                res.send(e.message);
+            });
     }
 
     /**

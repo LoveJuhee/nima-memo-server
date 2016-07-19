@@ -1,15 +1,15 @@
 'use strict';
 
-import {CommonBusiness} from '../common/common-business';
-import Account from '../../model/account/account';
-import {IAccountModel} from '../../model/account/account-schema';
+import {CommonBusiness} from '../../component/business/common.business';
+import {IAccountModel} from './account.schema';
+import AccountModel from './account.model';
+
+import nodeUtil = require('util');
+import passportUtil from '../../component/util/passport.util';
 
 import {DEBUG_BUSINESS_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_ACCOUNT);
-
-import nodeUtil = require('util');
-import passportUtil from '../../util/passport-util';
 
 export class AccountBusiness extends CommonBusiness<IAccountModel> {
     /**
@@ -17,7 +17,7 @@ export class AccountBusiness extends CommonBusiness<IAccountModel> {
      * 
      */
     constructor() {
-        super(Account);
+        super(AccountModel);
     }
 
     /**

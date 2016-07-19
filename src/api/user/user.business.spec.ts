@@ -1,10 +1,10 @@
 'use strict';
 import {preset} from '../../debug/spec-preset';
 
-import AccountFactory from '../account/account-business';
-import factory from './user-business';
+import AccountFactory from '../account/account.business';
+import factory from './user.business';
 
-import otherUtil from '../../util/other-util';
+import otherUtil from '../../component/util/other.util';
 
 import {DEBUG_TDD_BUSINESS_USER} from '../../config/logger';
 import * as debugClass from 'debug';

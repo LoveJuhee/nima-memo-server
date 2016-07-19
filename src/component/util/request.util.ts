@@ -1,7 +1,8 @@
 'use strict';
+
 import {Promise} from 'es6-promise';
 
-import {DEBUG_UTIL_REQUEST} from '../config/logger';
+import {DEBUG_UTIL_REQUEST} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_UTIL_REQUEST);
 

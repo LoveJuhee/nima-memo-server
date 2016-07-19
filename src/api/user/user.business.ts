@@ -1,10 +1,10 @@
 'use strict';
 
-import {CommonBusiness} from '../common/common-business';
-import User from '../../model/user/user';
-import {IUserModel} from '../../model/user/user-schema';
+import {CommonBusiness} from '../../component/business/common.business';
+import User from './user.model';
+import {IUserModel} from './user.schema';
 
-import AccountFactory from '../account/account-business';
+import AccountFactory from '../account/account.business';
 
 import {DEBUG_BUSINESS_USER} from '../../config/logger';
 import * as debugClass from 'debug';
@@ -53,7 +53,7 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
         const EMAIL: string = item.email;
         const NICKNAME: string = item.nickname;
         if (this.isValidUser(EMAIL, NICKNAME) === false) {
-            return Promise.reject(new Error('정보가 잘못 되었어요.'));
+            return Promise.reject(new Error(`정보가 잘못 되었어요. email:${EMAIL}, nickname:${NICKNAME}`));
         }
         return AccountFactory.findByEmail(EMAIL)
             .then(r => {

@@ -8,8 +8,8 @@ import {DEBUG_ROUTE_SERVERS} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_SERVERS);
 
-import requestUtil from '../../util/request-util';
-import otherUtil from '../../util/other-util';
+import requestUtil from '../../component/util/request.util';
+import otherUtil from '../../component/util/other.util';
 const nodeUtil = require('util');
 
 import {Request, Response} from 'express';

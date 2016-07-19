@@ -1,4 +1,5 @@
 'use strict';
+
 import {Promise} from 'es6-promise';
 import nodeUtil = require('util');
 

@@ -3,7 +3,7 @@
 import express = require('express');
 import passport = require('passport');
 
-import {AccountController} from './account-controller';
+import {AccountController} from './account.controller';
 
 var router = express.Router();
 
