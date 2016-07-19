@@ -1,7 +1,7 @@
 'use strict';
 
 import express = require('express');
-import {ServerController} from './server-controller';
+import {UserController} from './user.controller';
 
 var router = express.Router();
 
@@ -9,15 +9,15 @@ var router = express.Router();
  * 컨트롤러 연결 클래스
  * @class
  */
-export class ServerIndex {
+export class UserIndex {
     /**
      * route 처리 객체 반환
-     * 
+     *
      * @readonly
      * @type {express.Router}
      */
     get routes(): express.Router {
-        let controller: ServerController = new ServerController();
+        let controller: UserController = new UserController();
 
         router.get('/', controller.index);
         router.get('/:id', controller.show);
@@ -30,6 +30,6 @@ export class ServerIndex {
     }
 
     toString() {
-        return 'ServerIndex class';
+        return 'UserIndex class';
     }
 }

@@ -1,11 +1,11 @@
 'use strict';
 import {preset} from '../../debug/spec-preset';
 
-import AccountFactory from '../../model/account/account';
-import {AccountBusiness} from './account-business';
+import AccountModel from './account.model';
+import {AccountBusiness} from './account.business';
 
-import otherUtil from '../../util/other-util';
-import passportUtil from '../../util/passport-util';
+import otherUtil from '../../component/util/other.util';
+import passportUtil from '../../component/util/passport.util';
 
 import {DEBUG_TDD_BUSINESS_ACCOUNT} from '../../config/logger';
 import * as debugClass from 'debug';

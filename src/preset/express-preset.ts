@@ -4,9 +4,9 @@ import express = require('express');
 
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
-import {ServerIndex} from '../routes/servers/server-index';
-import {AccountIndex} from '../routes/accounts/account-index';
-import {UserIndex} from '../routes/users/user-index';
+import {ServerIndex} from '../api/server/index';
+import {AccountIndex} from '../api/account/index';
+import {UserIndex} from '../api/user/index';
 
 /** passport 처리를 위한 객체 */
 import {setupStrategies} from './passport-preset';
