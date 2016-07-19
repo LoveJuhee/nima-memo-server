@@ -1,7 +1,8 @@
 'use strict';
+
 import * as bcrypt from 'bcrypt-nodejs';
 
-import {DEBUG_UTIL_PASSPORT} from '../config/logger';
+import {DEBUG_UTIL_PASSPORT} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_UTIL_PASSPORT);
 

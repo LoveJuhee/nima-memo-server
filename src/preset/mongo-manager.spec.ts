@@ -2,9 +2,9 @@
 import {preset} from '../debug/spec-preset';
 import {MongoManager} from './mongo-manager';
 
-import mongoUtil from '../util/mongo-util';
-import requestUtil from '../util/request-util';
-import otherUtil from '../util/other-util';
+import mongoUtil from '../component/util/mongo.util';
+import requestUtil from '../component/util/request.util';
+import otherUtil from '../component/util/other.util';
 
 import {DEBUG_TDD_PRESET_MONGO_MANAGER} from '../config/logger';
 import * as debugClass from 'debug';

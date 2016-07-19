@@ -1,10 +1,10 @@
 'use strict';
 
-import {CommonBusiness} from '../common/common-business';
-import User from '../../model/user/user';
-import {IUserModel} from '../../model/user/user-schema';
+import {CommonBusiness} from '../../component/business/common.business';
+import User from './user.model';
+import {IUserModel} from './user.schema';
 
-import AccountFactory from '../account/account-business';
+import AccountFactory from '../account/account.business';
 
 import {DEBUG_BUSINESS_USER} from '../../config/logger';
 import * as debugClass from 'debug';

@@ -5,10 +5,10 @@
 import {Passport} from 'passport';
 import {Strategy as LocalStrategy, IStrategyOptionsWithRequest} from 'passport-local';
 
-import {IAccountModel} from '../model/account/account-schema';
-import factory from '../business/account/account-business';
+import {IAccountModel} from '../api/account/account.schema';
+import factory from '../api/account/account.business';
 
-import passportUtil from '../util/passport-util';
+import passportUtil from '../component/util/passport.util';
 
 import {DEBUG_PRESET_PASSPORT} from '../config/logger';
 import * as debugClass from 'debug';

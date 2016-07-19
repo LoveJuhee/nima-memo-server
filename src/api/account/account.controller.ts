@@ -1,5 +1,12 @@
 'use strict';
 
+import {Request, Response} from 'express';
+import AccountBusiness from './account.business';
+
+import requestUtil from '../../component/util/request.util';
+import otherUtil from '../../component/util/other.util';
+const nodeUtil = require('util');
+
 /* test-code */
 import {IS_DEBUG_ROUTE_ACCOUNTS} from '../../debug/flag';
 /* end-test-code */
@@ -7,15 +14,6 @@ import {IS_DEBUG_ROUTE_ACCOUNTS} from '../../debug/flag';
 import {DEBUG_ROUTE_ACCOUNTS} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_ACCOUNTS);
-
-import requestUtil from '../../util/request-util';
-import otherUtil from '../../util/other-util';
-const nodeUtil = require('util');
-
-import {Request, Response} from 'express';
-let passport = require('passport');
-
-import factory from '../../business/account/account-business';
 
 export class AccountController {
     /**
@@ -28,7 +26,7 @@ export class AccountController {
     signup(req: Request, res: Response): void {
         debug(req.body);
         debug(`email: ${req.body.email}, password: ${req.body.password}`);
-        factory.create(req.body)
+        AccountBusiness.create(req.body)
             .then(r => {
                 debug('signup success');
                 debug(r);
@@ -50,7 +48,7 @@ export class AccountController {
      * @param {Response} res
      */
     signout(req: Request, res: Response): void {
-        factory.deleteOne(req.body)
+        AccountBusiness.deleteOne(req.body)
             .then(r => {
                 req.flash('signout message', 'bye bye.');
                 // TODO: 탈퇴 시 이동할 페이지 추후에 반영
