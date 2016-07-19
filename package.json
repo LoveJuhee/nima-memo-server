@@ -4,7 +4,7 @@
   "description": "kitvalley manager",
   "main": "app.ts",
   "scripts": {
-    "test": "tdd"
+    "start": "DEBUG=* node app"
   },
   "keywords": [
     "kitvalley",
