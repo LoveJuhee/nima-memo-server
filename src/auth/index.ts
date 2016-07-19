@@ -3,7 +3,7 @@
 import * as express from 'express';
 import * as passport from 'passport';
 import config from '../config/environment';
-// import User from '../api/user/user.model';
+import User from '../api/user/user.model';
 
 // Passport Configuration
 require('./local/passport').setup(User, config);

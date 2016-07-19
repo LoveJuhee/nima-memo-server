@@ -1,8 +1,8 @@
 'use strict';
 
 import {CommonBusiness} from '../../component/business/common.business';
-import User from './user.model';
-import {IUserModel} from './user.schema';
+import User, {IUserModel} from './user.model';
+// import {IUserModel} from './user.schema';
 
 import AccountFactory from '../account/account.business';
 
@@ -51,23 +51,23 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
      */
     private _create(item: any): Promise<IUserModel> {
         const EMAIL: string = item.email;
-        const NICKNAME: string = item.nickname;
-        if (this.isValidUser(EMAIL, NICKNAME) === false) {
-            return Promise.reject(new Error(`정보가 잘못 되었어요. email:${EMAIL}, nickname:${NICKNAME}`));
+        const NICK: string = item.nick;
+        if (this.isValidUser(EMAIL, NICK) === false) {
+            return Promise.reject(new Error(`정보가 잘못 되었어요. email:${EMAIL}, nick:${NICK}`));
         }
         return AccountFactory.findByEmail(EMAIL)
             .then(r => {
                 if (!r) {
                     return Promise.reject(new Error('account 유저 계정이 없어요.'));
                 }
-                return super.findOne({ nickname: NICKNAME });
+                return super.findOne({ nick: NICK });
             })
-            // nickname을 사용하는 객체가 있는지 검색한 결과 
+            // nick을 사용하는 객체가 있는지 검색한 결과 
             .then(r => {
                 if (!r) {
                     return super.create(item);
                 }
-                return Promise.reject(new Error('이미 사용 중인 nickname 이에요.'));
+                return Promise.reject(new Error('이미 사용 중인 nick 이에요.'));
             })
             // 모든 promise 오류 대응
             .catch(err => {
@@ -104,14 +104,14 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
      * 실제로 User 검색 수행
      * 
      * @private
-     * @param {*} [{email = '', nickname = ''}={}]
+     * @param {*} [{email = '', nick = ''}={}]
      * @returns {Promise<IUserModel>}
      */
     private _findOne(item: any = {}): Promise<IUserModel> {
         const EMAIL: string = item.email;
-        const NICKNAME: string = item.nickname;
+        const NICKNAME: string = item.nick;
         if (!EMAIL && !NICKNAME) {
-            return Promise.reject(new Error(`invalid parameter(email:${EMAIL}, nickname:${NICKNAME})`));
+            return Promise.reject(new Error(`invalid parameter(email:${EMAIL}, nick:${NICKNAME})`));
         }
         return super.findOne(item);
     }
@@ -178,11 +178,11 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
      * 유저 정보가 유효한가에 대한 판단
      * 
      * @param {string} email
-     * @param {string} nickname
+     * @param {string} nick
      * @returns {boolean}
      */
-    public isValidUser(email: string, nickname: string): boolean {
-        if (!email || !nickname) {
+    public isValidUser(email: string, nick: string): boolean {
+        if (!email || !nick) {
             return false;
         }
         return true;

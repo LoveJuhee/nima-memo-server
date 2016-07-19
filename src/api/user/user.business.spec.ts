@@ -13,12 +13,12 @@ let debug: debug.IDebugger = debugClass(DEBUG_TDD_BUSINESS_USER);
 const ACCOUNT_MOCK: any = {
     email: 'nima@gmail.com',
     password: 'nima1234',
-    nickname: 'nima',
+    nick: 'nima',
 };
 const USER_TRY_UPDATE: any = {
     email: ACCOUNT_MOCK.email,
     password: ACCOUNT_MOCK.password,
-    nickname: 'updater',
+    nick: 'updater',
 };
 
 describe('UserBusiness TDD', function () {
@@ -40,7 +40,7 @@ describe('UserBusiness TDD', function () {
 
     it('계정이 없는 유저 생성 시도', function (done: DoneFn) {
         debug(`계정이 없는 유저 생성 시도`);
-        factory.create({ email: 'e', nickname: 'nick' })
+        factory.create({ email: 'e', nick: 'nick' })
             // 생성 성공 (오류)
             .then(r => {
                 debug(r);
@@ -70,8 +70,8 @@ describe('UserBusiness TDD', function () {
                 expect(r).not.toBeNull();
                 expect(r.email).not.toBeNull();
                 expect(r.email).toBe(ACCOUNT_MOCK.email);
-                expect(r.nickname).not.toBeNull();
-                expect(r.nickname).toBe(ACCOUNT_MOCK.nickname);
+                expect(r.nick).not.toBeNull();
+                expect(r.nick).toBe(ACCOUNT_MOCK.nick);
                 return Promise.resolve();
             })
             // 생성 실패 (오류)
@@ -111,13 +111,13 @@ describe('UserBusiness TDD', function () {
             .then(r => {
                 debug(r);
                 expect(r).not.toBeNull();
-                expect(r.nickname).toBe(ACCOUNT_MOCK.nickname);
+                expect(r.nick).toBe(ACCOUNT_MOCK.nick);
                 return factory.findByEmail(ACCOUNT_MOCK.email);
             })
             .then(r => {
                 debug(r);
                 expect(r).not.toBeNull();
-                expect(r.nickname).toBe(USER_TRY_UPDATE.nickname);
+                expect(r.nick).toBe(USER_TRY_UPDATE.nick);
                 return Promise.resolve();
             })
             // 생성 및 검색 실패 (오류)
