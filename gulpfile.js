@@ -46,7 +46,7 @@ gulp.task('js:dist', function () {
     .pipe(gPrint())
     .pipe(ts())
     .pipe(sourcemaps.write(MAPS_PATH))
-    .pipe(gulp.dest(DEPLOY_APP_PATH));
+    .pipe(gulp.dest(DIST_PATH));
 });
 
 /** 개발용 */
