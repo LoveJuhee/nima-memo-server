@@ -11,6 +11,8 @@ let gulp = require('gulp'),
   exec = require('gulp-exec'),
   del = require('del');
 
+var tsProject = ts.createProject('tsconfig.json');
+
 /****************************
  * 경로 설정
  ***************************/
@@ -44,7 +46,7 @@ gulp.task('js:dist', function () {
   return gulp.src(APP_TS_FILES)
     .pipe(sourcemaps.init())
     .pipe(gPrint())
-    .pipe(ts())
+    .pipe(ts(tsProject))
     .pipe(sourcemaps.write(MAPS_PATH))
     .pipe(gulp.dest(DIST_PATH));
 });
@@ -92,8 +94,8 @@ gulp.task('js:deploy', function () {
     .pipe(sourcemaps.init())
     .pipe(gPrint())
     .pipe(stripCode())
-    .pipe(stripComments())
-    .pipe(ts())
+    .pipe(stripComments(tsProject))
+    .pipe(ts(tsProject))
     .pipe(sourcemaps.write(MAPS_PATH))
     .pipe(gulp.dest(DEPLOY_APP_PATH))
     .pipe(exec('cp package.json ' + DEPLOY_PATH));
