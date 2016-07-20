@@ -3,9 +3,9 @@
 import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 
-import {DEBUG_SCHEMA_USER} from '../../config/logger';
+import {DEBUG_MODEL_USER} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(DEBUG_SCHEMA_USER);
+let debug: debug.IDebugger = debugClass(DEBUG_MODEL_USER);
 
 const authTypes = ['github', 'twitter', 'facebook', 'google'];
 const DEFAULT_SOLT_BYTE_SIZE = 16;
@@ -42,6 +42,7 @@ export let UserSchema = new mongoose.Schema({
     email: {
         type: String,
         lowercase: true,
+        required: true,
         index: { unique: true }
     },
     role: {
@@ -52,7 +53,10 @@ export let UserSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    password: String,
+    password: {
+        type: String,
+        required: true
+    },
     provider: String,
     salt: String,
     location: {
@@ -149,9 +153,34 @@ UserSchema.path('nick')
         });
     }, 'The specified nick is already in use.');
 
-let validatePresenceOf = function (value) {
+
+/**
+ * 객체 유효성 체크
+ * 
+ * @param {string} value
+ * @returns {Number}
+ */
+function validatePresenceOf(value: string): Number {
     return value && value.length;
 };
+
+/**
+ * Pre-findOneAndUpdate hook
+ */
+UserSchema.pre('findOneAndUpdate', function (next: mongoose.HookNextFunction) {
+    this._update.updated_at = new Date();
+    debug(this._update);
+    next();
+});
+
+/**
+ * Pre-updateOne hook
+ */
+UserSchema.pre('updateOne', function (next: mongoose.HookNextFunction) {
+    this._update.updated_at = new Date();
+    debug(this._update);
+    next();
+});
 
 /**
  * Pre-save hook
@@ -165,6 +194,10 @@ UserSchema.pre('save', function (next: mongoose.HookNextFunction) {
     if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1) {
         next(new Error('Invalid password'));
     }
+
+    this.created_at = this.created_at || new Date();
+    this.updated_at = new Date();
+    debug(this);
 
     // Make salt with a callback
     this.makeSalt(DEFAULT_SOLT_BYTE_SIZE, (saltErr, salt) => {
