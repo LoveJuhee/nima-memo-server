@@ -15,4 +15,4 @@ development.secrets.expiresIn = '1d';
 
 development.seedDB = true;
 
-export default development;
+module.exports = development;

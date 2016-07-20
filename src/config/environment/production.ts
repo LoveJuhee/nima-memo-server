@@ -40,4 +40,5 @@ production.port = process.env.OPENSHIFT_NODEJS_PORT ||
   process.env.PORT ||
   8080;
 
-export default production;
+// export default production;
+module.exports = production;

@@ -2,17 +2,17 @@
 
 import {Environment} from './params';
 
-let development: Environment = new Environment();
+let test: Environment = new Environment();
 
-development.mongo.uri = 'mongodb://127.0.0.1/nima-kitv-server-test';
+test.mongo.uri = 'mongodb://127.0.0.1/nima-kitv-server-test';
 
-development.sequelize.uri = 'sqlite://';
-development.sequelize.options.logging = false;
-development.sequelize.options.storage = 'test.sqlite';
-development.sequelize.options.define.timestamps = false;
+test.sequelize.uri = 'sqlite://';
+test.sequelize.options.logging = false;
+test.sequelize.options.storage = 'test.sqlite';
+test.sequelize.options.define.timestamps = false;
 
-development.secrets.expiresIn = '1h';
+test.secrets.expiresIn = '1h';
 
-development.seedDB = true;
+test.seedDB = true;
 
-export default development;
+module.exports = test;

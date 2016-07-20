@@ -196,13 +196,13 @@ export class Environment {
      * WAS port
      * 
      * @private
-     * @type {Number}
+     * @type {number}
      */
-    private _port: Number;
-    set port(port: Number) {
+    private _port: number;
+    set port(port: number) {
         this._port = port;
     }
-    get port(): Number {
+    get port(): number {
         return this._port;
     }
 
