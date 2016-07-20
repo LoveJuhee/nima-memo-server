@@ -8,6 +8,7 @@ import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_SCHEMA_USER);
 
 const authTypes = ['github', 'twitter', 'facebook', 'google'];
+const DEFAULT_SOLT_BYTE_SIZE = 16;
 
 export interface IUser {
     name: String;
@@ -120,48 +121,32 @@ UserSchema.path('password')
 UserSchema.path('email')
     .validate(function (value: string, respond: (res: boolean) => void): any {
         let self = this;
-        console.log(self);
-        return this
-            .constructor
-            .findOneAsync({
-                email: value
-            })
-            .then(function (user: IUserModel) {
-                if (user) {
-                    if (self.id === user.id) {
-                        return respond(true);
-                    }
-                    return respond(false);
-                }
-                return respond(true);
-            })
-            .catch(function (err: any) {
+        UserModel.findOne({ email: value }, (err, res) => {
+            if (err) {
+                debug(err);
                 throw err;
-            });
+            }
+            if (res && self.id !== res.id) {
+                return respond(false);
+            }
+            return respond(true);
+        });
     }, 'The specified email address is already in use.');
 
 // Validate nick is not taken
 UserSchema.path('nick')
     .validate(function (value: string, respond: (res: boolean) => void): any {
         let self = this;
-        console.log(self);
-        return this
-            .constructor
-            .findOneAsync({
-                nick: value
-            })
-            .then(function (user: IUserModel) {
-                if (user) {
-                    if (self.id === user.id) {
-                        return respond(true);
-                    }
-                    return respond(false);
-                }
-                return respond(true);
-            })
-            .catch(function (err: any) {
+        UserModel.findOne({ nick: value }, (err, res) => {
+            if (err) {
+                debug(err);
                 throw err;
-            });
+            }
+            if (res && self.id !== res.id) {
+                return respond(false);
+            }
+            return respond(true);
+        });
     }, 'The specified nick is already in use.');
 
 let validatePresenceOf = function (value) {
@@ -182,12 +167,12 @@ UserSchema.pre('save', function (next: mongoose.HookNextFunction) {
     }
 
     // Make salt with a callback
-    this.makeSalt((saltErr, salt) => {
+    this.makeSalt(DEFAULT_SOLT_BYTE_SIZE, (saltErr, salt) => {
         if (saltErr) {
             next(saltErr);
         }
         this.salt = salt;
-        this.encryptPassword(this.password, (encryptErr, hashedPassword) => {
+        this.encryptPassword(this.password, (encryptErr: any, hashedPassword: string) => {
             if (encryptErr) {
                 next(encryptErr);
             }
@@ -213,7 +198,7 @@ UserSchema.methods = {
             return this.password === this.encryptPassword(password);
         }
 
-        this.encryptPassword(password, (err, pwdGen) => {
+        this.encryptPassword(password, (err: any, pwdGen: string) => {
             if (err) {
                 return callback(err, null);
             }
@@ -229,24 +214,11 @@ UserSchema.methods = {
     /**
      * Make salt
      *
-     * @param {number} byteSize Optional salt byte size, default to 16
-     * @param {(err: any, res: string) => void} [callback=null] callback
+     * @param {number} [byteSize=DEFAULT_SOLT_BYTE_SIZE] byteSize Optional salt byte size, default to 16
+     * @param {(err: any, res: string) => void} [callback=null]
      * @returns {(string | void)}
      */
-    makeSalt(byteSize: number, callback: (err: any, res: string) => void = null): string | void {
-        const DEFAULT_BYTE_SIZE = 16;
-
-        if (typeof arguments[0] === 'function') {
-            callback = arguments[0];
-            byteSize = DEFAULT_BYTE_SIZE;
-        } else if (typeof arguments[1] === 'function') {
-            callback = arguments[1];
-        }
-
-        if (!byteSize) {
-            byteSize = DEFAULT_BYTE_SIZE;
-        }
-
+    makeSalt(byteSize: number = DEFAULT_SOLT_BYTE_SIZE, callback: (err: any, res: string) => void = null): string | void {
         if (!callback) {
             return crypto
                 .randomBytes(byteSize)
