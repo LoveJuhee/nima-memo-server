@@ -24,35 +24,35 @@ describe('MongoManager Test', function () {
 
     it('connect & disconnect test', function (done: DoneFn) {
         function isConnected() {
-            console.log(`1. after connect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(manager.readyState)}`);
+            debug(`1. after connect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(manager.readyState)}`);
             expect(manager.isConnected).toBeTruthy();
 
-            console.log(`try disconnect`);
+            debug(`try disconnect`);
             manager.disconnect();
             setTimeout(isDisconnected, 100);
         }
         function isDisconnected() {
-            console.log(`1. after disconnect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(manager.readyState)}`);
+            debug(`1. after disconnect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(manager.readyState)}`);
             expect(manager.isConnected).not.toBeTruthy();
             done();
         }
-        console.log(`try connect`);
+        debug(`try connect`);
         manager.connect();
         setTimeout(isConnected, 100);
     });
 
     it('connect & disconnect promise test', function (done: DoneFn) {
-        console.log(`try connect`);
+        debug(`try connect`);
         manager.connect()
             .then(() => {
                 let state: number = manager.readyState;
-                console.log(`2. after connect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(state)}`);
+                debug(`2. after connect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(state)}`);
                 expect(manager.isConnected).toBeTruthy();
-                console.log(`try disconnect`);
+                debug(`try disconnect`);
                 return manager.disconnect();
             }).then(() => {
                 let state: number = manager.readyState;
-                console.log(`2. after disconnect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(state)}`);
+                debug(`2. after disconnect(), manager.readyState: ${manager.readyState}, ${mongoUtil.toStringForReadyState(state)}`);
                 expect(manager.isConnected).not.toBeTruthy();
             }).catch(otherUtil.print)
             .then(done);
