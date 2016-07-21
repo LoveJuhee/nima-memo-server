@@ -87,6 +87,10 @@ export function writeAuthInfo(argument: any): void {
 
 /**
  * Checks if the user role meets the minimum requirements of the route
+ * 
+ * @export
+ * @param {*} roleRequired
+ * @returns
  */
 export function hasRole(roleRequired: any) {
     if (!roleRequired) {
@@ -108,8 +112,13 @@ export function hasRole(roleRequired: any) {
 
 /**
  * Returns a jwt token signed by the app secret
+ * 
+ * @export
+ * @param {string} id
+ * @param {(string | String)} role
+ * @returns {string}
  */
-export function signToken(id: string, role: string): string {
+export function signToken(id: string, role: string | String): string {
     let payload = {
         _id: id,
         role: role
@@ -121,6 +130,11 @@ export function signToken(id: string, role: string): string {
 
 /**
  * Set token cookie directly for oAuth strategies
+ * 
+ * @export
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
  */
 export function setTokenCookie(req: Request, res: Response) {
     if (!req.user) {
