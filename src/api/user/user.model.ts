@@ -29,9 +29,11 @@ export interface IUser {
 };
 
 export interface IUserModel extends IUser, mongoose.Document {
-    authenticate(password: string, callback: (err: any, res: boolean) => void): boolean | void;
-    makeSalt(byteSize: number, callback: (err: any, res: string) => void): string | void;
-    encryptPassword(password: string, callback: (err: any, res: string) => void): string | void;
+    profile: {};
+    token: {};
+    authenticate(password: string, callback?: (err: any, res: boolean) => void): boolean | void;
+    makeSalt(byteSize: number, callback?: (err: any, res: string) => void): string | void;
+    encryptPassword(password: string, callback?: (err: any, res: string) => void): string | void;
 };
 
 /**
