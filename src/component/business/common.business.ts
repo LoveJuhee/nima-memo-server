@@ -241,7 +241,7 @@ export class CommonBusiness<T extends mongoose.Document> {
      * @returns {Promise<T>}
      */
     findOne(cond: any = {}, filter: string = '', callback: (error: any, result: any) => void = null): Promise<T> {
-        return this.findOne(cond, filter)
+        return this._findOne(cond, filter)
             .then(r => {
                 return Promise.resolve(r);
             })
