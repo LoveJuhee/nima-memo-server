@@ -212,7 +212,7 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
     }
 
     /**
-     * 객체 검색 (email 또는 nick 값이 있어야 한다.)
+     * 객체 검색 (email 또는 nick 또는 _id 값이 있어야 한다.)
      * 
      * @param {*} [cond={}]
      * @param {string} [filter='']
@@ -220,8 +220,8 @@ export class UserBusiness extends CommonBusiness<IUserModel> {
      * @returns {Promise<IUserModel>}
      */
     findOne(cond: any = {}, filter: string = '', callback: (error: any, result: any) => void = null): Promise<IUserModel> {
-        if (!cond.email && !cond.nick) {
-            return Promise.reject('email and nick value is empty.');
+        if (!cond.email && !cond.nick && !cond._id) {
+            return Promise.reject('email, nick, _id is empty.');
         }
         return super.findOne(cond, filter, callback);
     }
