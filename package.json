@@ -25,6 +25,7 @@
     "express-session": "^1.14.0",
     "express-unless": "^0.3.0",
     "jsonwebtoken": "^7.1.6",
+    "lodash": "^4.13.1",
     "mongoose": "^4.5.3",
     "morgan": "^1.7.0",
     "passport": "^0.3.2",
