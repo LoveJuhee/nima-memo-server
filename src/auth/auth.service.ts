@@ -18,9 +18,9 @@ var validateJwt = expressJwt({
  * Otherwise returns 403
  * 
  * @export
- * @returns {void}
+ * @returns {*}
  */
-export function isAuthenticated(): void {
+export function isAuthenticated(): any {
     return compose()
         // Validate jwt
         .use(function (req: Request, res: Response, next: NextFunction) {
