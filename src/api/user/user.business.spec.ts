@@ -27,7 +27,7 @@ const USER_PASSWORD_UPDATE = {
 const USER_NICK_DUPLICATE = {
     email: 'other@gmail.com',
     password: ACCOUNT_MOCK.password,
-    nick: USER_NICK_UPDATE.nick,
+    nick: USER_PASSWORD_UPDATE.nick,
 };
 
 describe('UserBusiness TDD', function () {
@@ -47,27 +47,8 @@ describe('UserBusiness TDD', function () {
         }, 500);
     });
 
-    it('계정이 없는 유저 생성 시도', function (done: DoneFn) {
-        debug(`계정이 없는 유저 생성 시도`);
-        factory.create({ email: 'e', nick: 'nick' })
-            // 생성 성공 (오류)
-            .then(r => {
-                debug(r);
-                expect(r).toBeNull();
-                return Promise.resolve();
-            })
-            // 생성 실패 (목표)
-            .catch(err => {
-                debug(err);
-                expect(err).not.toBeNull();
-                return Promise.resolve();
-            })
-            .then(done)
-            .catch(done);
-    });
-
-    it('계정과 유저 생성 시도', function (done: DoneFn) {
-        debug(`계정과 유저 생성 시도`);
+    it('유저 생성 시도', function (done: DoneFn) {
+        debug(`유저 생성 시도`);
         factory.create(ACCOUNT_MOCK)
             // 생성 성공 (목표)
             .then(r => {
