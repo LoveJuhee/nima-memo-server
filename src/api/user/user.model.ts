@@ -28,7 +28,11 @@ export interface IUser {
     github: {};
 };
 
-export interface IUserModel extends IUser, mongoose.Document { };
+export interface IUserModel extends IUser, mongoose.Document {
+    authenticate(password: string, callback: (err: any, res: boolean) => void): boolean | void;
+    makeSalt(byteSize: number, callback: (err: any, res: string) => void): string | void;
+    encryptPassword(password: string, callback: (err: any, res: string) => void): string | void;
+};
 
 /**
  * User 스키마

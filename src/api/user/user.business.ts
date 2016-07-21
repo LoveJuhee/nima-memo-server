@@ -2,7 +2,6 @@
 
 import {CommonBusiness} from '../../component/business/common.business';
 import User, {IUserModel} from './user.model';
-// import {IUserModel} from './user.schema';
 
 import AccountFactory from '../account/account.business';
 
