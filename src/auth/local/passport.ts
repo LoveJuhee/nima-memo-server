@@ -57,35 +57,3 @@ export class LocalPassport {
         return 'LocalPassport class';
     }
 }
-
-// function localAuthenticate(factory: UserBusiness,
-//     email: string = '', password: string = '',
-//     done: (err: any, res?: boolean | IUserModel, info?: any) => void): void {
-
-//     factory.findByEmail(email.toLowerCase())
-//         .then(user => {
-//             if (!user) {
-//                 return done(null, false, { message: 'This email is not registered.' });
-//             }
-//             user.authenticate(password, function (authError: any, authenticated: boolean): void {
-//                 if (authError) {
-//                     return done(authError);
-//                 }
-//                 if (!authenticated) {
-//                     return done(null, false, { message: 'This password is not correct.' });
-//                 } else {
-//                     return done(null, user);
-//                 }
-//             });
-//         })
-//         .catch(err => done(err));
-// }
-
-// export function setup(factory: UserBusiness, config: Environment) {
-//     passport.use(new LocalStrategy({
-//         usernameField: 'email',
-//         passwordField: 'password' // this is the virtual field on the model
-//     }, function (email: string, password: string, done: (err: any, res?: boolean | IUserModel, info?: any) => void): void {
-//         return localAuthenticate(factory, email, password, done);
-//     }));
-// }
