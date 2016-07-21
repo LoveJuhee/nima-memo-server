@@ -7,6 +7,7 @@ import * as route from '../config/route';
 import {ServerIndex} from '../api/server/index';
 import {AccountIndex} from '../api/account/index';
 import {UserIndex} from '../api/user/index';
+import {AuthRoute} from '../auth';
 
 /** passport 처리를 위한 객체 */
 import {setupStrategies} from './passport-preset';
@@ -89,6 +90,7 @@ export class ExpressPreset {
     this.app.use(route.ROUTE_URI_ACCOUNTS, new AccountIndex().routes);
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
+    this.app.use(route.ROUTE_URI_AUTH, new AuthRoute().routes);
   }
 
   /**
