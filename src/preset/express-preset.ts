@@ -4,12 +4,9 @@ import express = require('express');
 
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
-import {ServerIndex} from '../api/server/server-index';
-import {AccountIndex} from '../api/account/account-index';
-import {UserIndex} from '../api/user/user-index';
-
-/** passport 처리를 위한 객체 */
-import {setupStrategies} from './passport-preset';
+import {ServerIndex} from '../api/server/index';
+import {UserIndex} from '../api/user/index';
+import {AuthRoute} from '../auth';
 
 /** 전처리를 위한 객체 */
 import * as bodyParser from 'body-parser';
@@ -75,9 +72,6 @@ export class ExpressPreset {
     this.app.use(passport.initialize());
     this.app.use(passport.session()); // persistent login sessions
     this.app.use(flash()); // use connect-flash for flash messages stored in session
-
-    // passport local 설정
-    setupStrategies(passport);
   }
 
   /**
@@ -86,9 +80,9 @@ export class ExpressPreset {
    * @private
    */
   private routeSetting(): void {
-    this.app.use(route.ROUTE_URI_ACCOUNTS, new AccountIndex().routes);
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
+    this.app.use(route.ROUTE_URI_AUTH, new AuthRoute().routes);
   }
 
   /**

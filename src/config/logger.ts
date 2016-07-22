@@ -3,11 +3,14 @@ export const DEBUG_ROUTE_SERVERS: string = 'route:servers';
 export const DEBUG_ROUTE_ACCOUNTS: string = 'route:accounts';
 export const DEBUG_ROUTE_USERS: string = 'route:users';
 
+export const DEBUG_AUTH_LOCAL: string = 'auth:local';
+
 export const DEBUG_MONGO_MANAGER: string = 'app:db:manager';
 export const DEBUG_PRESET_PASSPORT: string = 'preset:passport';
+export const DEBUG_CONFIG_ENVIRONMENT: string = 'config:environment';
 
-export const DEBUG_SCHEMA_ACCOUNT: string = 'schema:account';
-export const DEBUG_SCHEMA_USER: string = 'schema:user';
+export const DEBUG_MODEL_ACCOUNT: string = 'model:account';
+export const DEBUG_MODEL_USER: string = 'model:user';
 
 export const DEBUG_BUSINESS_COMMON: string = 'business:common';
 export const DEBUG_BUSINESS_ACCOUNT: string = 'business:account';
@@ -21,4 +24,5 @@ export const DEBUG_UTIL_PASSPORT: string = 'util:passport';
 export const DEBUG_TDD_PRESET_MONGO_MANAGER: string = 'tdd:preset:mongo-manager';
 export const DEBUG_TDD_BUSINESS_USER: string = 'tdd:business:user';
 export const DEBUG_TDD_BUSINESS_ACCOUNT: string = 'tdd:business:account';
+export const DEBUG_TDD_AUTH_LOCAL: string = 'tdd:auth:local';
 /* end-test-code */

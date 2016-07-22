@@ -41,10 +41,13 @@ export class MongoManager {
     public connect(): Promise<Object> {
         return new Promise((resolve: any, reject: any) => {
             // the url correspond to the environment we are in
-            this.app.set('dbUrl', ENVIRONMENT.db[this.app.settings.env]);
+            this.app.set('dbUrl', ENVIRONMENT.mongo.uri);
             // we're going to use mongoose to interact with the mongodb
-            this._mongoose = mongoose.connect(this.app.get('dbUrl'), function (err: any) {
+            let uri: string = this.app.get('dbUrl');
+            this._mongoose = mongoose.connect(uri, function (err: any) {
                 if (err) {
+                    debug(`mongoose.connect(${uri}) failed`);
+                    debug(err);
                     reject(err);
                 }
                 resolve();

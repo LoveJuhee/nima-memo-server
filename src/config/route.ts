@@ -2,3 +2,4 @@
 export const ROUTE_URI_ACCOUNTS: string = '/';
 export const ROUTE_URI_SERVERS: string = '/api/servers';
 export const ROUTE_URI_USERS: string = '/api/users';
+export const ROUTE_URI_AUTH: string = '/auth';

@@ -1,7 +1,8 @@
 'use strict';
+
 import * as bcrypt from 'bcrypt-nodejs';
 
-import {DEBUG_UTIL_PASSPORT} from '../config/logger';
+import {DEBUG_UTIL_PASSPORT} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_UTIL_PASSPORT);
 
@@ -27,11 +28,11 @@ class PassportUtil {
      * 암호 동일 여부 확인
      * 
      * @param {string} password  스트링 문자열
-     * @param {string} hash 암호화 처리 문자열
+     * @param {(string | String)} hash 암호화 처리 문자열
      * @returns {boolean}
      */
-    isValidPassword(password: string, hash: string): boolean {
-        return bcrypt.compareSync(password, hash);
+    isValidPassword(password: string, hash: string | String): boolean {
+        return bcrypt.compareSync(password, hash + '');
     };
 
 }

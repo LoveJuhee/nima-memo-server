@@ -158,16 +158,46 @@ export class CommonBusiness<T extends mongoose.Document> {
     /**
      * 모든 객체 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
+     * @param {string} [filter='']
      * @param {(error: any, result: any) => void} [callback=null]
      * @returns {Promise<T[]>}
      */
-    findAll(callback: (error: any, result: any) => void = null): Promise<T[]> {
-        if (callback) {
-            this._model.find({}, callback);
-            return;
-        }
+    findAll(cond: any = {}, filter: string = '', callback: (error: any, result: any) => void = null): Promise<T[]> {
+        return this._findAll(cond, filter)
+            .then(r => {
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 실제 모든 객체 검색을 수행하는 함수
+     * 
+     * @private
+     * @param {*} [cond={}]
+     * @param {string} [filter='']
+     * @returns {Promise<T[]>}
+     */
+    private _findAll(cond: any = {}, filter: string = ''): Promise<T[]> {
         return new Promise((resolve: any, reject: any) => {
-            this._model.find({}, (err: any, res: T[]) => {
+            if (filter) {
+                this._model.find(cond, filter, (err: any, res: T[]) => {
+                    if (err) {
+                        debug(`findAll reject()`);
+                        reject(err);
+                    }
+                    debug(`findAll resolve()`);
+                    resolve(res);
+                });
+                return;
+            }
+            this._model.find(cond, (err: any, res: T[]) => {
                 if (err) {
                     debug(`findAll reject()`);
                     reject(err);
@@ -204,13 +234,47 @@ export class CommonBusiness<T extends mongoose.Document> {
 
     /**
      * findOne
+     * 
+     * @param {*} [cond={}]
+     * @param {string} [filter='']
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<T>}
      */
-    public findOne(cond: any, callback: (error: any, result: any) => void = null): Promise<T> {
-        if (callback) {
-            this._model.findOne(cond, callback);
-            return;
-        }
+    findOne(cond: any = {}, filter: string = '', callback: (error: any, result: any) => void = null): Promise<T> {
+        return this._findOne(cond, filter)
+            .then(r => {
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err, null);
+                    return;
+                }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 실제 모든 객체 검색을 수행하는 함수
+     * 
+     * @private
+     * @param {*} [cond={}]
+     * @param {string} [filter='']
+     * @returns {Promise<T>}
+     */
+    private _findOne(cond: any = {}, filter: string = ''): Promise<T> {
         return new Promise((resolve: any, reject: any) => {
+            if (filter) {
+                this._model.findOne(cond, filter, (err: any, res: T) => {
+                    if (err) {
+                        debug(`findOne reject()`);
+                        reject(err);
+                    }
+                    debug(`findOne resolve()`);
+                    resolve(res);
+                });
+                return;
+            }
             this._model.findOne(cond, (err: any, res: T) => {
                 if (err) {
                     debug(`findOne reject()`);
@@ -241,6 +305,30 @@ export class CommonBusiness<T extends mongoose.Document> {
                     reject(err);
                 }
                 debug(`findById resolve()`);
+                resolve(res);
+            });
+        });
+    }
+
+    /**
+     * 삭제 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
+     * 
+     * @param {string} _id
+     * @param {(error: any, result: any) => void} [callback=null]
+     * @returns {Promise<T>}
+     */
+    findByIdAndRemove(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
+        if (callback) {
+            this._model.findByIdAndRemove(_id, callback);
+            return;
+        }
+        return new Promise((resolve: any, reject: any) => {
+            this._model.findByIdAndRemove(_id, (err: any, res: T) => {
+                if (err) {
+                    debug(`findByIdAndRemove reject()`);
+                    reject(err);
+                }
+                debug(`findByIdAndRemove resolve()`);
                 resolve(res);
             });
         });
