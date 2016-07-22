@@ -31,6 +31,22 @@ export function hasRole(roleRequired: string): (req: Request, res: Response, nex
 /* --------------------------------------
  * common controller
  * ----------------------------------- */
+
+/**
+ * 값 오류
+ * 
+ * @param {Response} res
+ * @param {number} [statusCode=422]
+ * @returns {Function}
+ */
+export function validationError(res: Response, statusCode: number = 422): (err: any) => any {
+    return function (err: any) {
+        res
+            .status(statusCode)
+            .json(err);
+    };
+}
+
 /**
  * 결과값 응답
  * 
