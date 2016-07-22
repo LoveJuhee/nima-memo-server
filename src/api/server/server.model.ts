@@ -31,7 +31,8 @@ export let ServerSchema = new mongoose.Schema({
 
 ServerSchema.path('name')
     .validate(function (name: String): boolean {
-        return (!name);
+        debug(`ServerSchema.name validate check (${name})`);
+        return !(!name);
     }, 'name cannot be blank');
 
 ServerSchema.path('ip')
