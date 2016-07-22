@@ -1,5 +1,16 @@
 'use strict';
 
+import {Request, Response} from 'express';
+
+import config from '../../config/environment';
+import {IServerModel} from './server.model';
+import ServerBusiness from './server.business';
+import * as cmmn from '../cmmn';
+
+import requestUtil from '../../component/util/request.util';
+import otherUtil from '../../component/util/other.util';
+const nodeUtil = require('util');
+
 /* test-code */
 import {IS_DEBUG_ROUTE_SERVERS} from '../../debug/flag';
 /* end-test-code */
@@ -7,12 +18,6 @@ import {IS_DEBUG_ROUTE_SERVERS} from '../../debug/flag';
 import {DEBUG_ROUTE_SERVERS} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_SERVERS);
-
-import requestUtil from '../../component/util/request.util';
-import otherUtil from '../../component/util/other.util';
-const nodeUtil = require('util');
-
-import {Request, Response} from 'express';
 
 /**
  * rest server 에 대한 처리 클래스
@@ -42,6 +47,27 @@ export class ServerController {
     }
 
     /**
+     * post 대응 로직
+     * 
+     * @param {Request} req
+     * @param {Response} res
+     */
+    create(req: Request, res: Response): void {
+        let server: IServerModel = req.body || {};
+
+        debug(`try create`);
+        debug(server);
+        ServerBusiness
+            .create(server)
+            .then(r => {
+                debug(`create succeed.`);
+                debug(r);
+                res.send(r);
+            })
+            .catch(cmmn.validationError(res));
+    }
+
+    /**
      * get:id 대응 로직
      * 
      * @param {Request} req
@@ -54,18 +80,6 @@ export class ServerController {
             .then(r => {
                 res.send(`show ${nodeUtil.inspect(r)}`);
             });
-    }
-
-    /**
-     * post 대응 로직
-     * 
-     * @param {Request} req
-     * @param {Response} res
-     */
-    create(req: Request, res: Response): void {
-        let body = req.body;
-        debug(`create ${nodeUtil.inspect(body)}`);
-        res.send(`create ${nodeUtil.inspect(body)}`);
     }
 
     /**
@@ -87,9 +101,16 @@ export class ServerController {
      * @param {Response} res
      */
     destroy(req: Request, res: Response): void {
-        let params = requestUtil.toEncodeObject(req.params);
-        debug(`destroy ${nodeUtil.inspect(params)}`);
-        res.send('destroy');
+        debug(`try destroy`);
+        debug(req.params);
+        ServerBusiness
+            .findByIdAndRemove(req.params.id)
+            .then(() => {
+                res
+                    .status(204)
+                    .end();
+            })
+            .catch(cmmn.handleError(res));
     }
 
     /**
