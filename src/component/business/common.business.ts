@@ -46,7 +46,9 @@ export class CommonBusiness<T extends mongoose.Document> {
             this._model.create(item, (err: any, res: T) => {
                 if (err) {
                     debug(`create reject()`);
+                    debug(err);
                     reject(err);
+                    return;
                 }
                 debug(`create resolve()`);
                 resolve(res);
@@ -72,6 +74,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`update reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`update resolve()`);
                 console.log(affectedRows);
@@ -98,6 +101,7 @@ export class CommonBusiness<T extends mongoose.Document> {
             this._model.findOneAndUpdate(cond, update, (err, res) => {
                 if (err) {
                     reject(err);
+                    return;
                 }
                 resolve(res);
             });
@@ -122,6 +126,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                     debug(`findOneAndRemove failed`);
                     debug(err.errmsg);
                     reject(err);
+                    return;
                 }
                 debug(`findOneAndRemove succeed`);
                 debug(res);
@@ -148,6 +153,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`delete reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`delete resolve()`);
                 resolve(null);
@@ -191,6 +197,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                     if (err) {
                         debug(`findAll reject()`);
                         reject(err);
+                        return;
                     }
                     debug(`findAll resolve()`);
                     resolve(res);
@@ -201,6 +208,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`findAll reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`findAll resolve()`);
                 resolve(res);
@@ -225,6 +233,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`find reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`find resolve()`);
                 resolve(res);
@@ -269,6 +278,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                     if (err) {
                         debug(`findOne reject()`);
                         reject(err);
+                        return;
                     }
                     debug(`findOne resolve()`);
                     resolve(res);
@@ -279,6 +289,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`findOne reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`findOne resolve()`);
                 resolve(res);
@@ -303,6 +314,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`findById reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`findById resolve()`);
                 resolve(res);
@@ -327,6 +339,7 @@ export class CommonBusiness<T extends mongoose.Document> {
                 if (err) {
                     debug(`findByIdAndRemove reject()`);
                     reject(err);
+                    return;
                 }
                 debug(`findByIdAndRemove resolve()`);
                 resolve(res);
