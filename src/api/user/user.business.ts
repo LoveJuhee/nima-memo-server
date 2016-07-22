@@ -3,8 +3,6 @@
 import {CommonBusiness} from '../../component/business/common.business';
 import User, {IUserModel} from './user.model';
 
-import AccountFactory from '../account/account.business';
-
 import {DEBUG_BUSINESS_USER} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_USER);
