@@ -3,7 +3,14 @@ import {Request, Response, NextFunction} from 'express';
 
 import config from '../config/environment';
 
-export function hasRole(roleRequired: string): Function {
+/**
+ * 계정 권한이 있는지 확인
+ * 
+ * @export
+ * @param {string} roleRequired
+ * @returns {(req: Request, res: Response, next: NextFunction) => void}
+ */
+export function hasRole(roleRequired: string): (req: Request, res: Response, next: NextFunction) => void {
     if (!roleRequired) {
         throw new Error('Required role needs to be set');
     }
@@ -24,7 +31,15 @@ export function hasRole(roleRequired: string): Function {
 /* --------------------------------------
  * common controller
  * ----------------------------------- */
-export function respondWithResult(res: Response, statusCode = 200) {
+/**
+ * 결과값 응답
+ * 
+ * @export
+ * @param {Response} res
+ * @param {number} [statusCode=200]
+ * @returns {(entity: any) => any}
+ */
+export function respondWithResult(res: Response, statusCode: number = 200): (entity: any) => any {
     return function (entity: any) {
         if (entity) {
             res.status(statusCode)
@@ -34,7 +49,15 @@ export function respondWithResult(res: Response, statusCode = 200) {
     };
 }
 
-export function respondWithCount(res: Response, statusCode = 200) {
+/**
+ * 카운트 반환
+ * 
+ * @export
+ * @param {Response} res
+ * @param {number} [statusCode=200]
+ * @returns {(entity: any) => any}
+ */
+export function respondWithCount(res: Response, statusCode: number = 200): (entity: any) => any {
     return function (entity: any) {
         if (entity) {
             res.status(statusCode)
@@ -46,7 +69,14 @@ export function respondWithCount(res: Response, statusCode = 200) {
     };
 }
 
-export function handleEntityNotFound(res: Response) {
+/**
+ * 검색 실패
+ * 
+ * @export
+ * @param {Response} res
+ * @returns {(entity: any) => any}
+ */
+export function handleEntityNotFound(res: Response): (entity: any) => any {
     return function (entity: any) {
         if (!entity) {
             res.status(404)
@@ -57,7 +87,15 @@ export function handleEntityNotFound(res: Response) {
     };
 }
 
-export function handleError(res: Response, statusCode = 500) {
+/**
+ * DB 처리 실패
+ * 
+ * @export
+ * @param {Response} res
+ * @param {number} [statusCode=500]
+ * @returns {(err: any) => any}
+ */
+export function handleError(res: Response, statusCode: number = 500): (err: any) => any {
     return function (err: any) {
         res.status(statusCode)
             .send(err);
