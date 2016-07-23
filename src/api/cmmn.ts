@@ -17,13 +17,17 @@ export function hasRole(roleRequired: string): (req: Request, res: Response, nex
 
     return function (req: Request, res: Response, next: NextFunction): void {
         if (!req.user) {
-            return res.status(401).end();
+            return res
+                .status(401)
+                .end();
         }
 
         if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
             next();
         } else {
-            res.status(403).send('Forbidden');
+            res
+                .status(403)
+                .send('Forbidden');
         }
     }
 }
@@ -39,11 +43,12 @@ export function hasRole(roleRequired: string): (req: Request, res: Response, nex
  * @param {number} [statusCode=422]
  * @returns {Function}
  */
-export function validationError(res: Response, statusCode: number = 422): (err: any) => any {
+export function validationError(res: Response, statusCode: number = 422): (err?: any) => any {
     return function (err: any) {
         res
             .status(statusCode)
-            .json(err);
+            .json(err)
+            .end();
     };
 }
 
@@ -55,11 +60,17 @@ export function validationError(res: Response, statusCode: number = 422): (err: 
  * @param {number} [statusCode=200]
  * @returns {(entity: any) => any}
  */
-export function respondWithResult(res: Response, statusCode: number = 200): (entity: any) => any {
+export function respondWithResult(res: Response, statusCode: number = 200): (entity?: any) => any {
     return function (entity: any) {
         if (entity) {
-            res.status(statusCode)
-                .json(entity);
+            res
+                .status(statusCode)
+                .json(entity)
+                .end();
+        } else {
+            res
+                .status(statusCode)
+                .end();
         }
         return entity;
     };
@@ -73,13 +84,15 @@ export function respondWithResult(res: Response, statusCode: number = 200): (ent
  * @param {number} [statusCode=200]
  * @returns {(entity: any) => any}
  */
-export function respondWithCount(res: Response, statusCode: number = 200): (entity: any) => any {
+export function respondWithCount(res: Response, statusCode: number = 200): (entity?: any) => any {
     return function (entity: any) {
         if (entity) {
-            res.status(statusCode)
+            res
+                .status(statusCode)
                 .json({
                     count: entity
-                });
+                })
+                .end();
         }
         return entity;
     };
@@ -92,12 +105,12 @@ export function respondWithCount(res: Response, statusCode: number = 200): (enti
  * @param {Response} res
  * @returns {(entity: any) => any}
  */
-export function handleEntityNotFound(res: Response): (entity: any) => any {
+export function handleEntityNotFound(res: Response): (entity?: any) => any {
     return function (entity: any) {
         if (!entity) {
-            res.status(404)
+            res
+                .status(404)
                 .end();
-            return null;
         }
         return entity;
     };
@@ -113,7 +126,8 @@ export function handleEntityNotFound(res: Response): (entity: any) => any {
  */
 export function handleError(res: Response, statusCode: number = 500): (err: any) => any {
     return function (err: any) {
-        res.status(statusCode)
+        res
+            .status(statusCode)
             .send(err);
     };
 }

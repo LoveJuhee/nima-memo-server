@@ -71,8 +71,10 @@ export class ServerController {
         ServerBusiness
             .create(server)
             .then(r => {
-                debug(`create succeed.`);
-                debug(r);
+                if (!r) {
+                    cmmn.handleEntityNotFound(res);
+                    return;
+                }
                 res.send(r);
             })
             .catch(cmmn.validationError(res));
@@ -91,7 +93,13 @@ export class ServerController {
 
         ServerBusiness
             .findById(id, '-__v')
-            .then(cmmn.respondWithResult(res))
+            .then(r => {
+                if (!r) {
+                    cmmn.handleEntityNotFound(res);
+                    return;
+                }
+                cmmn.respondWithResult(res)(r);
+            })
             .catch(cmmn.handleEntityNotFound(res));
     }
 
@@ -110,7 +118,13 @@ export class ServerController {
 
         ServerBusiness
             .updateById(id, body)
-            .then(cmmn.respondWithResult(res))
+            .then(r => {
+                if (!r) {
+                    cmmn.handleEntityNotFound(res);
+                    return;
+                }
+                cmmn.respondWithResult(res)();
+            })
             .catch(cmmn.handleError(res));
     }
 
@@ -127,10 +141,13 @@ export class ServerController {
 
         ServerBusiness
             .deleteById(req.params.id)
-            .then(() => {
-                res
-                    .status(204)
-                    .end();
+            .then(r => {
+                if (!r) {
+                    debug(`deleteById result is null`);
+                    cmmn.handleEntityNotFound(res)();
+                    return;
+                }
+                cmmn.respondWithResult(res, 204)();
             })
             .catch(cmmn.handleError(res));
     }
