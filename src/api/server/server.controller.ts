@@ -41,9 +41,20 @@ export class ServerController {
      * @param {Response} res
      */
     index(req: Request, res: Response): void {
-        let params = req.params;
-        debug(`index ${nodeUtil.inspect(params)}`);
-        res.send('index');
+        let params = req.params || {};
+        debug(`try index`);
+        debug(params);
+
+        ServerBusiness
+            .findAll(params, '-__v')
+            .then(r => {
+                if (!r) {
+                    cmmn.handleEntityNotFound(res);
+                    return;
+                }
+                cmmn.respondWithResult(res)(r);
+            })
+            .catch(cmmn.handleError(res));
     }
 
     /**
@@ -54,9 +65,9 @@ export class ServerController {
      */
     create(req: Request, res: Response): void {
         let server: IServerModel = req.body || {};
-
         debug(`try create`);
         debug(server);
+
         ServerBusiness
             .create(server)
             .then(r => {
@@ -74,12 +85,14 @@ export class ServerController {
      * @param {Response} res
      */
     show(req: Request, res: Response): void {
-        debug(`params: ${nodeUtil.inspect(req.params)}`);
-        requestUtil.fromRequestParams(req.params)
-            .then(otherUtil.print)
-            .then(r => {
-                res.send(`show ${nodeUtil.inspect(r)}`);
-            });
+        let id: string = req.params.id;
+        debug(`try show`);
+        debug(id);
+
+        ServerBusiness
+            .findById(id, '-__v')
+            .then(cmmn.respondWithResult(res))
+            .catch(cmmn.handleEntityNotFound(res));
     }
 
     /**
@@ -89,9 +102,16 @@ export class ServerController {
      * @param {Response} res
      */
     update(req: Request, res: Response): void {
-        let params = requestUtil.toEncodeObject(req.params);
-        debug(`update ${nodeUtil.inspect(params)}`);
-        res.send('update');
+        let id: string = req.params.id;
+        let body: any = req.body;
+        debug(`try update`);
+        debug(id);
+        debug(body);
+
+        ServerBusiness
+            .updateById(id, body)
+            .then(cmmn.respondWithResult(res))
+            .catch(cmmn.handleError(res));
     }
 
     /**
@@ -101,10 +121,12 @@ export class ServerController {
      * @param {Response} res
      */
     destroy(req: Request, res: Response): void {
+        let id: string = req.params.id;
         debug(`try destroy`);
-        debug(req.params);
+        debug(id);
+
         ServerBusiness
-            .findByIdAndRemove(req.params.id)
+            .deleteById(req.params.id)
             .then(() => {
                 res
                     .status(204)
