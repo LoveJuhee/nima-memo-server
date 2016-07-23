@@ -1,11 +1,10 @@
 'use strict';
 
-import mongoose = require('mongoose');
+import * as mongoose from 'mongoose';
 import {Promise} from 'es6-promise';
 
 import {DEBUG_BUSINESS_COMMON} from '../../config/logger';
 import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_COMMON);
 
 /**
  * 공통 비지니스 클래스
@@ -15,6 +14,7 @@ let debug: debug.IDebugger = debugClass(DEBUG_BUSINESS_COMMON);
  * @template T
  */
 export class CommonBusiness<T extends mongoose.Document> {
+    private _debugger: debug.IDebugger;
     private _model: mongoose.Model<T>;
 
     /**
@@ -22,8 +22,113 @@ export class CommonBusiness<T extends mongoose.Document> {
      * 
      * @param {mongoose.Model<T>} schemaModel
      */
-    constructor(schemaModel: mongoose.Model<T>) {
+    constructor(schemaModel: mongoose.Model<T>, debugKey: string = DEBUG_BUSINESS_COMMON) {
         this._model = schemaModel;
+        this._debugger = debugClass(debugKey);
+    }
+
+    /**
+     * 디버그 객체
+     * 
+     * @readonly
+     * @type {debug.IDebugger}
+     */
+    get debugger(): debug.IDebugger {
+        return this._debugger;
+    }
+
+    /**
+     * 값 문제 반환
+     * 
+     * @protected
+     * @param {*} [callback=null]
+     * @returns {Promise<any>}
+     */
+    protected returnInvalidParams(callback: any = null): Promise<any> {
+        let err = new Error(`invalid params`);
+        if (callback) {
+            callback(err);
+            return;
+        }
+        return Promise.reject(err);
+    }
+
+    /**
+     * 한개 작업에 대한 리턴 처리
+     * 
+     * @protected
+     * @param {Promise<T>} promise
+     * @param {(error: any, result?: T) => void} [callback=null]
+     * @returns {Promise<T>}
+     */
+    protected returnOne(promise: Promise<T>, callback: (error: any, result?: T) => void = null): Promise<T> {
+        return promise
+            .then(r => {
+                if (callback) {
+                    callback(null, r);
+                    return;
+                }
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err);
+                    return;
+                }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 다수 작업에 대한 리턴 처리
+     * 
+     * @protected
+     * @param {Promise<T[]>} promise
+     * @param {(error: any, result?: T[]) => void} [callback=null]
+     * @returns {Promise<T[]>}
+     */
+    protected returnMulti(promise: Promise<T[]>, callback: (error: any, result?: T[]) => void = null): Promise<T[]> {
+        return promise
+            .then(r => {
+                if (callback) {
+                    callback(null, r);
+                    return;
+                }
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err);
+                    return;
+                }
+                return Promise.reject(err);
+            });
+    }
+
+    /**
+     * 갱신에 대한 처리 결과 반환
+     * 
+     * @protected
+     * @param {Promise<T[]>} promise
+     * @param {(err: any, affectedRows?: number, raw?: any) => void} [callback=null]
+     * @returns {Promise<T[]>}
+     */
+    protected returnUpdate(promise: Promise<T[]>, callback: (err: any, affectedRows?: number, raw?: any) => void = null): Promise<T[]> {
+        return promise
+            .then(r => {
+                if (callback) {
+                    callback(null, r.length, r);
+                    return;
+                }
+                return Promise.resolve(r);
+            })
+            .catch(err => {
+                if (callback) {
+                    callback(err);
+                    return;
+                }
+                return Promise.reject(err);
+            });
     }
 
     /**
@@ -34,23 +139,30 @@ export class CommonBusiness<T extends mongoose.Document> {
      * @returns {Promise<T>}
      */
     create(item: any, callback: (error: any, result: T) => void = null): Promise<T> {
-        if (callback) {
-            debug(`use callback`);
-            debug(item);
-            this._model.create(item, callback);
-            return;
+        return this.returnOne(this._create(item), callback);
+    }
+
+    /**
+     * 실제 생성을 하는 로직 수행
+     * 
+     * @private
+     * @param {*} item
+     * @returns {Promise<T>}
+     */
+    private _create(item: any): Promise<T> {
+        if (!item) {
+            return this.returnInvalidParams();
         }
-        debug(`create return new Promise()`);
-        debug(item);
         return new Promise((resolve: any, reject: any) => {
             this._model.create(item, (err: any, res: T) => {
                 if (err) {
-                    debug(`create reject()`);
-                    debug(err);
+                    this.debugger(`create failed`);
+                    this.debugger(err);
                     reject(err);
                     return;
                 }
-                debug(`create resolve()`);
+                this.debugger(`create succeed`);
+                this.debugger(res);
                 resolve(res);
             });
         });
@@ -64,22 +176,34 @@ export class CommonBusiness<T extends mongoose.Document> {
      * @param {(err: any, affectedRows: number, raw: any) => void} [callback=null]
      * @returns {Promise<number>}
      */
-    update(_id: mongoose.Types.ObjectId, item: T, callback: (err: any, affectedRows: number, raw: any) => void = null): Promise<any> {
-        if (callback) {
-            this._model.update({ _id: _id }, item, callback);
-            return;
+    update(cond: any, item: T, callback: (err: any, affectedRows: number, raw: any) => void = null): Promise<T[]> {
+        return this.returnUpdate(this._update(cond, item), callback);
+    }
+
+    /**
+     * 갱신
+     * 
+     * @private
+     * @param {*} cond
+     * @param {T} update
+     * @returns {Promise<T[]>}
+     */
+    private _update(cond: any, update: T): Promise<T[]> {
+        if (!cond || !update) {
+            return this.returnInvalidParams();
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.update({ _id: _id }, item, (err: any, affectedRows: number, raw: any) => {
+            this._model.update(cond, update, (err: any, affectedRows: number, raw: any) => {
                 if (err) {
-                    debug(`update reject()`);
+                    this.debugger(`update failed`);
+                    this.debugger(err);
                     reject(err);
                     return;
                 }
-                debug(`update resolve()`);
-                console.log(affectedRows);
-                console.log(raw);
-                resolve(affectedRows);
+                this.debugger(`update succeed`);
+                this.debugger(affectedRows);
+                this.debugger(raw);
+                resolve(raw);
             });
         });
     }
@@ -92,18 +216,74 @@ export class CommonBusiness<T extends mongoose.Document> {
      * @param {(error: any, result: T) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    updateOne(cond: Object, update: Object, callback: (error: any, result: T) => void = null): Promise<T> {
-        if (callback) {
-            this._model.findOneAndUpdate(cond, update, callback);
-            return;
+    updateOne(cond: Object, update: Object, callback: (error: any, result?: T) => void = null): Promise<T> {
+        return this.returnOne(this._updateOne(cond, update), callback);
+    }
+
+    /**
+     * 하나의 객체 갱신
+     * 
+     * @private
+     * @param {Object} cond
+     * @param {Object} update
+     * @returns {Promise<T>}
+     */
+    private _updateOne(cond: Object, update: Object): Promise<T> {
+        if (!cond || !update) {
+            return this.returnInvalidParams();
         }
         return new Promise((resolve: any, reject: any) => {
             this._model.findOneAndUpdate(cond, update, (err, res) => {
                 if (err) {
+                    this.debugger(`updateOne failed`);
+                    this.debugger(err);
                     reject(err);
                     return;
                 }
+                this.debugger(`updateOne succeed`);
+                this.debugger(res);
                 resolve(res);
+                return;
+            });
+        });
+    }
+
+    /**
+     * 특정 대상 업데이트
+     * 
+     * @param {Object} cond
+     * @param {Object} update
+     * @param {(error: any, result: T) => void} [callback=null]
+     * @returns {Promise<T>}
+     */
+    updateById(id: string, update: Object, callback: (error: any, result?: T) => void = null): Promise<T> {
+        return this.returnOne(this._updateById(id, update), callback);
+    }
+
+    /**
+     * 하나의 객체 갱신
+     * 
+     * @private
+     * @param {string} id
+     * @param {Object} update
+     * @returns {Promise<T>}
+     */
+    private _updateById(id: string, update: Object): Promise<T> {
+        if (!id || !update) {
+            return this.returnInvalidParams();
+        }
+        return new Promise((resolve: any, reject: any) => {
+            this._model.findByIdAndUpdate(id, update, (err, res) => {
+                if (err) {
+                    this.debugger(`updateById failed`);
+                    this.debugger(err);
+                    reject(err);
+                    return;
+                }
+                this.debugger(`updateById succeed`);
+                this.debugger(res);
+                resolve(res);
+                return;
             });
         });
     }
@@ -116,21 +296,32 @@ export class CommonBusiness<T extends mongoose.Document> {
      * @returns {Promise<T>}
      */
     deleteOne(cond: Object, callback: (error: any, result: T) => void = null): Promise<T> {
-        if (callback) {
-            this._model.findOneAndRemove(cond, callback);
-            return;
+        return this.returnOne(this._deleteOne(cond), callback);
+    }
+
+    /**
+     * 
+     * 
+     * @private
+     * @param {Object} cond
+     * @returns {Promise<T>}
+     */
+    private _deleteOne(cond: Object): Promise<T> {
+        if (!cond) {
+            return this.returnInvalidParams();
         }
         return new Promise((resolve: any, reject: any) => {
             this._model.findOneAndRemove(cond, (err, res) => {
                 if (err) {
-                    debug(`findOneAndRemove failed`);
-                    debug(err.errmsg);
+                    this.debugger(`deleteOne failed`);
+                    this.debugger(err);
                     reject(err);
                     return;
                 }
-                debug(`findOneAndRemove succeed`);
-                debug(res);
+                this.debugger(`deleteOne succeed`);
+                this.debugger(res);
                 resolve(res);
+                return;
             });
         });
     }
@@ -138,25 +329,37 @@ export class CommonBusiness<T extends mongoose.Document> {
     /**
      * 삭제 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
-     * @param {string} _id
+     * @param {string} id
      * @param {(error: any, result: any) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    delete(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
-        debug(`delete _id: ${_id}`);
-        if (callback) {
-            this._model.remove({ _id: this.toObjectId(_id) }, (err) => callback(err, null));
-            return;
+    deleteById(id: string, callback: (error: any, result: any) => void = null): Promise<T> {
+        return this.returnOne(this._deleteById(id), callback);
+    }
+
+    /**
+     * 삭제
+     * 
+     * @private
+     * @param {string} id
+     * @returns {Promise<T>}
+     */
+    private _deleteById(id: string): Promise<T> {
+        if (!id) {
+            return this.returnInvalidParams();
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.remove({ _id: this.toObjectId(_id) }, (err) => {
+            this._model.findByIdAndRemove(id, (err, res) => {
                 if (err) {
-                    debug(`delete reject()`);
+                    this.debugger(`deleteById failed`);
+                    this.debugger(err);
                     reject(err);
                     return;
                 }
-                debug(`delete resolve()`);
-                resolve(null);
+                this.debugger(`deleteById succeed`);
+                this.debugger(res);
+                resolve(res);
+                return;
             });
         });
     }
@@ -164,22 +367,13 @@ export class CommonBusiness<T extends mongoose.Document> {
     /**
      * 모든 객체 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
-     * @param {string} [filter='']
-     * @param {(error: any, result: any) => void} [callback=null]
+     * @param {*} [cond={}]
+     * @param {string} [filter]
+     * @param {(error: any, result: T[]) => void} [callback=null]
      * @returns {Promise<T[]>}
      */
-    findAll(cond: any = {}, filter: string = '', callback: (error: any, result: any) => void = null): Promise<T[]> {
-        return this._findAll(cond, filter)
-            .then(r => {
-                return Promise.resolve(r);
-            })
-            .catch(err => {
-                if (callback) {
-                    callback(err, null);
-                    return;
-                }
-                return Promise.reject(err);
-            });
+    findAll(cond: any = {}, filter?: string, callback: (error: any, result: T[]) => void = null): Promise<T[]> {
+        return this.returnMulti(this._findAll(cond, filter), callback);
     }
 
     /**
@@ -187,165 +381,136 @@ export class CommonBusiness<T extends mongoose.Document> {
      * 
      * @private
      * @param {*} [cond={}]
-     * @param {string} [filter='']
+     * @param {string} [filter]
      * @returns {Promise<T[]>}
      */
-    private _findAll(cond: any = {}, filter: string = ''): Promise<T[]> {
+    private _findAll(cond: any = {}, filter?: string): Promise<T[]> {
         return new Promise((resolve: any, reject: any) => {
             if (filter) {
                 this._model.find(cond, filter, (err: any, res: T[]) => {
                     if (err) {
-                        debug(`findAll reject()`);
+                        this.debugger(`findAll failed`);
+                        this.debugger(err);
                         reject(err);
                         return;
                     }
-                    debug(`findAll resolve()`);
+                    this.debugger(`findAll succeed`);
+                    this.debugger(res);
                     resolve(res);
+                    return;
                 });
-                return;
+            } else {
+                this._model.find(cond, (err: any, res: T[]) => {
+                    if (err) {
+                        this.debugger(`findAll failed`);
+                        this.debugger(err);
+                        reject(err);
+                        return;
+                    }
+                    this.debugger(`findAll succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                    return;
+                });
             }
-            this._model.find(cond, (err: any, res: T[]) => {
-                if (err) {
-                    debug(`findAll reject()`);
-                    reject(err);
-                    return;
-                }
-                debug(`findAll resolve()`);
-                resolve(res);
-            });
-        });
-    }
-
-    /**
-     * 특정 조건 객체 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
-     * 
-     * @param {Object} [cond={}]
-     * @param {(error: any, result: any) => void} [callback=null]
-     * @returns {Promise<T[]>}
-     */
-    find(cond: Object = {}, callback: (error: any, result: any) => void = null): Promise<T[]> {
-        if (callback) {
-            this._model.find(cond, callback);
-            return;
-        }
-        return new Promise((resolve: any, reject: any) => {
-            this._model.find(cond, (err: any, res: T[]) => {
-                if (err) {
-                    debug(`find reject()`);
-                    reject(err);
-                    return;
-                }
-                debug(`find resolve()`);
-                resolve(res);
-            });
         });
     }
 
     /**
      * findOne
      * 
-     * @param {*} [cond={}]
-     * @param {string} [filter='']
-     * @param {(error: any, result: any) => void} [callback=null]
+     * @param {*} cond
+     * @param {string} [filter]
+     * @param {(error: any, result?: any) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    findOne(cond: any = {}, filter: string = '', callback: (error: any, result: any) => void = null): Promise<T> {
-        return this._findOne(cond, filter)
-            .then(r => {
-                return Promise.resolve(r);
-            })
-            .catch(err => {
-                if (callback) {
-                    callback(err, null);
-                    return;
-                }
-                return Promise.reject(err);
-            });
+    findOne(cond: any, filter?: string, callback: (error: any, result?: any) => void = null): Promise<T> {
+        return this.returnOne(this._findOne(cond, filter), callback);
     }
 
     /**
      * 실제 모든 객체 검색을 수행하는 함수
      * 
      * @private
-     * @param {*} [cond={}]
+     * @param {*} [cond]
      * @param {string} [filter='']
      * @returns {Promise<T>}
      */
-    private _findOne(cond: any = {}, filter: string = ''): Promise<T> {
+    private _findOne(cond: any, filter?: string): Promise<T> {
+        if (!cond) {
+            return this.returnInvalidParams();
+        }
         return new Promise((resolve: any, reject: any) => {
             if (filter) {
                 this._model.findOne(cond, filter, (err: any, res: T) => {
                     if (err) {
-                        debug(`findOne reject()`);
+                        this.debugger(`findOne failed`);
+                        this.debugger(err);
                         reject(err);
                         return;
                     }
-                    debug(`findOne resolve()`);
+                    this.debugger(`findOne succeed`);
+                    this.debugger(res);
                     resolve(res);
-                });
-                return;
-            }
-            this._model.findOne(cond, (err: any, res: T) => {
-                if (err) {
-                    debug(`findOne reject()`);
-                    reject(err);
                     return;
-                }
-                debug(`findOne resolve()`);
-                resolve(res);
-            });
+                });
+            } else {
+                this._model.findOne(cond, (err: any, res: T) => {
+                    if (err) {
+                        this.debugger(`findOne failed`);
+                        this.debugger(err);
+                        reject(err);
+                        return;
+                    }
+                    this.debugger(`findOne succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                    return;
+                });
+            }
         });
     }
 
     /**
      * 검색 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
      * 
-     * @param {string} _id
+     * @param {string} id
+     * @param {string} [filter]
      * @param {(error: any, result: any) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    findById(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
-        if (callback) {
-            this._model.findById(_id, callback);
-            return;
+    findById(id: string, filter?: string, callback: (error: any, result: any) => void = null): Promise<T> {
+        return this.returnOne(this._findById(id, filter), callback);
+    }
+
+    /**
+     * ID 검색
+     * 
+     * @private
+     * @param {string} id
+     * @param {string} [filter]
+     * @returns {Promise<T>}
+     */
+    private _findById(id: string, filter?: string): Promise<T> {
+        if (!id) {
+            return this.returnInvalidParams();
         }
         return new Promise((resolve: any, reject: any) => {
-            this._model.findById(_id, (err: any, res: T) => {
+            this._model.findById(id, filter, (err: any, res: T) => {
                 if (err) {
-                    debug(`findById reject()`);
+                    this.debugger(`findById failed`);
+                    this.debugger(err);
                     reject(err);
                     return;
                 }
-                debug(`findById resolve()`);
+                this.debugger(`findById succeed`);
+                this.debugger(res);
                 resolve(res);
+                return;
             });
         });
     }
 
-    /**
-     * 삭제 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
-     * 
-     * @param {string} _id
-     * @param {(error: any, result: any) => void} [callback=null]
-     * @returns {Promise<T>}
-     */
-    findByIdAndRemove(_id: string, callback: (error: any, result: any) => void = null): Promise<T> {
-        if (callback) {
-            this._model.findByIdAndRemove(_id, callback);
-            return;
-        }
-        return new Promise((resolve: any, reject: any) => {
-            this._model.findByIdAndRemove(_id, (err: any, res: T) => {
-                if (err) {
-                    debug(`findByIdAndRemove reject()`);
-                    reject(err);
-                    return;
-                }
-                debug(`findByIdAndRemove resolve()`);
-                resolve(res);
-            });
-        });
-    }
 
     /**
      * ObjectId로 변환
