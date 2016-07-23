@@ -9,8 +9,11 @@ import {DEBUG_TDD_BUSINESS_USER} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_TDD_BUSINESS_USER);
 
-const ACCOUNT_MOCK = {
+const EMAIL_MOCK = {
     email: 'nima@gmail.com',
+}
+const ACCOUNT_MOCK = {
+    email: EMAIL_MOCK.email,
     password: 'nima1234',
     nick: 'nima',
 };
@@ -92,7 +95,7 @@ describe('UserBusiness TDD', function () {
 
     it('유저 닉네임 업데이트 시도', function (done: DoneFn) {
         debug(`유저 닉네임 업데이트 시도`);
-        factory.updateOne(USER_NICK_UPDATE)
+        factory.updateOne(EMAIL_MOCK, USER_NICK_UPDATE)
             // 닉네임 업데이트 성공 결과 (목표)
             .then(r => {
                 debug(r);
@@ -192,7 +195,7 @@ describe('UserBusiness TDD', function () {
 
     it('삭제된 유저에 대한 업데이트 시도', function (done: DoneFn) {
         debug(`삭제된 유저에 대한 업데이트 시도`);
-        factory.updateOne(USER_NICK_UPDATE)
+        factory.updateOne(EMAIL_MOCK, USER_NICK_UPDATE)
             // 생성 성공 결과 (오류)
             .then(r => {
                 debug(r);
