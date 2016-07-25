@@ -5,7 +5,7 @@ import {Request, Response} from 'express';
 import config from '../../config/environment';
 import {IServerModel} from './server.model';
 import ServerBusiness from './server.business';
-import * as cmmn from '../cmmn';
+import {ApiController} from '../../component/api/controller';
 
 import requestUtil from '../../component/util/request.util';
 import otherUtil from '../../component/util/other.util';
@@ -16,8 +16,6 @@ import {IS_DEBUG_ROUTE_SERVERS} from '../../debug/flag';
 /* end-test-code */
 
 import {DEBUG_ROUTE_SERVERS} from '../../config/logger';
-import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_SERVERS);
 
 /**
  * rest server 에 대한 처리 클래스
@@ -25,13 +23,14 @@ let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_SERVERS);
  * @export
  * @class ServerController
  */
-export class ServerController {
+export class ServerController extends ApiController {
     /**
      * Creates an instance of ServerController.
      * 
      */
     constructor() {
-        debug(`ServerController create`);
+        super(DEBUG_ROUTE_SERVERS);
+        this.debugger(`ServerController create`);
     }
 
     /**
@@ -42,19 +41,19 @@ export class ServerController {
      */
     index(req: Request, res: Response): void {
         let params = req.params || {};
-        debug(`try index`);
-        debug(params);
+        this.debugger(`try index`);
+        this.debugger(params);
 
         ServerBusiness
             .findAll(params, '-__v')
             .then(r => {
                 if (!r) {
-                    cmmn.handleEntityNotFound(res);
+                    this.handleEntityNotFound(res);
                     return;
                 }
-                cmmn.respondWithResult(res)(r);
+                this.respondWithResult(res)(r);
             })
-            .catch(cmmn.handleError(res));
+            .catch(this.handleError(res));
     }
 
     /**
@@ -65,19 +64,13 @@ export class ServerController {
      */
     create(req: Request, res: Response): void {
         let server: IServerModel = req.body || {};
-        debug(`try create`);
-        debug(server);
+        this.debugger(`try create`);
+        this.debugger(server);
 
         ServerBusiness
             .create(server)
-            .then(r => {
-                if (!r) {
-                    cmmn.handleEntityNotFound(res);
-                    return;
-                }
-                res.send(r);
-            })
-            .catch(cmmn.validationError(res));
+            .then(this.respondWithResult(res))
+            .catch(this.validationError(res));
     }
 
     /**
@@ -88,19 +81,13 @@ export class ServerController {
      */
     show(req: Request, res: Response): void {
         let id: string = req.params.id;
-        debug(`try show`);
-        debug(id);
+        this.debugger(`try show`);
+        this.debugger(id);
 
         ServerBusiness
             .findById(id, '-__v')
-            .then(r => {
-                if (!r) {
-                    cmmn.handleEntityNotFound(res);
-                    return;
-                }
-                cmmn.respondWithResult(res)(r);
-            })
-            .catch(cmmn.handleEntityNotFound(res));
+            .then(this.respondWithResult(res))
+            .catch(this.handleEntityNotFound(res));
     }
 
     /**
@@ -112,20 +99,14 @@ export class ServerController {
     update(req: Request, res: Response): void {
         let id: string = req.params.id;
         let body: any = req.body;
-        debug(`try update`);
-        debug(id);
-        debug(body);
+        this.debugger(`try update`);
+        this.debugger(id);
+        this.debugger(body);
 
         ServerBusiness
             .updateById(id, body)
-            .then(r => {
-                if (!r) {
-                    cmmn.handleEntityNotFound(res);
-                    return;
-                }
-                cmmn.respondWithResult(res)();
-            })
-            .catch(cmmn.handleError(res));
+            .then(this.respondWithResult(res))
+            .catch(this.handleError(res));
     }
 
     /**
@@ -136,20 +117,13 @@ export class ServerController {
      */
     destroy(req: Request, res: Response): void {
         let id: string = req.params.id;
-        debug(`try destroy`);
-        debug(id);
+        this.debugger(`try destroy`);
+        this.debugger(id);
 
         ServerBusiness
             .deleteById(req.params.id)
-            .then(r => {
-                if (!r) {
-                    debug(`deleteById result is null`);
-                    cmmn.handleEntityNotFound(res)();
-                    return;
-                }
-                cmmn.respondWithResult(res, 204)();
-            })
-            .catch(cmmn.handleError(res));
+            .then(this.respondWithResult(res))
+            .catch(this.handleError(res));
     }
 
     /**

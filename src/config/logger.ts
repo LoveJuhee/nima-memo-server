@@ -1,4 +1,6 @@
 /** Logging */
+export const DEBUG: string = 'debug';
+
 export const DEBUG_ROUTE_SERVERS: string = 'route:servers';
 export const DEBUG_ROUTE_USERS: string = 'route:users';
 
@@ -15,6 +17,8 @@ export const DEBUG_MODEL_SERVER: string = 'model:server';
 export const DEBUG_BUSINESS_COMMON: string = 'business:common';
 export const DEBUG_BUSINESS_USER: string = 'business:user';
 export const DEBUG_BUSINESS_SERVER: string = 'business:server';
+
+export const DEBUG_CONTROLLER_COMMON: string = 'controller:common';
 
 export const DEBUG_UTIL_REQUEST: string = 'util:request';
 export const DEBUG_UTIL_PASSPORT: string = 'util:passport';

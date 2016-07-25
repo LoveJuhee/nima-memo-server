@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 import config from '../../config/environment';
 import {IUserModel} from './user.model';
 import UserBusiness from './user.business';
-import * as cmmn from '../cmmn';
+import {ApiController} from '../../component/api/controller';
 
 import requestUtil from '../../component/util/request.util';
 import otherUtil from '../../component/util/other.util';
@@ -17,8 +17,6 @@ import {IS_DEBUG_ROUTE_USERS} from '../../debug/flag';
 /* end-test-code */
 
 import {DEBUG_ROUTE_USERS} from '../../config/logger';
-import * as debugClass from 'debug';
-let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_USERS);
 
 /**
  * rest 라우트명 에 대한 처리 클래스
@@ -26,13 +24,14 @@ let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_USERS);
  * @export
  * @class UserController
  */
-export class UserController {
+export class UserController extends ApiController {
     /**
      * Creates an instance of UserController.
      *
      */
     constructor() {
-        debug(`UserController create`);
+        super(DEBUG_ROUTE_USERS);
+        this.debugger(`UserController create`);
     }
 
     /**
@@ -45,12 +44,8 @@ export class UserController {
         res.send('UserController.index');
         UserBusiness
             .findAll({}, '-salt -password')
-            .then(users => {
-                res
-                    .status(200)
-                    .json(users);
-            })
-            .catch(cmmn.handleError(res));
+            .then(this.respondWithResult(res))
+            .catch(this.handleError(res));
     }
 
     /**
@@ -67,7 +62,7 @@ export class UserController {
         UserBusiness
             .create(req.body)
             .then(r => {
-                debug(`유저 계정 생성 성공`);
+                this.debugger(`유저 계정 생성 성공`);
                 var token = jwt.sign({
                     _id: user._id
                 }, config.secrets.session, {
@@ -75,7 +70,7 @@ export class UserController {
                     });
                 res.json({ token });
             })
-            .catch(cmmn.validationError(res));
+            .catch(this.validationError(res));
     }
 
     /**
@@ -111,8 +106,8 @@ export class UserController {
         }
         UserBusiness
             .updateOne({ _id: req.params.id }, req.params)
-            .then(cmmn.respondWithResult(res))
-            .catch(cmmn.handleError(res));
+            .then(this.respondWithResult(res))
+            .catch(this.handleError(res));
     }
 
     /**
@@ -134,7 +129,7 @@ export class UserController {
                     user.password = newPass;
                     return user.save((err, r) => {
                         if (err) {
-                            cmmn.validationError(res);
+                            this.validationError(res);
                             return;
                         }
                         res
@@ -146,7 +141,8 @@ export class UserController {
                         .status(403)
                         .end();
                 }
-            });
+            })
+            .catch(this.handleError(res));
     }
 
     /**
@@ -163,7 +159,7 @@ export class UserController {
                     .status(204)
                     .end();
             })
-            .catch(cmmn.handleError(res));
+            .catch(this.handleError(res));
     }
 
     /**
