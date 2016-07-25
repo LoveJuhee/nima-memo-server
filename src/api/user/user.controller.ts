@@ -21,36 +21,6 @@ import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_ROUTE_USERS);
 
 /**
- * 값 오류
- * 
- * @param {Response} res
- * @param {number} [statusCode=422]
- * @returns {Function}
- */
-function validationError(res: Response, statusCode: number = 422): Function {
-    return function (err: any) {
-        res
-            .status(statusCode)
-            .json(err);
-    };
-}
-
-/**
- * 핸들 오류
- * 
- * @param {Response} res
- * @param {number} [statusCode=500]
- * @returns {Function}
- */
-function handleError(res: Response, statusCode: number = 500): Function {
-    return function (err: any) {
-        res
-            .status(statusCode)
-            .send(err);
-    };
-}
-
-/**
  * rest 라우트명 에 대한 처리 클래스
  *
  * @export
@@ -80,7 +50,7 @@ export class UserController {
                     .status(200)
                     .json(users);
             })
-            .catch(handleError);
+            .catch(cmmn.handleError(res));
     }
 
     /**
@@ -105,7 +75,7 @@ export class UserController {
                     });
                 res.json({ token });
             })
-            .catch(validationError);
+            .catch(cmmn.validationError(res));
     }
 
     /**
@@ -164,7 +134,7 @@ export class UserController {
                     user.password = newPass;
                     return user.save((err, r) => {
                         if (err) {
-                            validationError(res);
+                            cmmn.validationError(res);
                             return;
                         }
                         res
@@ -187,13 +157,13 @@ export class UserController {
      */
     destroy(req: Request, res: Response): void {
         UserBusiness
-            .findByIdAndRemove(req.params.id)
+            .deleteById(req.params.id)
             .then(() => {
                 res
                     .status(204)
                     .end();
             })
-            .catch(handleError);
+            .catch(cmmn.handleError(res));
     }
 
     /**

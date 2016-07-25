@@ -9,6 +9,10 @@ var compose = require('composable-middleware');
 import ENVIRONMENT from '../config/environment';
 import User from '../api/user/user.business';
 
+import {DEBUG_AUTH} from '../config/logger';
+import * as debugClass from 'debug';
+let debug: debug.IDebugger = debugClass(DEBUG_AUTH);
+
 var validateJwt = expressJwt({
     secret: ENVIRONMENT.secrets.session
 });
@@ -28,6 +32,8 @@ export function isAuthenticated(): any {
             if (req.query && req.query.hasOwnProperty('access_token')) {
                 req.headers['authorization'] = 'Bearer ' + req.query.access_token;
             }
+            debug(`isAuthenticated()`);
+            debug(req.headers);
             validateJwt(req, res, next);
         })
         // Attach user to request
