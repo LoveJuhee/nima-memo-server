@@ -20,6 +20,10 @@ export const DEBUG_BUSINESS_SERVER: string = 'business:server';
 
 export const DEBUG_CONTROLLER_COMMON: string = 'controller:common';
 
+export const DEBUG_SOCKET_SERVER: string = 'socket:server';
+export const DEBUG_SOCKET_CLIENT: string = 'socket:client';
+export const DEBUG_SOCKET_CLIENT_MANAGER: string = 'socket:manager';
+
 export const DEBUG_UTIL_REQUEST: string = 'util:request';
 export const DEBUG_UTIL_PASSPORT: string = 'util:passport';
 

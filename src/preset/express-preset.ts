@@ -7,6 +7,7 @@ import * as route from '../config/route';
 import {ServerIndex} from '../api/server/index';
 import {UserIndex} from '../api/user/index';
 import {AuthRoute} from '../auth';
+import * as auth from '../auth/auth.service';
 
 /** 전처리를 위한 객체 */
 import * as bodyParser from 'body-parser';
@@ -80,6 +81,9 @@ export class ExpressPreset {
    * @private
    */
   private routeSetting(): void {
+    // write auth info
+    this.app.use('/', auth.writeAuthInfo);
+
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
     this.app.use(route.ROUTE_URI_AUTH, new AuthRoute().routes);

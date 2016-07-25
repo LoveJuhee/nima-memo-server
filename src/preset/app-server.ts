@@ -8,6 +8,10 @@ import ENVIRONMENT from '../config/environment';
 import {ExpressPreset} from './express-preset';
 import {MongoManager} from './mongo-manager';
 
+import socketServer from '../component/socket.io/socket.server';
+
+require('./socket.preset');
+
 const PORT: number = ENVIRONMENT.port || 9999;
 
 /**
@@ -51,6 +55,8 @@ export class AppServer {
             var port = this.server.address().port;
             console.log('This express app is listening on port:' + port);
         });
+
+        socketServer.setServer(this.server);
     }
 
     /**
