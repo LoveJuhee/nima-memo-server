@@ -18,6 +18,9 @@ import {IS_DEBUG_ROUTE_USERS} from '../../debug/flag';
 
 import {DEBUG_ROUTE_USERS} from '../../config/logger';
 
+/** 컨트롤러에 대한 객체 : request 처리는 this 가 없다. */
+let instance: UserController;
+
 /**
  * rest 라우트명 에 대한 처리 클래스
  *
@@ -31,7 +34,8 @@ export class UserController extends ApiController {
      */
     constructor() {
         super(DEBUG_ROUTE_USERS);
-        this.debugger(`UserController create`);
+        instance = this;
+        instance.debugger(`UserController create`);
     }
 
     /**
@@ -44,8 +48,8 @@ export class UserController extends ApiController {
         res.send('UserController.index');
         UserBusiness
             .findAll({}, '-salt -password')
-            .then(this.respondWithResult(res))
-            .catch(this.handleError(res));
+            .then(instance.respondWithResult(res))
+            .catch(instance.handleError(res));
     }
 
     /**
@@ -62,7 +66,7 @@ export class UserController extends ApiController {
         UserBusiness
             .create(req.body)
             .then(r => {
-                this.debugger(`유저 계정 생성 성공`);
+                instance.debugger(`유저 계정 생성 성공`);
                 var token = jwt.sign({
                     _id: user._id
                 }, config.secrets.session, {
@@ -70,7 +74,7 @@ export class UserController extends ApiController {
                     });
                 res.json({ token });
             })
-            .catch(this.validationError(res));
+            .catch(instance.validationError(res));
     }
 
     /**
@@ -106,8 +110,8 @@ export class UserController extends ApiController {
         }
         UserBusiness
             .updateOne({ _id: req.params.id }, req.params)
-            .then(this.respondWithResult(res))
-            .catch(this.handleError(res));
+            .then(instance.respondWithResult(res))
+            .catch(instance.handleError(res));
     }
 
     /**
@@ -129,7 +133,7 @@ export class UserController extends ApiController {
                     user.password = newPass;
                     return user.save((err, r) => {
                         if (err) {
-                            this.validationError(res);
+                            instance.validationError(res);
                             return;
                         }
                         res
@@ -142,7 +146,7 @@ export class UserController extends ApiController {
                         .end();
                 }
             })
-            .catch(this.handleError(res));
+            .catch(instance.handleError(res));
     }
 
     /**
@@ -159,7 +163,7 @@ export class UserController extends ApiController {
                     .status(204)
                     .end();
             })
-            .catch(this.handleError(res));
+            .catch(instance.handleError(res));
     }
 
     /**
