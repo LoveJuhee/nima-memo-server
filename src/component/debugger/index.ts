@@ -1,7 +1,7 @@
 'use strict';
 
 import {DEBUG} from '../../config/logger';
-import * as debugClass from 'debug';
+import * as debug from 'debug';
 
 /**
  * 공통 디버그 클래스
@@ -19,7 +19,7 @@ export class Debugger {
      * @param {string} [debugKey=DEBUG]
      */
     constructor(debugKey: string = DEBUG) {
-        this._debugger = debugClass(debugKey);
+        this._debugger = debug(debugKey);
     }
 
     /**

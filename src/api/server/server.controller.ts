@@ -17,6 +17,9 @@ import {IS_DEBUG_ROUTE_SERVERS} from '../../debug/flag';
 
 import {DEBUG_ROUTE_SERVERS} from '../../config/logger';
 
+/** 컨트롤러에 대한 객체 : request 처리는 this 가 없다. */
+let instance: ServerController;
+
 /**
  * rest server 에 대한 처리 클래스
  * 
@@ -30,7 +33,8 @@ export class ServerController extends ApiController {
      */
     constructor() {
         super(DEBUG_ROUTE_SERVERS);
-        this.debugger(`ServerController create`);
+        instance = this;
+        instance.debugger(`ServerController create`);
     }
 
     /**
@@ -41,19 +45,19 @@ export class ServerController extends ApiController {
      */
     index(req: Request, res: Response): void {
         let params = req.params || {};
-        this.debugger(`try index`);
-        this.debugger(params);
+        instance.debugger(`try index`);
+        instance.debugger(params);
 
         ServerBusiness
             .findAll(params, '-__v')
             .then(r => {
                 if (!r) {
-                    this.handleEntityNotFound(res);
+                    instance.handleEntityNotFound(res);
                     return;
                 }
-                this.respondWithResult(res)(r);
+                instance.respondWithResult(res)(r);
             })
-            .catch(this.handleError(res));
+            .catch(instance.handleError(res));
     }
 
     /**
@@ -64,13 +68,13 @@ export class ServerController extends ApiController {
      */
     create(req: Request, res: Response): void {
         let server: IServerModel = req.body || {};
-        this.debugger(`try create`);
-        this.debugger(server);
+        instance.debugger(`try create`);
+        instance.debugger(server);
 
         ServerBusiness
             .create(server)
-            .then(this.respondWithResult(res))
-            .catch(this.validationError(res));
+            .then(instance.respondWithResult(res))
+            .catch(instance.validationError(res));
     }
 
     /**
@@ -81,13 +85,13 @@ export class ServerController extends ApiController {
      */
     show(req: Request, res: Response): void {
         let id: string = req.params.id;
-        this.debugger(`try show`);
-        this.debugger(id);
+        instance.debugger(`try show`);
+        instance.debugger(id);
 
         ServerBusiness
             .findById(id, '-__v')
-            .then(this.respondWithResult(res))
-            .catch(this.handleEntityNotFound(res));
+            .then(instance.respondWithResult(res))
+            .catch(instance.handleEntityNotFound(res));
     }
 
     /**
@@ -99,14 +103,14 @@ export class ServerController extends ApiController {
     update(req: Request, res: Response): void {
         let id: string = req.params.id;
         let body: any = req.body;
-        this.debugger(`try update`);
-        this.debugger(id);
-        this.debugger(body);
+        instance.debugger(`try update`);
+        instance.debugger(id);
+        instance.debugger(body);
 
         ServerBusiness
             .updateById(id, body)
-            .then(this.respondWithResult(res))
-            .catch(this.handleError(res));
+            .then(instance.respondWithResult(res))
+            .catch(instance.handleError(res));
     }
 
     /**
@@ -117,13 +121,13 @@ export class ServerController extends ApiController {
      */
     destroy(req: Request, res: Response): void {
         let id: string = req.params.id;
-        this.debugger(`try destroy`);
-        this.debugger(id);
+        instance.debugger(`try destroy`);
+        instance.debugger(id);
 
         ServerBusiness
             .deleteById(req.params.id)
-            .then(this.respondWithResult(res))
-            .catch(this.handleError(res));
+            .then(instance.respondWithResult(res))
+            .catch(instance.handleError(res));
     }
 
     /**
