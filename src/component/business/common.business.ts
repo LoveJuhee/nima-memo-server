@@ -169,54 +169,14 @@ export class CommonBusiness<T extends mongoose.Document> {
     }
 
     /**
-     * 갱신 (callback 객체가 없다면 Promise 라고 판단하고 대응한다.)
-     * 
-     * @param {mongoose.Types.ObjectId} _id
-     * @param {T} item
-     * @param {(err: any, affectedRows: number, raw: any) => void} [callback=null]
-     * @returns {Promise<number>}
-     */
-    update(cond: any, item: T, callback: (err: any, affectedRows: number, raw: any) => void = null): Promise<T[]> {
-        return this.returnUpdate(this._update(cond, item), callback);
-    }
-
-    /**
-     * 갱신
-     * 
-     * @private
-     * @param {*} cond
-     * @param {T} update
-     * @returns {Promise<T[]>}
-     */
-    private _update(cond: any, update: T): Promise<T[]> {
-        if (!cond || !update) {
-            return this.returnInvalidParams();
-        }
-        return new Promise((resolve: any, reject: any) => {
-            this._model.update(cond, update, (err: any, affectedRows: number, raw: any) => {
-                if (err) {
-                    this.debugger(`update failed`);
-                    this.debugger(err);
-                    reject(err);
-                    return;
-                }
-                this.debugger(`update succeed`);
-                this.debugger(affectedRows);
-                this.debugger(raw);
-                resolve(raw);
-            });
-        });
-    }
-
-    /**
      * 특정 대상 업데이트
      * 
-     * @param {Object} cond
-     * @param {Object} update
+     * @param {T} cond
+     * @param {T} update
      * @param {(error: any, result: T) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    updateOne(cond: Object, update: Object, callback: (error: any, result?: T) => void = null): Promise<T> {
+    updateOne(cond: T, update: T, callback: (error: any, result?: T) => void = null): Promise<T> {
         return this.returnOne(this._updateOne(cond, update), callback);
     }
 
@@ -224,27 +184,27 @@ export class CommonBusiness<T extends mongoose.Document> {
      * 하나의 객체 갱신
      * 
      * @private
-     * @param {Object} cond
-     * @param {Object} update
+     * @param {T} cond
+     * @param {T} update
      * @returns {Promise<T>}
      */
-    private _updateOne(cond: Object, update: Object): Promise<T> {
+    private _updateOne(cond: T, update: T): Promise<T> {
         if (!cond || !update) {
             return this.returnInvalidParams();
         }
+        cond = this.convertId(cond);
+        delete update._id;
         return new Promise((resolve: any, reject: any) => {
-            this._model.findOneAndUpdate(cond, update, (err, res) => {
-                if (err) {
+            this._model.findOneAndUpdate(cond, update).exec()
+                .then(res => {
+                    this.debugger(`updateOne succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                }, err => {
                     this.debugger(`updateOne failed`);
                     this.debugger(err);
                     reject(err);
-                    return;
-                }
-                this.debugger(`updateOne succeed`);
-                this.debugger(res);
-                resolve(res);
-                return;
-            });
+                });
         });
     }
 
@@ -272,19 +232,18 @@ export class CommonBusiness<T extends mongoose.Document> {
         if (!id || !update) {
             return this.returnInvalidParams();
         }
+        let _id = this.convertId(id);
         return new Promise((resolve: any, reject: any) => {
-            this._model.findByIdAndUpdate(id, update, (err, res) => {
-                if (err) {
+            this._model.findByIdAndUpdate(_id, update).exec()
+                .then(res => {
+                    this.debugger(`updateById succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                }, err => {
                     this.debugger(`updateById failed`);
                     this.debugger(err);
                     reject(err);
-                    return;
-                }
-                this.debugger(`updateById succeed`);
-                this.debugger(res);
-                resolve(res);
-                return;
-            });
+                });
         });
     }
 
@@ -310,19 +269,18 @@ export class CommonBusiness<T extends mongoose.Document> {
         if (!cond) {
             return this.returnInvalidParams();
         }
+        cond = this.convertId(cond);
         return new Promise((resolve: any, reject: any) => {
-            this._model.findOneAndRemove(cond, (err, res) => {
-                if (err) {
+            this._model.findOneAndRemove(cond).exec()
+                .then(res => {
+                    this.debugger(`deleteOne succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                }, err => {
                     this.debugger(`deleteOne failed`);
                     this.debugger(err);
                     reject(err);
-                    return;
-                }
-                this.debugger(`deleteOne succeed`);
-                this.debugger(res);
-                resolve(res);
-                return;
-            });
+                });
         });
     }
 
@@ -348,19 +306,18 @@ export class CommonBusiness<T extends mongoose.Document> {
         if (!id) {
             return this.returnInvalidParams();
         }
+        let _id = this.convertId(id);
         return new Promise((resolve: any, reject: any) => {
-            this._model.findByIdAndRemove(id, (err, res) => {
-                if (err) {
+            this._model.findByIdAndRemove(_id).exec()
+                .then(res => {
+                    this.debugger(`deleteById succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                }, err => {
                     this.debugger(`deleteById failed`);
                     this.debugger(err);
                     reject(err);
-                    return;
-                }
-                this.debugger(`deleteById succeed`);
-                this.debugger(res);
-                resolve(res);
-                return;
-            });
+                });
         });
     }
 
@@ -385,34 +342,18 @@ export class CommonBusiness<T extends mongoose.Document> {
      * @returns {Promise<T[]>}
      */
     private _findAll(cond: any = {}, filter?: string): Promise<T[]> {
+        cond = this.convertId(cond);
         return new Promise((resolve: any, reject: any) => {
-            if (filter) {
-                this._model.find(cond, filter, (err: any, res: T[]) => {
-                    if (err) {
-                        this.debugger(`findAll failed`);
-                        this.debugger(err);
-                        reject(err);
-                        return;
-                    }
+            this._model.find(cond, filter).exec()
+                .then(res => {
                     this.debugger(`findAll succeed`);
                     this.debugger(res);
                     resolve(res);
-                    return;
+                }, err => {
+                    this.debugger(`findAll failed`);
+                    this.debugger(err);
+                    reject(err);
                 });
-            } else {
-                this._model.find(cond, (err: any, res: T[]) => {
-                    if (err) {
-                        this.debugger(`findAll failed`);
-                        this.debugger(err);
-                        reject(err);
-                        return;
-                    }
-                    this.debugger(`findAll succeed`);
-                    this.debugger(res);
-                    resolve(res);
-                    return;
-                });
-            }
         });
     }
 
@@ -440,34 +381,18 @@ export class CommonBusiness<T extends mongoose.Document> {
         if (!cond) {
             return this.returnInvalidParams();
         }
+        cond = this.convertId(cond);
         return new Promise((resolve: any, reject: any) => {
-            if (filter) {
-                this._model.findOne(cond, filter, (err: any, res: T) => {
-                    if (err) {
-                        this.debugger(`findOne failed`);
-                        this.debugger(err);
-                        reject(err);
-                        return;
-                    }
-                    this.debugger(`findOne succeed`);
+            this._model.findOne(cond, filter).exec()
+                .then(res => {
+                    this.debugger(`findById succeed`);
                     this.debugger(res);
                     resolve(res);
-                    return;
+                }, err => {
+                    this.debugger(`findById failed`);
+                    this.debugger(err);
+                    reject(err);
                 });
-            } else {
-                this._model.findOne(cond, (err: any, res: T) => {
-                    if (err) {
-                        this.debugger(`findOne failed`);
-                        this.debugger(err);
-                        reject(err);
-                        return;
-                    }
-                    this.debugger(`findOne succeed`);
-                    this.debugger(res);
-                    resolve(res);
-                    return;
-                });
-            }
         });
     }
 
@@ -495,22 +420,39 @@ export class CommonBusiness<T extends mongoose.Document> {
         if (!id) {
             return this.returnInvalidParams();
         }
+        let _id = this.convertId(id);
         return new Promise((resolve: any, reject: any) => {
-            this._model.findById(id, filter, (err: any, res: T) => {
-                if (err) {
+            this._model.findById(_id, filter).exec()
+                .then(res => {
+                    this.debugger(`findById succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                }, err => {
                     this.debugger(`findById failed`);
                     this.debugger(err);
                     reject(err);
-                    return;
-                }
-                this.debugger(`findById succeed`);
-                this.debugger(res);
-                resolve(res);
-                return;
-            });
+                });
         });
     }
 
+    /**
+     * _id 객체에 대해 변환처리하는 함수
+     * cond._id, _id 모두 변환처리 
+     * 
+     * @protected
+     * @param {(string | any)} arg 
+     * @returns {*}
+     */
+    protected convertId(arg: string | any): any {
+        if (!arg) {
+            return arg;
+        }
+        if (typeof arg === 'string') {
+            return this.toObjectId(arg);
+        } else if (arg._id) {
+            arg._id = this.toObjectId(arg._id);
+        }
+    }
 
     /**
      * ObjectId로 변환

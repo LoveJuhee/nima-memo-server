@@ -52,6 +52,7 @@ export class MongoManager {
                 }
                 resolve();
             });
+            this._mongoose.Promise = global.Promise;
         });
     }
 
