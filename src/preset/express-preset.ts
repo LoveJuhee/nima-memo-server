@@ -49,7 +49,7 @@ export class ExpressPreset {
    * @private
    */
   private beforeSetting(): void {
-    this.app.use(logger('dev'));
+    // this.app.use(logger('dev'));
 
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -81,8 +81,8 @@ export class ExpressPreset {
    * @private
    */
   private routeSetting(): void {
-    // write auth info
-    this.app.use('/', auth.writeAuthInfo);
+    // // write auth info
+    // this.app.use('/', auth.writeAuthInfo);
 
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);

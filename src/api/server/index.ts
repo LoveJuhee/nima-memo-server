@@ -4,6 +4,8 @@ import express = require('express');
 import {ServerController} from './server.controller';
 import * as auth from '../../auth/auth.service';
 
+import {ServerDbEvent} from './server.db.event';
+
 var router = express.Router();
 
 /**
@@ -11,6 +13,10 @@ var router = express.Router();
  * @class
  */
 export class ServerIndex {
+    constructor() {
+        new ServerDbEvent();
+    }
+
     /**
      * route 처리 객체 반환
      * 
