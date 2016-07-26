@@ -12,9 +12,7 @@ class ObjectUtil {
      * @param {boolean} [color]
      * @returns {string}
      */
-    inspect(object: any, showHidden?: boolean, depth?: number, color?: boolean): string {
-        return nodeUtil.inspect(object, showHidden, depth, color);
-    }
+    inspect = nodeUtil.inspect;
 
     /**
      * 상속 클래스 등에 사용하는 객체 복제
