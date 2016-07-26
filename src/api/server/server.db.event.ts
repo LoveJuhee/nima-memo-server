@@ -23,13 +23,11 @@ export class ServerDbEvent extends ApiDbEvent<IServerModel> {
     }
 
     preset(item: IServerModel): IServerModel {
-        console.log(item);
         if (item) {
             let remove: any = item;
             remove.__v = undefined;
             item.id = undefined;
             item._id = undefined;
-            console.log(item);
         }
         return item;
     }
