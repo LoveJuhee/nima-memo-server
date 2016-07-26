@@ -1,7 +1,7 @@
 'use strict';
 
 import {Promise} from 'es6-promise';
-import nodeUtil = require('util');
+import objectUtil from './object.util';
 
 class OtherUtil {
     /**
@@ -15,7 +15,7 @@ class OtherUtil {
             Promise.resolve();
         }
         return new Promise((resolve: any, reject: any) => {
-            console.log(`${nodeUtil.inspect(item)}`);
+            console.log(`${objectUtil.inspect(item)}`);
             resolve(item);
         });
     }

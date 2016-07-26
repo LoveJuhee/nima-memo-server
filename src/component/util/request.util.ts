@@ -1,15 +1,16 @@
 'use strict';
 
+const fs = require('fs');
+const urlencode = require('urlencode');
+const queryString = require('query-string');
+
 import {Promise} from 'es6-promise';
+
+import objectUtil from './object.util';
 
 import {DEBUG_UTIL_REQUEST} from '../../config/logger';
 import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_UTIL_REQUEST);
-
-const fs = require('fs');
-const urlencode = require('urlencode');
-const queryString = require('query-string');
-const nodeUtil = require('util');
 
 /**
  * 유틸리티 라이브러리 클래스
@@ -61,7 +62,7 @@ class RequestUtil {
             result[key] = queryString.parse(params[key]);
           }
         }
-        debug(`toJsonObject after ${nodeUtil.inspect(result)}`);
+        debug(`toJsonObject after ${objectUtil.inspect(result)}`);
         resolve(result);
       } catch (e) {
         reject(e);
@@ -86,7 +87,7 @@ class RequestUtil {
             result[key] = urlencode.decode(params[key]);
           }
         }
-        debug(`toEncodeObject after ${nodeUtil.inspect(result)}`);
+        debug(`toEncodeObject after ${objectUtil.inspect(result)}`);
         resolve(result);
       } catch (e) {
         console.log(e);
@@ -112,7 +113,7 @@ class RequestUtil {
             result[key] = urlencode(params[key]);
           }
         }
-        debug(`toDecodeObject ${nodeUtil.inspect(result)}`);
+        debug(`toDecodeObject ${objectUtil.inspect(result)}`);
         resolve(result);
       } catch (e) {
         console.log(e);

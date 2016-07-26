@@ -8,10 +8,6 @@ import {IUserModel} from './user.model';
 import UserBusiness from './user.business';
 import {ApiController} from '../../component/api/controller';
 
-import requestUtil from '../../component/util/request.util';
-import otherUtil from '../../component/util/other.util';
-const nodeUtil = require('util');
-
 /* test-code */
 import {IS_DEBUG_ROUTE_USERS} from '../../debug/flag';
 /* end-test-code */
