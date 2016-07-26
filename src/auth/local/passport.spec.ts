@@ -20,7 +20,7 @@ const PASSWORD_NOT_MATCH = {
     nick: USER_ACCOUNT.nick,
 };
 
-describe('LocalPassport 테스트', function () {
+describe('LocalPassport TDD', function () {
     beforeEach(function (done: DoneFn) {
         preset.db.connect()
             .then(done)
@@ -112,7 +112,7 @@ describe('LocalPassport 테스트', function () {
 
     it('테스트 데이터 삭제', function (done: DoneFn) {
         debug('테스트 데이터 삭제');
-        factory.deleteOne(USER_ACCOUNT.email)
+        factory.deleteOne({ email: USER_ACCOUNT.email })
             .then(r => {
                 done();
             })

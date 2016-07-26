@@ -15,7 +15,7 @@ const EMAIL_MOCK = {
 const ACCOUNT_MOCK = {
     email: EMAIL_MOCK.email,
     password: 'nima1234',
-    nick: 'nima',
+    nick: 'user.business.spec.nick',
 };
 const USER_NICK_UPDATE = {
     email: ACCOUNT_MOCK.email,
@@ -70,8 +70,7 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('중복된 이메일 유저 생성 시도', function (done: DoneFn) {
@@ -89,8 +88,7 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('유저 닉네임 업데이트 시도', function (done: DoneFn) {
@@ -116,8 +114,7 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('유저 암호 업데이트 시도', function (done: DoneFn) {
@@ -149,8 +146,7 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('중복된 닉네임 유저 생성 시도', function (done: DoneFn) {
@@ -168,13 +164,12 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('유저 삭제 시도', function (done: DoneFn) {
         debug(`유저 삭제 시도`);
-        factory.deleteOne(USER_NICK_UPDATE.email)
+        factory.deleteOne({ email: USER_NICK_UPDATE.email })
             // 삭제 성공 결과 (목표)
             .then(r => {
                 debug(`유저 삭제 시도 성공`);
@@ -189,8 +184,7 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('삭제된 유저에 대한 업데이트 시도', function (done: DoneFn) {
@@ -208,13 +202,12 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
     it('이미 삭제된 유저 삭제 시도', function (done: DoneFn) {
         debug(`이미 삭제된 유저 삭제 시도`);
-        factory.deleteOne(USER_NICK_UPDATE.email)
+        factory.deleteOne({ email: USER_NICK_UPDATE.email })
             // 생성 성공 결과 (오류)
             .then(r => {
                 debug(r);
@@ -227,8 +220,7 @@ describe('UserBusiness TDD', function () {
                 return Promise.resolve();
             })
             // 종료처리
-            .then(done)
-            .catch(done);
+            .then(done);
     });
 
 });

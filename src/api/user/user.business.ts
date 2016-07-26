@@ -85,7 +85,10 @@ export class UserBusiness extends ApiBusiness<IUserModel> {
         if (!cond || !item) {
             return this.returnInvalidParams(callback);
         }
-        delete item.password;
+        if (item.password) {
+            item.password = undefined;
+            delete item.password;
+        }
         return super.updateOne(cond, item, callback);
     }
 
