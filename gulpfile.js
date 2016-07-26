@@ -11,12 +11,20 @@ let gulp = require('gulp'),
   exec = require('gulp-exec'),
   del = require('del');
 
-// 기본 경로
-const DIST_PATH = 'dist/';
-const DEPLOY_PATH = 'deploy/';
-const MAPS_PATH = './';
-const APP_PATH = 'src/';
+var tsProject = ts.createProject('tsconfig.json');
 
+/****************************
+ * 경로 설정
+ ***************************/
+const APP_PATH = 'src/';
+const DIST_PATH = 'dist/';                    // 개발 경로
+const MAPS_PATH = './';                       // 기본 경로
+const DEPLOY_PATH = 'deploy/';                // 배포 경로 (package.json 위치)
+const DEPLOY_APP_PATH = DEPLOY_PATH + 'app/'; // 배포 경로 (app 위치)
+
+/****************************
+ * 파일 리스트 설정
+ ***************************/
 // 속성에 맞는 파일리스트
 const APP_ALL_FILES = APP_PATH + '**/*';
 const APP_TS_FILES = APP_PATH + '**/*.ts';
@@ -38,7 +46,7 @@ gulp.task('js:dist', function () {
   return gulp.src(APP_TS_FILES)
     .pipe(sourcemaps.init())
     .pipe(gPrint())
-    .pipe(ts())
+    .pipe(ts(tsProject))
     .pipe(sourcemaps.write(MAPS_PATH))
     .pipe(gulp.dest(DIST_PATH));
 });
@@ -86,10 +94,11 @@ gulp.task('js:deploy', function () {
     .pipe(sourcemaps.init())
     .pipe(gPrint())
     .pipe(stripCode())
-    .pipe(stripComments())
-    .pipe(ts())
+    .pipe(stripComments(tsProject))
+    .pipe(ts(tsProject))
     .pipe(sourcemaps.write(MAPS_PATH))
-    .pipe(gulp.dest(DEPLOY_PATH));
+    .pipe(gulp.dest(DEPLOY_APP_PATH))
+    .pipe(exec('cp package.json ' + DEPLOY_PATH));
 });
 
 /** 배포용 */
@@ -101,7 +110,7 @@ gulp.task('clean:deploy', function () {
 gulp.task('deploy', ['clean:deploy', 'js:deploy'], function () {
   return gulp.src([APP_HTTP_FILES, APP_CSS_FILES])
     .pipe(gPrint())
-    .pipe(gulp.dest(DEPLOY_PATH));
+    .pipe(gulp.dest(DEPLOY_APP_PATH));
 });
 
 /** 정리용 */

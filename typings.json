@@ -10,9 +10,13 @@
     "debug": "registry:dt/debug#0.0.0+20160317120654",
     "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
     "express": "registry:dt/express#4.0.0+20160317120654",
+    "express-jwt": "registry:dt/express-jwt#0.0.0+20160629014920",
     "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160701212727",
     "express-session": "registry:dt/express-session#0.0.0+20160331200931",
+    "express-unless": "registry:dt/express-unless#0.0.0+20160317120654",
     "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
+    "jsonwebtoken": "registry:dt/jsonwebtoken#0.0.0+20160720062725",
+    "lodash": "registry:dt/lodash#3.10.0+20160720001309",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "mongoose": "registry:dt/mongoose#3.8.5+20160629014609",
     "morgan": "registry:dt/morgan#1.7.0+20160524142355",
@@ -20,6 +24,7 @@
     "passport": "registry:dt/passport#0.2.0+20160317120654",
     "passport-local": "registry:dt/passport-local#0.0.0+20160316155526",
     "serve-favicon": "registry:dt/serve-favicon#0.0.0+20160316155526",
-    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157"
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "socket.io": "registry:dt/socket.io#1.4.4+20160317120654"
   }
 }

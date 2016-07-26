@@ -8,4 +8,6 @@ let app = express();
 import {MongoManager} from '../preset/mongo-manager';
 let db = new MongoManager(app, false);
 
+process.env.NODE_ENV = 'test';
+
 export let preset = { app, db };

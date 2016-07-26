@@ -4,12 +4,10 @@ import express = require('express');
 
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
-import {ServerIndex} from '../api/server/server-index';
-import {AccountIndex} from '../api/account/account-index';
-import {UserIndex} from '../api/user/user-index';
-
-/** passport 처리를 위한 객체 */
-import {setupStrategies} from './passport-preset';
+import {ServerIndex} from '../api/server/index';
+import {UserIndex} from '../api/user/index';
+import {AuthRoute} from '../auth';
+import * as auth from '../auth/auth.service';
 
 /** 전처리를 위한 객체 */
 import * as bodyParser from 'body-parser';
@@ -51,7 +49,8 @@ export class ExpressPreset {
    * @private
    */
   private beforeSetting(): void {
-    this.app.use(logger('dev'));
+    // // TODO: morgan 관련 내용 확인하고 적용한다.
+    // this.app.use(logger('dev'));
 
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,9 +74,6 @@ export class ExpressPreset {
     this.app.use(passport.initialize());
     this.app.use(passport.session()); // persistent login sessions
     this.app.use(flash()); // use connect-flash for flash messages stored in session
-
-    // passport local 설정
-    setupStrategies(passport);
   }
 
   /**
@@ -86,9 +82,13 @@ export class ExpressPreset {
    * @private
    */
   private routeSetting(): void {
-    this.app.use(route.ROUTE_URI_ACCOUNTS, new AccountIndex().routes);
+    // TODO: 필요한 이유를 확인하고 점검하여 처리한다.
+    // // write auth info
+    // this.app.use('/', auth.writeAuthInfo);
+
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
+    this.app.use(route.ROUTE_URI_AUTH, new AuthRoute().routes);
   }
 
   /**
