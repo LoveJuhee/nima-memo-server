@@ -12,13 +12,24 @@ export class ServerDbEvent extends ApiDbEvent<IServerModel> {
     }
 
     getEvents(): { dbEvent: string, event: string }[] {
-        let events = [event.DB_EVENT_SAVE, event.DB_EVENT_REMOVE];
+        let events = [
+            event.DB_EVENT_SAVE,
+            event.DB_EVENT_UPDATE,
+            event.DB_EVENT_FIND_BY_ID_AND_UPDATE,
+            event.DB_EVENT_REMOVE,
+            event.DB_EVENT_FIND_BY_ID_AND_REMOVE
+        ];
         return events;
     }
 
     preset(item: IServerModel): IServerModel {
+        console.log(item);
         if (item) {
-            delete item.id;
+            let remove: any = item;
+            remove.__v = undefined;
+            item.id = undefined;
+            item._id = undefined;
+            console.log(item);
         }
         return item;
     }
