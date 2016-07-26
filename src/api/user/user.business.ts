@@ -1,11 +1,11 @@
 'use strict';
 
-import {CommonBusiness} from '../../component/business/common.business';
+import {ApiBusiness} from '../../component/api/business';
 import User, {IUserModel} from './user.model';
 
 import {DEBUG_BUSINESS_USER} from '../../config/logger';
 
-export class UserBusiness extends CommonBusiness<IUserModel> {
+export class UserBusiness extends ApiBusiness<IUserModel> {
     constructor() {
         super(User, DEBUG_BUSINESS_USER);
     }
