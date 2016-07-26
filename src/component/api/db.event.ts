@@ -25,10 +25,12 @@ export abstract class ApiDbEvent<T extends Document> extends Debugger {
             throw (new Error(`invalid schema`));
         }
 
+        // DB post 이벤트 연결 구현 
         let events = this.getEvents();
         for (var i = 0; i < events.length; i++) {
             var event = events[i];
-            schema.post(event.dbEvent, this.emitEvent(event.event));
+            this.debugger(event);
+            schema.post(event.dbEvent, this.emitEvent(event));
         }
     }
 
@@ -67,13 +69,18 @@ export abstract class ApiDbEvent<T extends Document> extends Debugger {
      * @param {string} event
      * @returns
      */
-    emitEvent(event: string) {
+    emitEvent(evt: { dbEvent: string, event: string }) {
+        let d = this.debugger;
         let preset = this.preset;
         let emitter = this.emitter;
         return function (doc: T): void {
+            d(evt);
+            d(doc);
             doc = preset(doc);
-            emitter.emit(`${event} : ${doc._id}`, doc);
-            emitter.emit(event, doc);
+            d(`preset(doc)`);
+            d(doc);
+            emitter.emit(`${evt.event} : ${doc._id}`, doc);
+            emitter.emit(evt.event, doc);
         };
     }
 
