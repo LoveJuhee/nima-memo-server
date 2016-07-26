@@ -27,7 +27,6 @@ export class ServerDbEvent extends ApiDbEvent<IServerModel> {
             let remove: any = item;
             remove.__v = undefined;
             item.id = undefined;
-            item._id = undefined;
         }
         return item;
     }
