@@ -43,7 +43,7 @@ export class ApiController extends Debugger {
                     .status(403)
                     .send('Forbidden');
             }
-        }
+        };
     }
 
     /**
