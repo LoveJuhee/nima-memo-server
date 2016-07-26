@@ -10,8 +10,8 @@ import * as debugClass from 'debug';
 let debug: debug.IDebugger = debugClass(DEBUG_TDD_BUSINESS_USER);
 
 const EMAIL_MOCK = {
-    email: 'nima@gmail.com',
-}
+    email: 'user.business.spec@nima.com',
+};
 const ACCOUNT_MOCK = {
     email: EMAIL_MOCK.email,
     password: 'nima1234',
@@ -28,10 +28,11 @@ const USER_PASSWORD_UPDATE = {
     nick: USER_NICK_UPDATE.nick,
 };
 const USER_NICK_DUPLICATE = {
-    email: 'other@gmail.com',
+    email: 'user.business.spec.duplicate.nick@nima.com',
     password: ACCOUNT_MOCK.password,
     nick: USER_PASSWORD_UPDATE.nick,
 };
+let latsUserId: string = '';
 
 describe('UserBusiness TDD', function () {
     beforeEach(function (done: DoneFn) {
@@ -61,6 +62,7 @@ describe('UserBusiness TDD', function () {
                 expect(r.email).toBe(ACCOUNT_MOCK.email);
                 expect(r.nick).not.toBeNull();
                 expect(r.nick).toBe(ACCOUNT_MOCK.nick);
+                latsUserId = r._id;
                 return Promise.resolve();
             })
             // 생성 실패 (오류)
@@ -93,7 +95,7 @@ describe('UserBusiness TDD', function () {
 
     it('유저 닉네임 업데이트 시도', function (done: DoneFn) {
         debug(`유저 닉네임 업데이트 시도`);
-        factory.updateOne(EMAIL_MOCK, USER_NICK_UPDATE)
+        factory.updateById(latsUserId, USER_NICK_UPDATE)
             // 닉네임 업데이트 성공 결과 (목표)
             .then(r => {
                 debug(r);
@@ -169,7 +171,7 @@ describe('UserBusiness TDD', function () {
 
     it('유저 삭제 시도', function (done: DoneFn) {
         debug(`유저 삭제 시도`);
-        factory.deleteOne({ email: USER_NICK_UPDATE.email })
+        factory.deleteById(latsUserId)
             // 삭제 성공 결과 (목표)
             .then(r => {
                 debug(`유저 삭제 시도 성공`);
@@ -189,7 +191,7 @@ describe('UserBusiness TDD', function () {
 
     it('삭제된 유저에 대한 업데이트 시도', function (done: DoneFn) {
         debug(`삭제된 유저에 대한 업데이트 시도`);
-        factory.updateOne(EMAIL_MOCK, USER_NICK_UPDATE)
+        factory.updateById(latsUserId, USER_NICK_UPDATE)
             // 생성 성공 결과 (오류)
             .then(r => {
                 debug(r);
@@ -207,7 +209,7 @@ describe('UserBusiness TDD', function () {
 
     it('이미 삭제된 유저 삭제 시도', function (done: DoneFn) {
         debug(`이미 삭제된 유저 삭제 시도`);
-        factory.deleteOne({ email: USER_NICK_UPDATE.email })
+        factory.deleteById(latsUserId)
             // 생성 성공 결과 (오류)
             .then(r => {
                 debug(r);

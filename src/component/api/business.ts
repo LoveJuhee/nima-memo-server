@@ -422,22 +422,18 @@ export class ApiBusiness<T extends mongoose.Document> {
         }
         cond = this.convertId(cond);
         this.debugger(cond);
-        return this._findOne(cond)
+        return new Promise((resolve: any, reject: any) => {
+        this._model.findByIdAndRemove(cond).exec()
             .then(res => {
-                return res.remove().exec()
-                    .then(res => {
-                        this.debugger(`deleteOne succeed`);
-                        this.debugger(res);
-                        Promise.resolve(res);
-                    }, err => {
-                        this.debugger(`deleteOne failed`);
-                        this.debugger(err);
-                        Promise.reject(err);
-                    });
-            })
-            .catch(err => {
-                return Promise.reject(err);
+                this.debugger(`deleteOne succeed`);
+                this.debugger(res);
+                resolve(res);
+            }, err => {
+                this.debugger(`deleteOne failed`);
+                this.debugger(err);
+                reject(err);
             });
+        });
     }
 
     /**
