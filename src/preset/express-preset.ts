@@ -49,7 +49,8 @@ export class ExpressPreset {
    * @private
    */
   private beforeSetting(): void {
-    this.app.use(logger('dev'));
+    // // TODO: morgan 관련 내용 확인하고 적용한다.
+    // this.app.use(logger('dev'));
 
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -81,8 +82,9 @@ export class ExpressPreset {
    * @private
    */
   private routeSetting(): void {
-    // write auth info
-    this.app.use('/', auth.writeAuthInfo);
+    // TODO: 필요한 이유를 확인하고 점검하여 처리한다.
+    // // write auth info
+    // this.app.use('/', auth.writeAuthInfo);
 
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
