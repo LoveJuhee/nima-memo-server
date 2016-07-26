@@ -59,7 +59,7 @@ export function isAuthenticated(): any {
  * @param {any} argument
  * @returns {void}
  */
-export function writeAuthInfo(argument: any): void {
+export function writeAuthInfo(req: Request, res: Response, next: NextFunction): void {
     return compose()
         // Validate jwt
         .use(function (req: Request, res: Response, next: NextFunction) {
