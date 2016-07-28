@@ -1,6 +1,6 @@
 'use strict';
 
-import {ApiDbEvent} from '../../component/api/db.event';
+import {ApiDbEvent, DbEventKeyValue} from '../../component/api/db.event';
 import * as event from '../../component/api/db.event.instance';
 
 import {DEBUG_DB_EVENT_SERVER} from '../../config/logger';
@@ -11,13 +11,11 @@ export class ServerDbEvent extends ApiDbEvent<IServerModel> {
         super(ServerSchema, DEBUG_DB_EVENT_SERVER);
     }
 
-    getEvents(): { dbEvent: string, event: string }[] {
+    getEvents(): DbEventKeyValue[] {
         let events = [
             event.DB_EVENT_SAVE,
             event.DB_EVENT_UPDATE,
-            event.DB_EVENT_FIND_BY_ID_AND_UPDATE,
             event.DB_EVENT_REMOVE,
-            event.DB_EVENT_FIND_BY_ID_AND_REMOVE
         ];
         return events;
     }
