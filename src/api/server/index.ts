@@ -5,6 +5,7 @@ import {ServerController} from './server.controller';
 import * as auth from '../../auth/auth.service';
 
 import {ServerDbEvent} from './server.db.event';
+import {ServerSocketEvent} from './server.socket.event';
 
 var router = express.Router();
 
@@ -13,10 +14,6 @@ var router = express.Router();
  * @class
  */
 export class ServerIndex {
-    constructor() {
-        new ServerDbEvent();
-    }
-
     /**
      * route 처리 객체 반환
      * 
