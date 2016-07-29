@@ -3,6 +3,9 @@
 import {SocketClient, clientEventProcessor} from '../component/socket.io/socket.client';
 import manager from '../component/socket.io/socket.client.manager';
 
+import serverSocketEvent from '../api/server/server.socket.event';
+import userSocketEvent from '../api/user/user.socket.event';
+
 clientEventProcessor.onConnect = onConnect;
 clientEventProcessor.onDisconnect = onDisconnect;
 
@@ -42,5 +45,6 @@ function onConnect(client: SocketClient): void {
     });
 
     // 소켓 이벤트 추가 처리
-    // require('../api/alm/alm.socket').register(socket);
+    serverSocketEvent.register(client);
+    userSocketEvent.register(client);
 }

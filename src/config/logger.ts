@@ -16,6 +16,7 @@ export const DEBUG_MODEL_SERVER: string = 'model:server';
 
 export const DEBUG_DB_EVENT_COMMON: string = 'db:event:common';
 export const DEBUG_DB_EVENT_SERVER: string = 'db:event:server';
+export const DEBUG_DB_EVENT_USER: string = 'db:event:user';
 
 export const DEBUG_BUSINESS_COMMON: string = 'business:common';
 export const DEBUG_BUSINESS_USER: string = 'business:user';
