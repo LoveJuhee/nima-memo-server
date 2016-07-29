@@ -24,6 +24,7 @@ export class UserDbEvent extends ApiDbEvent<IUserModel> {
         if (item) {
             let result: any = {};
             result.email = item.email;
+            result.nick = item.nick;
             return result;
         }
         return item;
