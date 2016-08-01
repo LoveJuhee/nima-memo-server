@@ -118,6 +118,38 @@ export function hasRole(roleRequired: any) {
 }
 
 /**
+ * 
+ * 
+ * @export
+ * @param {IUserModel} user
+ * @returns {*}
+ */
+export function loginBody(user: IUserModel): any {
+    if (user) {
+        let body: any = makeUserBase(user);
+        let token: string = signToken(user);
+        body.token = token;
+        return body;
+    }
+}
+
+/**
+ * 
+ * 
+ * @export
+ * @param {IUserModel} user
+ * @returns {*}
+ */
+export function makeUserBase(user: IUserModel): any {
+    return {
+        id: user._id,
+        nick: user.nick,
+        role: user.role,
+        updatedAt: user.updatedAt,
+    };
+}
+
+/**
  * Returns a jwt token signed by the app secret
  * 
  * @export
@@ -127,13 +159,12 @@ export function hasRole(roleRequired: any) {
  */
 export function signToken(user: IUserModel): string {
     let payload = {
-        _id: user._id,
         nick: user.nick,
-        role: user.role,
-        updatedAt: user.updated_at,
+        time: new Date(),
     };
-    let options: jwt.SignOptions = {};
-    options.expiresIn = ENVIRONMENT.secrets.expiresIn;
+    let options: jwt.SignOptions = {
+        expiresIn: ENVIRONMENT.secrets.expiresIn
+    };
     return jwt.sign(payload, ENVIRONMENT.secrets.session, options);
 }
 
