@@ -8,6 +8,7 @@ var compose = require('composable-middleware');
 
 import ENVIRONMENT from '../config/environment';
 import User from '../api/user/user.business';
+import {IUserModel} from '../api/user/user.model';
 
 import {DEBUG_AUTH} from '../config/logger';
 import * as debugClass from 'debug';
@@ -124,10 +125,12 @@ export function hasRole(roleRequired: any) {
  * @param {(string | String)} role
  * @returns {string}
  */
-export function signToken(id: string, role: string | String): string {
+export function signToken(user: IUserModel): string {
     let payload = {
-        _id: id,
-        role: role
+        _id: user._id,
+        nick: user.nick,
+        role: user.role,
+        updatedAt: user.updated_at,
     };
     let options: jwt.SignOptions = {};
     options.expiresIn = ENVIRONMENT.secrets.expiresIn;
@@ -148,7 +151,7 @@ export function setTokenCookie(req: Request, res: Response) {
             .status(404)
             .send('It looks like you aren\'t logged in, please try again.');
     }
-    var token = signToken(req.user._id, req.user.role);
+    var token = signToken(req.user);
     res.cookie('token', token);
     res.redirect('/');
 }
