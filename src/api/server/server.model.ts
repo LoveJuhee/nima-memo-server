@@ -10,8 +10,8 @@ let debug: debug.IDebugger = debugClass(DEBUG_MODEL_SERVER);
 export interface IServer {
     name: String;
     ip: String;
-    created_at: Date;
-    updated_at: Date;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
 export interface IServerModel extends IServer, mongoose.Document { };
@@ -19,11 +19,11 @@ export interface IServerModel extends IServer, mongoose.Document { };
 export let ServerSchema = new mongoose.Schema({
     name: String,
     ip: { type: String, required: true },
-    created_at: {
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    updated_at: {
+    updatedAt: {
         type: Date,
         default: Date.now
     },
@@ -65,7 +65,7 @@ ServerSchema.pre('updateOn', preUpdate);
  */
 function preUpdate(next: mongoose.HookNextFunction) {
     if (this && this._update) {
-        this._update.updated_at = new Date();
+        this._update.updatedAt = new Date();
     } else {
         debug(`function preUpdate(next: mongoose.HookNextFunction) error`);
         debug(this);

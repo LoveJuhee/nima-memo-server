@@ -20,8 +20,8 @@ export interface IUser {
     password: String;
     provider: String;
     salt: String;
-    created_at: Date;
-    updated_at: Date;
+    createdAt: Date;
+    updatedAt: Date;
     facebook: {};
     twitter: {};
     google: {};
@@ -69,11 +69,11 @@ export let UserSchema = new mongoose.Schema({
         type: String,
         default: 'en'
     },
-    created_at: {
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    updated_at: {
+    updatedAt: {
         type: Date,
         default: Date.now
     },
@@ -174,7 +174,7 @@ function validatePresenceOf(value: string): Number {
  * Pre-findOneAndUpdate hook
  */
 UserSchema.pre('findOneAndUpdate', function (next: mongoose.HookNextFunction) {
-    this._update.updated_at = new Date();
+    this._update.updatedAt = new Date();
     debug(this._update);
     next();
 });
@@ -183,7 +183,7 @@ UserSchema.pre('findOneAndUpdate', function (next: mongoose.HookNextFunction) {
  * Pre-updateOne hook
  */
 UserSchema.pre('updateOne', function (next: mongoose.HookNextFunction) {
-    this._update.updated_at = new Date();
+    this._update.updatedAt = new Date();
     debug(this._update);
     next();
 });
@@ -201,8 +201,8 @@ UserSchema.pre('save', function (next: mongoose.HookNextFunction) {
         next(new Error('Invalid password'));
     }
 
-    this.created_at = this.created_at || new Date();
-    this.updated_at = new Date();
+    this.createdAt = this.createdAt || new Date();
+    this.updatedAt = new Date();
     debug(this);
 
     // Make salt with a callback
