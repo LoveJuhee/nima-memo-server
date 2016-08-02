@@ -2,13 +2,13 @@
 
 import {ApiDbEvent, DbEventKeyValue} from '../../component/api/db.event';
 import * as event from '../../component/api/db.event.instance';
+import {UserSchema, IUserModel} from './user.model';
 
-import {DEBUG_DB_EVENT_SERVER} from '../../config/logger';
-import {ServerSchema, IServerModel} from './server.model';
+import {DEBUG_DB_EVENT_USER} from '../../config/logger';
 
-export class ServerDbEvent extends ApiDbEvent<IServerModel> {
+export class UserDbEvent extends ApiDbEvent<IUserModel> {
     constructor() {
-        super(ServerSchema, DEBUG_DB_EVENT_SERVER);
+        super(UserSchema, DEBUG_DB_EVENT_USER);
     }
 
     getEvents(): DbEventKeyValue[] {
@@ -16,20 +16,21 @@ export class ServerDbEvent extends ApiDbEvent<IServerModel> {
             event.DB_EVENT_SAVE,
             event.DB_EVENT_UPDATE,
             event.DB_EVENT_REMOVE,
-        ];
+        ]
         return events;
     }
 
-    preset(item: IServerModel): IServerModel {
+    preset(item: IUserModel): IUserModel {
         if (item) {
-            let remove: any = item;
-            remove.__v = undefined;
-            item.id = undefined;
+            let result: any = {};
+            result.email = item.email;
+            result.nick = item.nick;
+            return result;
         }
         return item;
     }
 
     toString() {
-        return 'ServerDbEvent extends ApiDbEvent class';
+        return 'UserDbEvent class';
     }
 }

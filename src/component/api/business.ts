@@ -335,8 +335,8 @@ export class ApiBusiness<T extends mongoose.Document> {
      * 실제 모든 객체 검색을 수행하는 함수
      * 
      * @private
-     * @param {*} [cond]
-     * @param {string} [filter='']
+     * @param {*} cond
+     * @param {string} [filter]
      * @returns {Promise<T>}
      */
     private _findOne(cond: any, filter?: string): Promise<T> {
@@ -361,12 +361,12 @@ export class ApiBusiness<T extends mongoose.Document> {
     /**
      * 특정 대상 업데이트
      * 
-     * @param {T} cond
+     * @param {*} cond
      * @param {T} update
-     * @param {(error: any, result: T) => void} [callback=null]
+     * @param {(error: any, result?: T) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    updateOne(cond: T, update: T, callback: (error: any, result?: T) => void = null): Promise<T> {
+    updateOne(cond: any, update: T, callback: (error: any, result?: T) => void = null): Promise<T> {
         return this.returnOne(this._updateOne(cond, update), callback);
     }
 
@@ -374,11 +374,11 @@ export class ApiBusiness<T extends mongoose.Document> {
      * 하나의 객체 갱신
      * 
      * @private
-     * @param {T} cond
+     * @param {*} cond
      * @param {T} update
      * @returns {Promise<T>}
      */
-    private _updateOne(cond: T, update: T): Promise<T> {
+    private _updateOne(cond: any, update: T): Promise<T> {
         if (!cond || !update) {
             return this.returnInvalidParams();
         }
@@ -401,42 +401,39 @@ export class ApiBusiness<T extends mongoose.Document> {
     /**
      * 특정 대상 삭제
      * 
-     * @param {Object} cond
+     * @param {*} cond
      * @param {(error: any, result: T) => void} [callback=null]
      * @returns {Promise<T>}
      */
-    deleteOne(cond: Object, callback: (error: any, result: T) => void = null): Promise<T> {
+    deleteOne(cond: any, callback: (error: any, result: T) => void = null): Promise<T> {
         return this.returnOne(this._deleteOne(cond), callback);
     }
 
     /**
-     * 
+     * 특정 대상 삭제
      * 
      * @private
-     * @param {Object} cond
+     * @param {*} cond
      * @returns {Promise<T>}
      */
-    private _deleteOne(cond: Object): Promise<T> {
+    private _deleteOne(cond: any): Promise<T> {
         if (!cond) {
             return this.returnInvalidParams();
         }
         cond = this.convertId(cond);
-        this._findOne(cond)
+        this.debugger(cond);
+        return new Promise((resolve: any, reject: any) => {
+        this._model.findByIdAndRemove(cond).exec()
             .then(res => {
-                return res.remove().exec()
-                    .then(res => {
-                        this.debugger(`deleteOne succeed`);
-                        this.debugger(res);
-                        return Promise.resolve(res);
-                    }, err => {
-                        this.debugger(`deleteOne failed`);
-                        this.debugger(err);
-                        return Promise.reject(err);
-                    });
-            })
-            .catch(err => {
-                return Promise.reject(err);
+                this.debugger(`deleteOne succeed`);
+                this.debugger(res);
+                resolve(res);
+            }, err => {
+                this.debugger(`deleteOne failed`);
+                this.debugger(err);
+                reject(err);
             });
+        });
     }
 
     /**

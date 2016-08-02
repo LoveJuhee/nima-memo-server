@@ -6,6 +6,33 @@ import {EventEmitter} from 'events';
 import {DEBUG_DB_EVENT_COMMON} from '../../config/logger';
 import {Debugger} from '../debugger';
 
+export class DbEventKeyValue {
+    constructor(dbEvent: string, event: string) {
+        this.dbEvent = dbEvent;
+        this.event = event;
+    }
+
+    private _dbEvent: string;
+    set dbEvent(dbEvent: string) {
+        this._dbEvent = dbEvent;
+    }
+    get dbEvent(): string {
+        return this._dbEvent;
+    }
+
+    private _event: string;
+    set event(event: string) {
+        this._event = event;
+    }
+    get event(): string {
+        return this._event;
+    }
+
+    toString() {
+        return 'DbEventKeyValue class';
+    }
+}
+
 /**
  * Db Event 발생 클래스
  * 
@@ -40,9 +67,9 @@ export abstract class ApiDbEvent<T extends Document> extends Debugger {
      * event: 전파되는 이벤트
      * 
      * @abstract
-     * @returns {{ dbEvent: string, event: string }[]}
+     * @returns {DbEventKeyValue[]}
      */
-    abstract getEvents(): { dbEvent: string, event: string }[];
+    abstract getEvents(): DbEventKeyValue[];
 
     /**
      * 데이터 전송 전에 정리해야하는 로직 구현
@@ -69,7 +96,7 @@ export abstract class ApiDbEvent<T extends Document> extends Debugger {
      * @param {string} event
      * @returns
      */
-    emitEvent(evt: { dbEvent: string, event: string }) {
+    emitEvent(evt: DbEventKeyValue) {
         let d = this.debugger;
         let preset = this.preset;
         let emitter = this.emitter;

@@ -3,7 +3,7 @@
 import {Router, Request, Response, NextFunction} from 'express';
 import * as passport from 'passport';
 
-import {signToken} from '../auth.service';
+import * as auth from '../auth.service';
 import {IUserModel} from '../../api/user/user.model';
 import {UserBusiness} from '../../api/user/user.business';
 import {Environment} from '../../config/environment/params';
@@ -51,8 +51,8 @@ export class AuthLocalRoute {
                     return res.status(404).json({ message: 'Something went wrong, please try again.' });
                 }
 
-                var token = signToken(user._id, user.role);
-                res.json({ token });
+                let body: any = auth.loginBody(user);
+                res.json(body);
             })(req, res, next);
         });
 

@@ -52,11 +52,21 @@ export class ExpressPreset {
     // // TODO: morgan 관련 내용 확인하고 적용한다.
     // this.app.use(logger('dev'));
 
+    this.app.use(this.allowCrossDomain);
+
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
     this.beforePassport();
+  }
+
+  //CORS middleware
+  allowCrossDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PUT');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
   }
 
   /**
@@ -98,7 +108,7 @@ export class ExpressPreset {
    */
   private afterSetting(): void {
     /* Not Foud */
-    this.app.use((req: express.Request, res: express.Response, next: Function) => {
+    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
       /**
        *  Error이라는 정의가 있지만 Error에는 status라는 정의가 없어서 any 설정
        *  (아마 typescript로 개발하다보면 any를 많이 쓰게된다)
