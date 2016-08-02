@@ -51,8 +51,8 @@ export class AuthLocalRoute {
                     return res.status(404).json({ message: 'Something went wrong, please try again.' });
                 }
 
-                var token = auth.signToken(user);
-                res.json({ token });
+                let body: any = auth.loginBody(user);
+                res.json(body);
             })(req, res, next);
         });
 
