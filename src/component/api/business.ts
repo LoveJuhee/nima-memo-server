@@ -347,11 +347,11 @@ export class ApiBusiness<T extends mongoose.Document> {
         return new Promise((resolve: any, reject: any) => {
             this._model.findOne(cond, filter).exec()
                 .then(res => {
-                    this.debugger(`findById succeed`);
+                    this.debugger(`findOne succeed`);
                     this.debugger(res);
                     resolve(res);
                 }, err => {
-                    this.debugger(`findById failed`);
+                    this.debugger(`findOne failed`);
                     this.debugger(err);
                     reject(err);
                 });
@@ -423,16 +423,16 @@ export class ApiBusiness<T extends mongoose.Document> {
         cond = this.convertId(cond);
         this.debugger(cond);
         return new Promise((resolve: any, reject: any) => {
-        this._model.findByIdAndRemove(cond).exec()
-            .then(res => {
-                this.debugger(`deleteOne succeed`);
-                this.debugger(res);
-                resolve(res);
-            }, err => {
-                this.debugger(`deleteOne failed`);
-                this.debugger(err);
-                reject(err);
-            });
+            this._model.findByIdAndRemove(cond).exec()
+                .then(res => {
+                    this.debugger(`deleteOne succeed`);
+                    this.debugger(res);
+                    resolve(res);
+                }, err => {
+                    this.debugger(`deleteOne failed`);
+                    this.debugger(err);
+                    reject(err);
+                });
         });
     }
 
@@ -453,6 +453,7 @@ export class ApiBusiness<T extends mongoose.Document> {
         } else if (arg._id) {
             arg._id = this.toObjectId(arg._id);
         }
+        return arg;
     }
 
     /**
