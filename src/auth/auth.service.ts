@@ -159,7 +159,7 @@ export function makeUserBase(user: IUserModel): any {
  */
 export function signToken(user: IUserModel): string {
     let payload = {
-        id: user._id,
+        _id: user._id,
         role: user.role,
         nick: user.nick,
         time: new Date(),
