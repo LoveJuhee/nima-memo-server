@@ -1,6 +1,7 @@
 'use strict';
 
 import express = require('express');
+import cors = require('cors');
 
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
@@ -52,7 +53,11 @@ export class ExpressPreset {
     // // TODO: morgan 관련 내용 확인하고 적용한다.
     // this.app.use(logger('dev'));
 
+    this.app.use(this.print);
     this.app.use(this.allowCrossDomain);
+
+    // 복잡한 리퀘스트에 대한 이슈 (options 정보를 주고 받는 부분)
+    this.app.use(cors());
 
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -61,10 +66,15 @@ export class ExpressPreset {
     this.beforePassport();
   }
 
+  print(req: express.Request, res: express.Response, next: express.NextFunction) {
+    console.log(req.headers);
+    next();
+  }
+
   //CORS middleware
   allowCrossDomain(req: express.Request, res: express.Response, next: express.NextFunction) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PUT');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
   }
