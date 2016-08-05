@@ -367,6 +367,9 @@ export class ApiBusiness<T extends mongoose.Document> {
      * @returns {Promise<T>}
      */
     updateOne(cond: any, update: T, callback: (error: any, result?: T) => void = null): Promise<T> {
+        this.debugger(`updateOne()`);
+        this.debugger(cond);
+        this.debugger(update);
         return this.returnOne(this._updateOne(cond, update), callback);
     }
 
@@ -451,7 +454,7 @@ export class ApiBusiness<T extends mongoose.Document> {
         if (typeof arg === 'string') {
             return this.toObjectId(arg);
         } else if (arg._id) {
-            arg._id = this.toObjectId(arg._id);
+            arg._id = this.toObjectId(arg._id + '');
         }
         return arg;
     }
@@ -464,6 +467,8 @@ export class ApiBusiness<T extends mongoose.Document> {
      * @returns {mongoose.Types.ObjectId}
      */
     protected toObjectId(_id: string): mongoose.Types.ObjectId {
+        this.debugger(`toObjectId(${_id})`);
+        this.debugger(_id);
         return mongoose.Types.ObjectId.createFromHexString(_id);
     }
 }
