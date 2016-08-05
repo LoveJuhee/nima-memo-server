@@ -104,8 +104,10 @@ export class UserController extends ApiController {
         if (req.body._id) {
             delete req.body._id;
         }
+        var userId = req.params.id;
         UserBusiness
-            .updateOne({ _id: req.params.id }, req.params)
+            .updateById(userId, req.body)
+            .then(() => UserBusiness.findById(userId, '-salt -password'))
             .then(instance.respondWithResult(res))
             .catch(instance.handleError(res));
     }
