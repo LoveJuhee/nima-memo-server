@@ -142,7 +142,7 @@ export function loginBody(user: IUserModel): any {
  */
 export function makeUserBase(user: IUserModel): any {
     return {
-        id: user._id,
+        _id: user._id,
         nick: user.nick,
         role: user.role,
         updatedAt: user.updatedAt,
