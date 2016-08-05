@@ -142,7 +142,7 @@ export function loginBody(user: IUserModel): any {
  */
 export function makeUserBase(user: IUserModel): any {
     return {
-        id: user._id,
+        _id: user._id,
         nick: user.nick,
         role: user.role,
         updatedAt: user.updatedAt,
@@ -159,7 +159,7 @@ export function makeUserBase(user: IUserModel): any {
  */
 export function signToken(user: IUserModel): string {
     let payload = {
-        id: user._id,
+        _id: user._id,
         role: user.role,
         nick: user.nick,
         time: new Date(),
