@@ -41,7 +41,7 @@ export class MemoController extends ApiController {
         instance.debugger(params);
 
         MemoBusiness
-            .findAll(params, '-__v')
+            .findAll(params, '-__v -message')
             .then(r => {
                 if (!r) {
                     instance.handleEntityNotFound(res);
