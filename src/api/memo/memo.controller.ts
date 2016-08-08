@@ -37,6 +37,7 @@ export class MemoController extends ApiController {
      */
     index(req: Request, res: Response): void {
         let params = req.params || {};
+        params.ownerId = req.user._id;
         instance.debugger(`try index`);
         instance.debugger(params);
 
@@ -60,6 +61,7 @@ export class MemoController extends ApiController {
      */
     create(req: Request, res: Response): void {
         let memo: IMemoModel = req.body || {};
+        memo.ownerId = req.user._id;
         instance.debugger(`try create`);
         instance.debugger(memo);
 
@@ -95,12 +97,17 @@ export class MemoController extends ApiController {
     update(req: Request, res: Response): void {
         let id: string = req.params.id;
         let body: any = req.body;
+
+        if (body._id) {
+            delete body._id;
+        }
+
         instance.debugger(`try update`);
         instance.debugger(id);
         instance.debugger(body);
-
         MemoBusiness
             .updateById(id, body)
+            .then(() => MemoBusiness.findById(id, '-__v'))
             .then(instance.respondWithResult(res))
             .catch(instance.handleError(res));
     }
