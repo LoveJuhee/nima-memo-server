@@ -2,6 +2,7 @@
 export const DEBUG: string = 'debug';
 
 export const DEBUG_ROUTE_SERVERS: string = 'route:servers';
+export const DEBUG_ROUTE_MEMOS: string = 'route:memos';
 export const DEBUG_ROUTE_USERS: string = 'route:users';
 
 export const DEBUG_AUTH: string = 'auth';
@@ -13,14 +14,17 @@ export const DEBUG_CONFIG_ENVIRONMENT: string = 'config:environment';
 
 export const DEBUG_MODEL_USER: string = 'model:user';
 export const DEBUG_MODEL_SERVER: string = 'model:server';
+export const DEBUG_MODEL_MEMO: string = 'model:memo';
 
 export const DEBUG_DB_EVENT_COMMON: string = 'db:event:common';
 export const DEBUG_DB_EVENT_SERVER: string = 'db:event:server';
+export const DEBUG_DB_EVENT_MEMO: string = 'db:event:memo';
 export const DEBUG_DB_EVENT_USER: string = 'db:event:user';
 
 export const DEBUG_BUSINESS_COMMON: string = 'business:common';
 export const DEBUG_BUSINESS_USER: string = 'business:user';
 export const DEBUG_BUSINESS_SERVER: string = 'business:server';
+export const DEBUG_BUSINESS_MEMO: string = 'business:memo';
 
 export const DEBUG_CONTROLLER_COMMON: string = 'controller:common';
 

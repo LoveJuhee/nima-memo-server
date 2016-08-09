@@ -190,6 +190,7 @@ export class ApiBusiness<T extends mongoose.Document> {
      */
     private _findAll(cond: any = {}, filter?: string): Promise<T[]> {
         cond = this.convertId(cond);
+        this.debugger(cond);
         return new Promise((resolve: any, reject: any) => {
             this._model.find(cond, filter).exec()
                 .then(res => {
@@ -229,6 +230,7 @@ export class ApiBusiness<T extends mongoose.Document> {
             return this.returnInvalidParams();
         }
         let _id = this.convertId(id);
+        this.debugger(_id);
         return new Promise((resolve: any, reject: any) => {
             this._model.findById(_id, filter).exec()
                 .then(res => {
@@ -268,6 +270,8 @@ export class ApiBusiness<T extends mongoose.Document> {
             return this.returnInvalidParams();
         }
         let _id = this.convertId(id);
+        this.debugger(_id);
+        this.debugger(update);
         return new Promise((resolve: any, reject: any) => {
             this._model.update({ _id: _id }, update).exec()
                 .then(res => {
@@ -305,6 +309,7 @@ export class ApiBusiness<T extends mongoose.Document> {
             return this.returnInvalidParams();
         }
         let _id = this.convertId(id);
+        this.debugger(_id);
         return new Promise((resolve: any, reject: any) => {
             this._model.remove({ _id: _id }).exec()
                 .then(res => {
@@ -344,6 +349,8 @@ export class ApiBusiness<T extends mongoose.Document> {
             return this.returnInvalidParams();
         }
         cond = this.convertId(cond);
+        this.debugger(cond);
+        this.debugger(filter);
         return new Promise((resolve: any, reject: any) => {
             this._model.findOne(cond, filter).exec()
                 .then(res => {
@@ -386,7 +393,11 @@ export class ApiBusiness<T extends mongoose.Document> {
             return this.returnInvalidParams();
         }
         cond = this.convertId(cond);
-        delete update._id;
+        if (update._id) {
+            delete update._id;
+        }
+        this.debugger(cond);
+        this.debugger(update);
         return new Promise((resolve: any, reject: any) => {
             this._model.findOneAndUpdate(cond, update).exec()
                 .then(res => {

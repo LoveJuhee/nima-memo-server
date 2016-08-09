@@ -6,6 +6,7 @@ import cors = require('cors');
 /** 라우트 처리를 위한 객체 */
 import * as route from '../config/route';
 import {ServerIndex} from '../api/server/index';
+import {MemoIndex} from '../api/memo/index';
 import {UserIndex} from '../api/user/index';
 import {AuthRoute} from '../auth';
 import * as auth from '../auth/auth.service';
@@ -107,6 +108,7 @@ export class ExpressPreset {
     // this.app.use('/', auth.writeAuthInfo);
 
     this.app.use(route.ROUTE_URI_SERVERS, new ServerIndex().routes);
+    this.app.use(route.ROUTE_URI_MEMOS, new MemoIndex().routes);
     this.app.use(route.ROUTE_URI_USERS, new UserIndex().routes);
     this.app.use(route.ROUTE_URI_AUTH, new AuthRoute().routes);
   }
